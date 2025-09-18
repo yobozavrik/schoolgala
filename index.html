@@ -550,23 +550,40 @@
                     const day = index + 1;
                     const isLocked = day > progressState.completedDays.length + 1;
                     const isCompleted = progressState.completedDays.includes(day);
-                    
+
                     const container = createElement('div', null, {'class': 'border rounded-lg', 'style': 'border-color: var(--border);'});
                     const button = createElement('button', null, {
-                        'class': 'accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold',
-                        'disabled': isLocked
+                        'class': 'accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold'
                     });
-                     if(isLocked) button.classList.add('opacity-50', 'cursor-not-allowed');
+                    if(isLocked) {
+                        button.disabled = true;
+                        button.classList.add('opacity-50', 'cursor-not-allowed');
+                    }
 
                     const titleSpan = createElement('span', `День ${day}: ${dayData.title}`);
-                    let iconName = 'chevron-down';
-                    if (isLocked) iconName = 'lock';
-                    if (isCompleted) iconName = 'check-circle-2';
-                    const icon = createElement('i', null, {'data-lucide': iconName, 'class': 'w-5 h-5 transition-transform duration-300 flex-shrink-0 ml-2'});
-                     if (isCompleted) icon.style.color = 'var(--success)';
+                    const iconContainer = createElement('span', null, {
+                        'class': 'flex items-center ml-2',
+                        'style': 'gap: 0.5rem;'
+                    });
 
+                    if (isCompleted || isLocked) {
+                        const statusIconName = isLocked ? 'lock' : 'check-circle-2';
+                        const statusIcon = createElement('i', null, {
+                            'data-lucide': statusIconName,
+                            'class': 'w-5 h-5 flex-shrink-0'
+                        });
+                        if (isCompleted) statusIcon.style.color = 'var(--success)';
+                        if (isLocked) statusIcon.style.color = 'var(--muted-foreground)';
+                        iconContainer.appendChild(statusIcon);
+                    }
 
-                    button.append(titleSpan, icon);
+                    const chevronIcon = createElement('i', null, {
+                        'data-lucide': 'chevron-down',
+                        'class': 'w-5 h-5 transition-transform duration-300 flex-shrink-0'
+                    });
+                    iconContainer.appendChild(chevronIcon);
+
+                    button.append(titleSpan, iconContainer);
 
                     const contentWrapper = createElement('div', null, {'class': 'accordion-content'});
                     const contentDiv = createElement('div', null, {'class': 'p-4 pt-0', 'style': 'color: var(--muted-foreground);'});
