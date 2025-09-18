@@ -601,7 +601,7 @@
             function handleAccordionToggle(toggle) {
                 if(!toggle || toggle.disabled) return;
                 const content = toggle.nextElementSibling;
-                const icon = toggle.querySelector('i[data-lucide="chevron-down"]');
+                const icon = toggle.querySelector('[data-lucide="chevron-down"]');
                 if (!icon) return; // Don't toggle for lock/check icons
                 
                 const isCurrentlyOpen = content.style.maxHeight && content.style.maxHeight !== "0px";
@@ -610,7 +610,7 @@
                     parent.querySelectorAll('.accordion-content').forEach(el => {
                         if(el !== content) {
                            el.style.maxHeight = null;
-                           const otherIcon = el.previousElementSibling.querySelector('i[data-lucide="chevron-down"]');
+                           const otherIcon = el.previousElementSibling.querySelector('[data-lucide="chevron-down"]');
                            if (otherIcon) otherIcon.classList.remove('rotate-180');
                         }
                     });
