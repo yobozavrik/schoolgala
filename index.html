@@ -1134,13 +1134,15 @@
                 
                 const productsHtml = products.map(product => {
                     const onErrorScript = `this.onerror=null;this.src='https://placehold.co/100x100/FDE68A/4B5563?text=Фото';`;
+                    const productUrl = product.url || '#';
+                    const targetAttributes = product.url ? ' target="_blank" rel="noopener noreferrer"' : '';
                     return `
-                        <div class="flex items-start bg-white p-3 rounded-lg shadow-sm border">
+                        <a href="${productUrl}" class="flex items-start bg-white p-3 rounded-lg shadow-sm border"${targetAttributes}>
                             <img src="${product.image}" alt="${product.name}" class="w-16 h-16 md:w-20 md:h-20 rounded-md mr-4 object-cover flex-shrink-0" onerror="${onErrorScript}">
                             <div>
                                 <h4 class="font-bold text-base md:text-lg">${product.name.replace(' - Галя Балувана', '')}</h4>
                             </div>
-                        </div>
+                        </a>
                     `;
                 }).join('');
                 productList.innerHTML = productsHtml;
