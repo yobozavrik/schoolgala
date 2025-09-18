@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="uk" class="">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,8 +9,42 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* CSS Variables for Theming */
+        :root {
+            --background: #f8f9fa; /* Softer light gray */
+            --foreground: #212529; /* Softer black */
+            --card-background: #ffffff;
+            --card-foreground: #343a40;
+            --muted-foreground: #6c757d;
+            --primary: #fca311; /* Richer amber */
+            --primary-foreground: #ffffff;
+            --secondary-background: #e9ecef; /* Light gray for elements */
+            --border: #dee2e6;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.04);
+            --success: #28a745;
+            --success-foreground: #ffffff;
+        }
+
+        html.dark {
+            --background: #181a1b; /* Rich dark background */
+            --foreground: #e8e6e3; /* Soft white text */
+            --card-background: #242627;
+            --card-foreground: #f1f3f5;
+            --muted-foreground: #adb5bd;
+            --primary: #fcc419; /* Brighter yellow for dark mode */
+            --primary-foreground: #181a1b;
+            --secondary-background: #33373a;
+            --border: #495057;
+            --success: #20c997;
+            --success-foreground: #181a1b;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
+            background-color: var(--background);
+            color: var(--foreground);
+            transition: background-color 0.3s, color 0.3s;
         }
         .main-page { display: block; }
         .sub-page { display: none; }
@@ -21,19 +55,25 @@
             overflow: hidden;
             transition: max-height 0.3s ease-out;
         }
+        .answer-option {
+            border-width: 2px;
+            transition: all 0.2s ease-in-out;
+        }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="antialiased">
 
-    <div class="container mx-auto max-w-lg min-h-screen bg-white shadow-lg">
+    <div class="container mx-auto max-w-lg min-h-screen" style="background-color: var(--card-background);">
         <!-- HEADER -->
-        <header class="sticky top-0 bg-white border-b border-gray-200 z-10">
+        <header class="sticky top-0 z-10 border-b" style="background-color: var(--card-background); border-color: var(--border);">
             <div class="flex items-center justify-between p-4">
-                <button id="backButton" class="text-gray-600 invisible">
+                <button id="backButton" class="invisible" style="color: var(--muted-foreground);">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
                 </button>
-                <h1 id="headerTitle" class="text-xl font-bold text-gray-800">Навігатор Стажера</h1>
-                <div class="w-6"></div> <!-- Spacer -->
+                <h1 id="headerTitle" class="text-xl font-bold" style="color: var(--card-foreground);">Навігатор Стажера</h1>
+                <button id="theme-toggle" class="p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)]" style="color: var(--muted-foreground); background-color: var(--secondary-background);">
+                    <i id="theme-icon" data-lucide="moon" class="w-5 h-5"></i>
+                </button>
             </div>
         </header>
 
@@ -43,151 +83,186 @@
             <!-- Main Page -->
             <div id="main-page" class="main-page">
                 <div class="text-center mb-6">
-                    <img src="https://galya-baluwana.lviv.ua/wp-content/uploads/2022/09/logo-yellow.svg" alt="Галя Балувана" class="mx-auto h-24 w-24 rounded-full mb-4">
-                    <h2 class="text-2xl font-bold text-gray-900">Ласкаво просимо, Анно!</h2>
-                    <p class="text-gray-500">Ваш шлях у "Галя Балувана" починається тут.</p>
+                    <div class="w-24 h-24 mx-auto mb-4 rounded-full flex items-center justify-center" style="background-color: var(--secondary-background);">
+                        <img src="https://i.ibb.co/688w7Vq/image-f723c9.jpg" alt="Галя Балувана" class="h-20 w-20 rounded-full">
+                    </div>
+                    <h2 class="text-2xl font-bold" style="color: var(--card-foreground);">Ласкаво просимо, Анно!</h2>
+                    <p style="color: var(--muted-foreground);">Ваш шлях у "Галя Балувана" починається тут.</p>
                 </div>
 
                 <!-- Progress -->
                 <div class="mb-8">
                     <div class="flex justify-between mb-1">
-                        <span class="text-base font-medium text-amber-700">Ваш прогрес</span>
-                        <span class="text-sm font-medium text-amber-700">25%</span>
+                        <span class="text-base font-medium" style="color: var(--primary);">Ваш прогрес</span>
+                        <span id="mainProgressText" class="text-sm font-medium" style="color: var(--primary);">5%</span>
                     </div>
-                    <div class="w-full bg-gray-200 rounded-full h-2.5">
-                        <div class="bg-amber-500 h-2.5 rounded-full" style="width: 25%"></div>
+                    <div class="w-full rounded-full h-2.5" style="background-color: var(--secondary-background);">
+                        <div id="mainProgressBar" class="h-2.5 rounded-full" style="background-color: var(--primary); width: 5%; transition: width 0.5s ease-in-out;"></div>
                     </div>
                 </div>
 
                 <!-- Menu Grid -->
                 <div class="grid grid-cols-2 gap-4">
-                    <button data-page="products-page" class="menu-card group flex flex-col items-center justify-center p-4 bg-amber-50 rounded-lg shadow-sm hover:bg-amber-100 transition-all duration-200">
-                        <div class="p-3 bg-white rounded-full mb-3 shadow-md">
-                            <i data-lucide="book-open" class="w-8 h-8 text-amber-500"></i>
+                    <button data-page="plan-page" class="menu-card group flex flex-col items-center justify-center p-4 rounded-lg transition-transform transform hover:scale-105" style="background-color: var(--secondary-background); box-shadow: var(--shadow-sm);">
+                        <div class="p-3 rounded-full mb-3" style="background-color: var(--card-background); box-shadow: var(--shadow);">
+                            <i data-lucide="clipboard-list" class="w-8 h-8" style="color: var(--primary);"></i>
                         </div>
-                        <span class="font-semibold text-gray-700 text-center">Наша Продукція</span>
+                        <span class="font-semibold text-center" style="color: var(--card-foreground);">План Навчання</span>
                     </button>
-                    <button data-page="standards-page" class="menu-card group flex flex-col items-center justify-center p-4 bg-amber-50 rounded-lg shadow-sm hover:bg-amber-100 transition-all duration-200">
-                         <div class="p-3 bg-white rounded-full mb-3 shadow-md">
-                            <i data-lucide="gem" class="w-8 h-8 text-amber-500"></i>
+                     <button data-page="checklists-page" class="menu-card group flex flex-col items-center justify-center p-4 rounded-lg transition-transform transform hover:scale-105" style="background-color: var(--secondary-background); box-shadow: var(--shadow-sm);">
+                         <div class="p-3 rounded-full mb-3" style="background-color: var(--card-background); box-shadow: var(--shadow);">
+                            <i data-lucide="check-square" class="w-8 h-8" style="color: var(--primary);"></i>
                         </div>
-                        <span class="font-semibold text-gray-700 text-center">Стандарти Роботи</span>
+                        <span class="font-semibold text-center" style="color: var(--card-foreground);">Чек-листи</span>
                     </button>
-                    <button data-page="plan-page" class="menu-card group flex flex-col items-center justify-center p-4 bg-amber-50 rounded-lg shadow-sm hover:bg-amber-100 transition-all duration-200">
-                         <div class="p-3 bg-white rounded-full mb-3 shadow-md">
-                            <i data-lucide="clipboard-list" class="w-8 h-8 text-amber-500"></i>
+                    <button data-page="standards-page" class="menu-card group flex flex-col items-center justify-center p-4 rounded-lg transition-transform transform hover:scale-105" style="background-color: var(--secondary-background); box-shadow: var(--shadow-sm);">
+                         <div class="p-3 rounded-full mb-3" style="background-color: var(--card-background); box-shadow: var(--shadow);">
+                            <i data-lucide="gem" class="w-8 h-8" style="color: var(--primary);"></i>
                         </div>
-                        <span class="font-semibold text-gray-700 text-center">План Адаптації</span>
+                        <span class="font-semibold text-center" style="color: var(--card-foreground);">База Знань</span>
                     </button>
-                    <button data-page="quiz-page" class="menu-card group flex flex-col items-center justify-center p-4 bg-amber-50 rounded-lg shadow-sm hover:bg-amber-100 transition-all duration-200">
-                         <div class="p-3 bg-white rounded-full mb-3 shadow-md">
-                            <i data-lucide="graduation-cap" class="w-8 h-8 text-amber-500"></i>
+                    <button data-page="quiz-page" class="menu-card group flex flex-col items-center justify-center p-4 rounded-lg transition-transform transform hover:scale-105" style="background-color: var(--secondary-background); box-shadow: var(--shadow-sm);">
+                         <div class="p-3 rounded-full mb-3" style="background-color: var(--card-background); box-shadow: var(--shadow);">
+                            <i data-lucide="graduation-cap" class="w-8 h-8" style="color: var(--primary);"></i>
                         </div>
-                        <span class="font-semibold text-gray-700 text-center">Перевірка Знань</span>
+                        <span class="font-semibold text-center" style="color: var(--card-foreground);">Перевірка Знань</span>
                     </button>
-                    <button data-page="contacts-page" class="menu-card col-span-2 group flex flex-col items-center justify-center p-4 bg-gray-100 rounded-lg shadow-sm hover:bg-gray-200 transition-all duration-200">
-                         <div class="p-3 bg-white rounded-full mb-3 shadow-md">
-                            <i data-lucide="users" class="w-8 h-8 text-gray-500"></i>
+                    <button data-page="products-page" class="menu-card group flex flex-col items-center justify-center p-4 rounded-lg transition-transform transform hover:scale-105" style="background-color: var(--secondary-background); box-shadow: var(--shadow-sm);">
+                        <div class="p-3 rounded-full mb-3" style="background-color: var(--card-background); box-shadow: var(--shadow);">
+                            <i data-lucide="book-open" class="w-8 h-8" style="color: var(--primary);"></i>
                         </div>
-                        <span class="font-semibold text-gray-700 text-center">Корисні Контакти</span>
+                        <span class="font-semibold text-center" style="color: var(--card-foreground);">Наша Продукція</span>
+                    </button>
+                    <button data-page="contacts-page" class="menu-card group flex flex-col items-center justify-center p-4 rounded-lg transition-transform transform hover:scale-105" style="background-color: var(--secondary-background); box-shadow: var(--shadow-sm);">
+                         <div class="p-3 rounded-full mb-3" style="background-color: var(--card-background); box-shadow: var(--shadow);">
+                            <i data-lucide="users" class="w-8 h-8" style="color: var(--primary);"></i>
+                        </div>
+                        <span class="font-semibold text-center" style="color: var(--card-foreground);">Корисні Контакти</span>
                     </button>
                 </div>
             </div>
 
-            <!-- Products Page -->
+            <!-- Products Page (Placeholder) -->
             <div id="products-page" class="sub-page">
-                <h3 class="text-xl font-bold mb-4">Каталог Продукції</h3>
-                <div class="mb-4">
-                    <div class="border-b border-gray-200">
-                        <nav class="-mb-px flex space-x-4 overflow-x-auto no-scrollbar" id="productTabsContainer" role="tablist" aria-label="Категорії продукції"></nav>
-                    </div>
-                </div>
-                <div id="productList" class="space-y-3" role="tabpanel" tabindex="0"></div>
-                <div id="productModal" class="fixed inset-0 z-30 hidden items-center justify-center bg-black/50 p-4" aria-hidden="true">
-                    <div class="relative w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl" role="dialog" aria-modal="true" aria-labelledby="productModalTitle">
-                        <button type="button" id="productModalClose" class="absolute right-4 top-4 text-gray-400 transition hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2" aria-label="Закрити">
-                            <i data-lucide="x" class="h-5 w-5"></i>
-                        </button>
-                        <div class="flex flex-col items-center gap-4 text-center">
-                            <div class="w-full overflow-hidden rounded-xl bg-gray-100">
-                                <img id="productModalImage" src="" alt="" class="h-60 w-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x400/FDE68A/4B5563?text=Фото';">
-                            </div>
-                            <h4 id="productModalTitle" class="text-lg font-semibold text-gray-800"></h4>
-                            <a id="productModalLink" href="#" target="_blank" rel="noopener noreferrer" aria-disabled="true" class="hidden inline-flex items-center gap-2 rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2">
-                                <span>Перейти в каталог</span>
-                                <i data-lucide="external-link" class="h-4 w-4"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                <h3 class="text-xl font-bold">Тут буде каталог продукції</h3>
+                <p class="mt-2" style="color: var(--muted-foreground);">Цей розділ буде наповнено пізніше.</p>
             </div>
-
-            <!-- Standards Page -->
+            
+            <!-- Standards Page (Knowledge Base) -->
             <div id="standards-page" class="sub-page">
-                <h3 class="text-xl font-bold mb-4">Стандарти Роботи</h3>
+                <h3 class="text-xl font-bold mb-4">База Знань</h3>
                 <div class="space-y-2">
-                    <!-- Accordion Item 1 -->
-                    <div class="border border-gray-200 rounded-lg">
-                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold text-gray-800" id="standard-accordion-button-1" aria-expanded="false" aria-controls="standard-accordion-panel-1">
-                            <span>1. Гігієна та Санітарія</span>
+                    <div class="border rounded-lg" style="border-color: var(--border);">
+                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold">
+                            <span>Вхід до каси Poster</span>
                             <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
                         </button>
-                        <div class="accordion-content" id="standard-accordion-panel-1" role="region" aria-labelledby="standard-accordion-button-1" aria-hidden="true">
-                            <div class="p-4 pt-0 text-gray-600">
+                        <div class="accordion-content">
+                             <div class="p-4 pt-0" style="color: var(--muted-foreground);">
                                 <ul class="list-disc pl-5 space-y-2">
-                                    <li>Обов'язкове миття рук перед початком роботи та після кожної операції.</li>
-                                    <li>Робоча поверхня має бути ідеально чистою.</li>
-                                    <li>Використання одноразових рукавичок при роботі з готовою продукцією.</li>
-                                    <li>Волосся має бути повністю сховане під головний убір.</li>
+                                    <li>Кожен продавець має унікальний логін та пароль.</li>
+                                    <li>Вхід здійснюється за посиланням <strong>[заклад].joinposter.com</strong>.</li>
+                                    <li>Після вводу логіну/паролю необхідно ввести персональний ПІН-код.</li>
+                                    <li>Детальніше — в <a href="https://knowledge-base.joinposter.com/uk-ua/log-in-to-pos-register" target="_blank" class="hover:underline" style="color: var(--primary);">інструкції Poster</a>.</li>
                                 </ul>
                             </div>
                         </div>
                     </div>
-                    <!-- Accordion Item 2 -->
-                    <div class="border border-gray-200 rounded-lg">
-                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold text-gray-800" id="standard-accordion-button-2" aria-expanded="false" aria-controls="standard-accordion-panel-2">
-                            <span>2. Робота з Клієнтами</span>
+                    <div class="border rounded-lg" style="border-color: var(--border);">
+                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold">
+                            <span>Основні операції на касі Poster</span>
                             <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
                         </button>
-                        <div class="accordion-content" id="standard-accordion-panel-2" role="region" aria-labelledby="standard-accordion-button-2" aria-hidden="true">
-                             <div class="p-4 pt-0 text-gray-600">
+                        <div class="accordion-content">
+                            <div class="p-4 pt-0" style="color: var(--muted-foreground);">
                                 <ul class="list-disc pl-5 space-y-2">
-                                    <li>Завжди вітатися з клієнтом першим.</li>
-                                    <li>Бути ввічливим, усміхненим та готовим допомогти.</li>
-                                    <li>Знати асортимент та вміти порадити продукцію.</li>
-                                    <li>"Клієнт завжди правий" - базовий принцип роботи.</li>
+                                    <li><b>Додавання товару:</b> пошук за назвою, вибір з категорії, сканування штрих-коду.</li>
+                                    <li><b>Сортування товарів:</b> налаштуйте вигляд меню за популярністю чи алфавітом для швидкої роботи.</li>
+                                    <li><b>Редагування чека:</b> зміна кількості, додавання коментарів до страв.</li>
+                                    <li><b>Прийом оплати:</b> готівка, картка, змішана оплата (split-payment).</li>
+                                    <li><b>Робота з чеком:</b> друк, відправка на email, перегляд історії.</li>
+                                    <li>Детальніше — в <a href="https://knowledge-base.joinposter.com/uk-ua/how-to-work-with-pos" target="_blank" class="hover:underline" style="color: var(--primary);">Базі знань Poster</a> та <a href="https://knowledge-base.joinposter.com/uk-ua/how-to-sort-products-on-the-register" target="_blank" class="hover:underline" style="color: var(--primary);">інструкції з сортування</a>.</li>
                                 </ul>
                             </div>
                         </div>
                     </div>
-                    <!-- Accordion Item 3 -->
-                    <div class="border border-gray-200 rounded-lg">
-                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold text-gray-800" id="standard-accordion-button-3" aria-expanded="false" aria-controls="standard-accordion-panel-3">
-                            <span>3. Зберігання Продукції</span>
+                     <div class="border rounded-lg" style="border-color: var(--border);">
+                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold">
+                            <span>Звіти на касі (X та Z-звіти)</span>
                             <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
                         </button>
-                        <div class="accordion-content" id="standard-accordion-panel-3" role="region" aria-labelledby="standard-accordion-button-3" aria-hidden="true">
-                            <div class="p-4 pt-0 text-gray-600">
+                        <div class="accordion-content">
+                             <div class="p-4 pt-0" style="color: var(--muted-foreground);">
                                 <ul class="list-disc pl-5 space-y-2">
-                                    <li>Суворе дотримання температурних режимів у холодильниках та морозильних камерах.</li>
-                                    <li>Правило FIFO (First In, First Out): продукція, що надійшла першою, продається першою.</li>
-                                    <li>Регулярна перевірка термінів придатності.</li>
+                                    <li><b>X-звіт:</b> показує поточну суму готівки в касі. Використовується для проміжної звірки протягом дня.</li>
+                                    <li><b>Z-звіт:</b> фіскальний звіт, який закриває зміну та надсилає дані до податкової. Формується один раз в кінці зміни.</li>
+                                    <li>Детальніше — в <a href="https://knowledge-base.joinposter.com/uk-ua/how-to-generate-x-and-z-reports" target="_blank" class="hover:underline" style="color: var(--primary);">інструкції Poster</a>.</li>
                                 </ul>
                             </div>
                         </div>
                     </div>
-                    <!-- Accordion Item 4 -->
-                    <div class="border border-gray-200 rounded-lg">
-                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold text-gray-800" id="standard-accordion-button-4" aria-expanded="false" aria-controls="standard-accordion-panel-4">
-                            <span>4. Техніка Безпеки</span>
+                    <div class="border rounded-lg" style="border-color: var(--border);">
+                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold">
+                            <span>Службові транзакції (внесення/видача)</span>
                             <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
                         </button>
-                        <div class="accordion-content" id="standard-accordion-panel-4" role="region" aria-labelledby="standard-accordion-button-4" aria-hidden="true">
-                            <div class="p-4 pt-0 text-gray-600">
+                        <div class="accordion-content">
+                            <div class="p-4 pt-0" style="color: var(--muted-foreground);">
                                 <ul class="list-disc pl-5 space-y-2">
-                                    <li>Обережно поводитись з гострими предметами (ножі, слайсери).</li>
-                                    <li>Не залишати електроприлади без нагляду.</li>
-                                    <li>Знати, де знаходиться вогнегасник та аптечка.</li>
+                                    <li><b>Службове внесення:</b> використовується для додавання грошей в касу, не пов'язаних з продажем (напр., розмін).</li>
+                                    <li><b>Службова видача:</b> для видачі грошей з каси на операційні витрати (напр., оплата кур'єру).</li>
+                                    <li>Всі транзакції фіксуються для точного обліку готівки.</li>
+                                    <li>Детальніше — в <a href="https://knowledge-base.joinposter.com/uk-ua/how-to-add-a-transaction-on-the-register" target="_blank" class="hover:underline" style="color: var(--primary);">інструкції Poster</a>.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border rounded-lg" style="border-color: var(--border);">
+                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold">
+                            <span>Робота з ПРРО 2.0 (Фіскалізація)</span>
+                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="p-4 pt-0" style="color: var(--muted-foreground);">
+                                <ul class="list-disc pl-5 space-y-2">
+                                    <li><b>ПРРО</b> — це програмний реєстратор, він замінює класичний касовий апарат.</li>
+                                    <li>Кожен чек автоматично відправляється до податкової (ДПС).</li>
+                                    <li><b>Електронний чек:</b> замість друку можна показати клієнту QR-код для сканування або відправити чек на email.</li>
+                                    <li><b>Z-звіт</b> є обов'язковим для закриття зміни та передачі фіскальних даних.</li>
+                                    <li>ПРРО може працювати в <b>офлайн-режимі</b> (без інтернету) до 36 годин поспіль.</li>
+                                    <li>Детальніше — в <a href="https://knowledge-base.joinposter.com/uk-ua/how-to-work-with-pro-2.0-at-the-cashier" target="_blank" class="hover:underline" style="color: var(--primary);">інструкції по ПРРО</a> та <a href="https://knowledge-base.joinposter.com/uk-ua/how-to-fiscalize-receipts-without-printing" target="_blank" class="hover:underline" style="color: var(--primary);">про електронні чеки</a>.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="border rounded-lg" style="border-color: var(--border);">
+                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold">
+                            <span>Робота з поверненнями та конфліктами</span>
+                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="p-4 pt-0" style="color: var(--muted-foreground);">
+                                <ul class="list-disc pl-5 space-y-2">
+                                     <li><b>Продукти харчування:</b> якщо якість належна, поверненню/обміну не підлягають (Постанова КМУ). Якщо є дефект — оформлюємо повернення.</li>
+                                     <li><b>Непродовольчі товари:</b> 14 днів на повернення, якщо товар не був у використанні та збережено його вигляд.</li>
+                                     <li><b>Немає паперового чека:</b> не є причиною для відмови. Доказом є ел. чек, QR, виписка з банку, камери.</li>
+                                     <li><b>Алгоритм LEARN:</b> Listen (Вислухай) → Empathize (Поспівчувай) → Ask (Уточни) → Resolve (Виріши) → Next step (Наступний крок).</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border rounded-lg" style="border-color: var(--border);">
+                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold">
+                            <span>Сервіс-скрипти</span>
+                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="p-4 pt-0" style="color: var(--muted-foreground);">
+                                <ul class="list-disc pl-5 space-y-2">
+                                    <li><b>Привітання:</b> "Доброго дня! Вітаємо в 'Галя Балувана'!"</li>
+                                    <li><b>Уточнення потреби:</b> "Що сьогодні смачненького шукаєте?"</li>
+                                    <li><b>Ап-сел/Крос-сел:</b> "До пельменів чудово пасує наш фірмовий соус. Спробуєте?"</li>
+                                    <li><b>Робота зі скаргою:</b> "Дуже шкода, що так сталося. Давайте разом вирішимо цю ситуацію."</li>
                                 </ul>
                             </div>
                         </div>
@@ -197,322 +272,167 @@
 
             <!-- Adaptation Plan Page -->
             <div id="plan-page" class="sub-page">
-                <h3 class="text-xl font-bold mb-4">План на перший тиждень</h3>
-                <div class="space-y-4">
-                    <div>
-                        <h4 class="font-semibold mb-2">День 1</h4>
-                        <ul class="space-y-2">
-                           <li class="flex items-center"><span class="w-5 h-5 bg-amber-500 rounded-full mr-3 flex-shrink-0"></span><span>Познайомитись з наставником</span></li>
-                           <li class="flex items-center"><span class="w-5 h-5 bg-amber-500 rounded-full mr-3 flex-shrink-0"></span><span>Вивчити розділ "Стандарти гігієни"</span></li>
-                           <li class="flex items-center"><span class="w-5 h-5 bg-gray-200 rounded-full mr-3 flex-shrink-0"></span><span>Вивчити 5 видів пельменів</span></li>
-                        </ul>
-                    </div>
-                     <div>
-                        <h4 class="font-semibold mb-2">День 2</h4>
-                        <ul class="space-y-2">
-                           <li class="flex items-center"><span class="w-5 h-5 bg-gray-200 rounded-full mr-3 flex-shrink-0"></span><span>Практика: ліплення вареників</span></li>
-                           <li class="flex items-center"><span class="w-5 h-5 bg-gray-200 rounded-full mr-3 flex-shrink-0"></span><span>Пройти тест "Наша продукція. Частина 1"</span></li>
-                        </ul>
-                    </div>
+                <h3 class="text-xl font-bold mb-4">План Навчання Продавця (6 Днів)</h3>
+                <div id="plan-container" class="space-y-2">
+                    <!-- Days will be generated here by JS -->
                 </div>
-                <section aria-labelledby="checklists-title" class="mt-8 space-y-4">
-                    <div class="flex items-center gap-3">
-                        <i data-lucide="list-checks" class="w-6 h-6 text-amber-500"></i>
-                        <h3 id="checklists-title" class="text-xl font-bold text-gray-800">Чек-листи</h3>
-                    </div>
-                    <p class="text-sm text-gray-600">Використовуйте ці нагадування, щоб підтримувати стабільний сервіс та виконувати вимоги змін.</p>
-                    <div class="space-y-4">
-                        <article class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-                            <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                                <div class="flex gap-3">
-                                    <span class="flex h-10 w-10 items-center justify-center rounded-full bg-amber-500 font-semibold text-white">A</span>
-                                    <div>
-                                        <div class="flex items-center gap-2">
-                                            <i data-lucide="sunrise" class="w-5 h-5 text-amber-500"></i>
-                                            <h4 class="text-lg font-semibold text-gray-800">Відкриття зміни</h4>
-                                        </div>
-                                        <ul class="mt-3 space-y-2 text-gray-700">
-                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Перевірити чистоту вхідної зони, вітрини та касової зони.</span></li>
-                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Увімкнути обладнання, зафіксувати робочі температури холодильників.</span></li>
-                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Підготувати касу: перевірити рулони, здачу, авторизуватися в системі.</span></li>
-                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Оновити викладку продукції згідно з планограмою та чек-листом викладки.</span></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="flex flex-col gap-2 sm:items-end">
-                                    <button type="button" class="inline-flex items-center gap-2 rounded-lg bg-amber-500 px-3 py-2 font-semibold text-white shadow hover:bg-amber-600 transition" onclick="alert('Чек-лист буде надіслано на друк.');">
-                                        <i data-lucide="printer" class="w-4 h-4"></i>
-                                        <span>Друк</span>
-                                    </button>
-                                    <button type="button" class="inline-flex items-center gap-2 rounded-lg border border-amber-500 px-3 py-2 font-semibold text-amber-700 shadow-sm hover:bg-amber-50 transition" onclick="alert('Чек-лист відкриється у Telegram.');">
-                                        <i data-lucide="send" class="w-4 h-4"></i>
-                                        <span>Відкрити в Telegram</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </article>
-                        <article class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-                            <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                                <div class="flex gap-3">
-                                    <span class="flex h-10 w-10 items-center justify-center rounded-full bg-amber-500 font-semibold text-white">B</span>
-                                    <div>
-                                        <div class="flex items-center gap-2">
-                                            <i data-lucide="moon" class="w-5 h-5 text-amber-500"></i>
-                                            <h4 class="text-lg font-semibold text-gray-800">Закриття зміни + Z-звіт</h4>
-                                        </div>
-                                        <ul class="mt-3 space-y-2 text-gray-700">
-                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Провести інкасацію, зняти Z-звіт та прикріпити його до журналу.</span></li>
-                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Порахувати виручку, звірити із системою та підготувати касу для наступної зміни.</span></li>
-                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Очистити робочі поверхні, обладнання та касову зону.</span></li>
-                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Закрити та опломбувати холодильники, вимкнути освітлення у вітрині.</span></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="flex flex-col gap-2 sm:items-end">
-                                    <button type="button" class="inline-flex items-center gap-2 rounded-lg bg-amber-500 px-3 py-2 font-semibold text-white shadow hover:bg-amber-600 transition" onclick="alert('Чек-лист буде надіслано на друк.');">
-                                        <i data-lucide="printer" class="w-4 h-4"></i>
-                                        <span>Друк</span>
-                                    </button>
-                                    <button type="button" class="inline-flex items-center gap-2 rounded-lg border border-amber-500 px-3 py-2 font-semibold text-amber-700 shadow-sm hover:bg-amber-50 transition" onclick="alert('Чек-лист відкриється у Telegram.');">
-                                        <i data-lucide="send" class="w-4 h-4"></i>
-                                        <span>Відкрити в Telegram</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </article>
-                        <article class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-                            <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                                <div class="flex gap-3">
-                                    <span class="flex h-10 w-10 items-center justify-center rounded-full bg-amber-500 font-semibold text-white">C</span>
-                                    <div>
-                                        <div class="flex items-center gap-2">
-                                            <i data-lucide="layers" class="w-5 h-5 text-amber-500"></i>
-                                            <h4 class="text-lg font-semibold text-gray-800">FIFO на полиці</h4>
-                                        </div>
-                                        <ul class="mt-3 space-y-2 text-gray-700">
-                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Перевірити дати виробництва та терміни придатності кожної позиції.</span></li>
-                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Переставити продукцію за принципом «першим прийшов — першим пішов».</span></li>
-                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Відмітити товари, що потребують списання або промо-цінника.</span></li>
-                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Оновити залишки у журналі обліку та повідомити про дефіцити.</span></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="flex flex-col gap-2 sm:items-end">
-                                    <button type="button" class="inline-flex items-center gap-2 rounded-lg bg-amber-500 px-3 py-2 font-semibold text-white shadow hover:bg-amber-600 transition" onclick="alert('Чек-лист буде надіслано на друк.');">
-                                        <i data-lucide="printer" class="w-4 h-4"></i>
-                                        <span>Друк</span>
-                                    </button>
-                                    <button type="button" class="inline-flex items-center gap-2 rounded-lg border border-amber-500 px-3 py-2 font-semibold text-amber-700 shadow-sm hover:bg-amber-50 transition" onclick="alert('Чек-лист відкриється у Telegram.');">
-                                        <i data-lucide="send" class="w-4 h-4"></i>
-                                        <span>Відкрити в Telegram</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </article>
-                        <article class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-                            <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                                <div class="flex gap-3">
-                                    <span class="flex h-10 w-10 items-center justify-center rounded-full bg-amber-500 font-semibold text-white">D</span>
-                                    <div>
-                                        <div class="flex items-center gap-2">
-                                            <i data-lucide="shield-check" class="w-5 h-5 text-amber-500"></i>
-                                            <h4 class="text-lg font-semibold text-gray-800">HACCP мінімум</h4>
-                                        </div>
-                                        <ul class="mt-3 space-y-2 text-gray-700">
-                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Записати температури холодильників та морозильників у контрольний журнал.</span></li>
-                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Перевірити наявність і чистоту рукавичок, санітайзерів та одноразового пакування.</span></li>
-                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Переконатися у справності термометра та засобів для маркування алергенів.</span></li>
-                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Зафіксувати відхилення і повідомити відповідальну особу за безпеку харчових продуктів.</span></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                                <div class="flex flex-col gap-2 sm:items-end">
-                                    <button type="button" class="inline-flex items-center gap-2 rounded-lg bg-amber-500 px-3 py-2 font-semibold text-white shadow hover:bg-amber-600 transition" onclick="alert('Чек-лист буде надіслано на друк.');">
-                                        <i data-lucide="printer" class="w-4 h-4"></i>
-                                        <span>Друк</span>
-                                    </button>
-                                    <button type="button" class="inline-flex items-center gap-2 rounded-lg border border-amber-500 px-3 py-2 font-semibold text-amber-700 shadow-sm hover:bg-amber-50 transition" onclick="alert('Чек-лист відкриється у Telegram.');">
-                                        <i data-lucide="send" class="w-4 h-4"></i>
-                                        <span>Відкрити в Telegram</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </article>
-                    </div>
-                </section>
             </div>
             
-            <div id="quiz-page" class="sub-page space-y-6">
-                <div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">Перевірка знань</h3>
-                    <p class="text-gray-600">Обирайте тест, який відповідає вашому етапу адаптації, та перевіряйте себе перед виходом на зміну.</p>
-                </div>
-                <div class="space-y-4">
-                    <article class="border border-amber-100 bg-amber-50 rounded-xl p-4 shadow-sm">
-                        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                            <div>
-                                <h4 class="text-lg font-semibold text-gray-800">Наша продукція. Частина 1</h4>
-                                <p class="text-sm text-gray-600 mt-1">Закріпіть назви та ключові характеристики хітових позицій меню.</p>
-                                <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm font-medium text-amber-700">
-                                    <div class="flex items-center gap-1">
-                                        <i data-lucide="help-circle" class="w-4 h-4"></i>
-                                        <span>10 запитань</span>
-                                    </div>
-                                    <div class="flex items-center gap-1">
-                                        <i data-lucide="clock" class="w-4 h-4"></i>
-                                        <span>7 хвилин</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex flex-col gap-2 sm:items-end">
-                                <button type="button" class="inline-flex items-center justify-center gap-2 rounded-lg bg-amber-500 px-4 py-2 font-semibold text-white shadow hover:bg-amber-600 transition" onclick="alert('Тест буде відкрито найближчим часом!');">
-                                    <i data-lucide="play" class="w-4 h-4"></i>
-                                    <span>Почати</span>
-                                </button>
-                                <button type="button" class="text-sm font-medium text-amber-700 hover:underline" onclick="alert('Нагадування додано до вашого плану.');">Додати нагадування</button>
+            <!-- Checklists Page -->
+            <div id="checklists-page" class="sub-page">
+                <h3 class="text-xl font-bold mb-4">Щоденні Чек-листи</h3>
+                <div class="space-y-2">
+                    <div class="border rounded-lg" style="border-color: var(--border);">
+                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold">
+                            <span>A. Відкриття зміни в Poster</span>
+                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="p-4 pt-0" style="color: var(--muted-foreground);">
+                                <ul class="list-decimal pl-5 space-y-2">
+                                    <li>Відкрити касу за посиланням <code>[заклад].joinposter.com</code>.</li>
+                                    <li>Ввести <strong>логін</strong> та <strong>пароль</strong>.</li>
+                                    <li>Ввести <strong>ПІН-код</strong>.</li>
+                                    <li>Вказати суму готівки в касі (розмін).</li>
+                                    <li>Натиснути «Відкрити зміну».</li>
+                                    <li>Перевірити стан принтера та чекової стрічки.</li>
+                                </ul>
                             </div>
                         </div>
-                    </article>
-                    <article class="border border-gray-200 bg-white rounded-xl p-4 shadow-sm">
-                        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                            <div>
-                                <h4 class="text-lg font-semibold text-gray-800">Обслуговування гостя</h4>
-                                <p class="text-sm text-gray-600 mt-1">Згадайте сценарії спілкування, відповіді на типові запитання та стандарти ввічливості.</p>
-                                <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm font-medium text-amber-700">
-                                    <div class="flex items-center gap-1">
-                                        <i data-lucide="message-circle" class="w-4 h-4"></i>
-                                        <span>8 кейсів</span>
-                                    </div>
-                                    <div class="flex items-center gap-1">
-                                        <i data-lucide="clock" class="w-4 h-4"></i>
-                                        <span>5 хвилин</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex flex-col gap-2 sm:items-end">
-                                <button type="button" class="inline-flex items-center justify-center gap-2 rounded-lg bg-amber-500 px-4 py-2 font-semibold text-white shadow hover:bg-amber-600 transition" onclick="alert('Цей тренажер зараз у розробці.');">
-                                    <i data-lucide="play" class="w-4 h-4"></i>
-                                    <span>Почати</span>
-                                </button>
-                                <button type="button" class="text-sm font-medium text-amber-700 hover:underline" onclick="alert('Ми нагадаємо вам про цей тренажер.');">Отримати нагадування</button>
+                    </div>
+                    <div class="border rounded-lg" style="border-color: var(--border);">
+                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold">
+                            <span>B. Закриття зміни + Z-звіт</span>
+                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="p-4 pt-0" style="color: var(--muted-foreground);">
+                                <ul class="list-decimal pl-5 space-y-2">
+                                    <li>У кінці робочого дня в меню каси обрати «Касові зміни».</li>
+                                    <li>Перевірити суму готівки в касі, порівнявши її з X-звітом.</li>
+                                    <li>Натиснути «Закрити зміну» та сформувати Z-звіт (фіскальний звіт) через ПРРО.</li>
+                                    <li>Передати готівку та зміну наступному продавцю.</li>
+                                </ul>
                             </div>
                         </div>
-                    </article>
-                    <article class="border border-gray-200 bg-gray-50 rounded-xl p-4 shadow-sm">
-                        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                            <div>
-                                <h4 class="text-lg font-semibold text-gray-800">Безпека на кухні</h4>
-                                <p class="text-sm text-gray-600 mt-1">Перевірте знання правил користування обладнанням та алгоритму дій у надзвичайних ситуаціях.</p>
-                                <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm font-medium text-amber-700">
-                                    <div class="flex items-center gap-1">
-                                        <i data-lucide="shield-check" class="w-4 h-4"></i>
-                                        <span>12 карток</span>
-                                    </div>
-                                    <div class="flex items-center gap-1">
-                                        <i data-lucide="clock" class="w-4 h-4"></i>
-                                        <span>10 хвилин</span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flex flex-col gap-2 sm:items-end">
-                                <button type="button" class="inline-flex items-center justify-center gap-2 rounded-lg border border-amber-500 px-4 py-2 font-semibold text-amber-700 shadow-sm hover:bg-amber-50 transition" onclick="alert('Збережено для повторення.');">
-                                    <i data-lucide="bookmark-check" class="w-4 h-4"></i>
-                                    <span>Запланувати</span>
-                                </button>
-                                <button type="button" class="text-sm font-medium text-amber-700 hover:underline" onclick="alert('Нотатник відкрито.');">Зробити нотатки</button>
+                    </div>
+                    <div class="border rounded-lg" style="border-color: var(--border);">
+                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold">
+                            <span>C. FIFO на полиці/вітрині</span>
+                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
+                        </button>
+                        <div class="accordion-content">
+                            <div class="p-4 pt-0" style="color: var(--muted-foreground);">
+                                <ul class="list-disc pl-5 space-y-2">
+                                    <li>Нове «в глиб», старіше — «на фасад».</li>
+                                    <li>Перевірка дат «краще вжити до» щозміни.</li>
+                                    <li>Ротація при кожній поставці.</li>
+                                </ul>
                             </div>
                         </div>
-                    </article>
-                </div>
-                <div class="rounded-xl border border-dashed border-gray-300 bg-white p-4 text-sm text-gray-500">
-                    <p class="font-medium text-gray-700">Порада наставниці</p>
-                    <p class="mt-1">Плануйте проходження одного тесту щодня та фіксуйте питання, які викликають труднощі, щоб обговорити їх на зустрічі з наставником.</p>
+                    </div>
+                     <div class="border rounded-lg" style="border-color: var(--border);">
+                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold">
+                            <span>D. HACCP мінімум для продавця</span>
+                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
+                        </button>
+                        <div class="accordion-content">
+                             <div class="p-4 pt-0" style="color: var(--muted-foreground);">
+                                <ul class="list-disc pl-5 space-y-2">
+                                    <li>Особиста гігієна, чисті руки, рукавички за потреби.</li>
+                                    <li>Контроль температур (холод ≤ 5°C, гаряче ≥ 63°C).</li>
+                                    <li>Уникати перехресного забруднення (сире/готове).</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div id="contacts-page" class="sub-page space-y-6">
-                <div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">Корисні контакти</h3>
-                    <p class="text-gray-600">Зберігайте ці контакти під рукою, щоб швидко отримати підтримку з будь-яких питань під час стажування.</p>
+
+            <!-- Quiz Page -->
+            <div id="quiz-page" class="sub-page">
+                <h3 class="text-xl font-bold mb-4">Перевірка Знань</h3>
+                <div id="quiz-container">
+                    <div id="quiz-start" class="text-center">
+                        <div id="quiz-menu" class="space-y-3">
+                           <!-- Quiz buttons will be generated here -->
+                        </div>
+                    </div>
+                    
+                    <div id="quiz-main" class="hidden">
+                         <div class="mb-6 text-center">
+                             <i data-lucide="graduation-cap" class="w-16 h-16 mx-auto mb-4" style="color: var(--primary);"></i>
+                             <h4 id="quiz-title" class="text-lg font-semibold mb-2"></h4>
+                             <p id="quiz-description" style="color: var(--muted-foreground);"></p>
+                         </div>
+                        <div id="quiz-questions" class="hidden">
+                            <div class="mb-4">
+                                <div class="flex justify-between items-center mb-2">
+                                    <span class="text-sm" style="color: var(--muted-foreground);">Питання <span id="current-question">1</span> з <span id="total-questions">7</span></span>
+                                    <span class="text-sm" style="color: var(--muted-foreground);">Бали: <span id="current-score">0</span></span>
+                                </div>
+                                <div class="w-full rounded-full h-2" style="background-color: var(--secondary-background);">
+                                    <div id="progress-bar" class="h-2 rounded-full transition-all duration-300" style="background-color: var(--primary); width: 0%"></div>
+                                </div>
+                            </div>
+                            
+                            <div id="question-container" class="mb-6">
+                                <h4 id="question-text" class="text-lg font-semibold mb-4"></h4>
+                                <div id="answers-container" class="space-y-3"></div>
+                            </div>
+                            
+                            <div class="flex justify-between">
+                                 <button id="prev-question" class="px-4 py-2 rounded-lg transition-colors hidden" style="background-color: var(--secondary-background); color: var(--foreground);">
+                                    Попереднє
+                                </button>
+                                <button id="next-question" class="px-6 py-2 rounded-lg transition-colors" style="background-color: var(--primary); color: var(--primary-foreground);">
+                                    Наступне
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div id="quiz-results" class="hidden text-center">
+                            <div class="mb-6">
+                                <i data-lucide="trophy" class="w-16 h-16 mx-auto mb-4" style="color: var(--primary);"></i>
+                                <h4 class="text-lg font-semibold mb-2">Тест завершено!</h4>
+                                <p style="color: var(--muted-foreground);">Ваш результат: <span id="final-score" class="font-bold" style="color: var(--primary);">0</span> з <span id="max-score">7</span></p>
+                                <p id="result-message" class="text-sm mt-2" style="color: var(--muted-foreground);"></p>
+                            </div>
+                            <button id="restart-quiz" class="w-full px-6 py-3 rounded-lg font-semibold transition-colors" style="background-color: var(--primary); color: var(--primary-foreground);">
+                                Пройти знову
+                            </button>
+                             <button id="back-to-tests" class="w-full mt-2 px-6 py-3 rounded-lg font-semibold transition-colors" style="background-color: var(--secondary-background); color: var(--foreground);">
+                                Повернутись до тестів
+                            </button>
+                        </div>
+                    </div>
                 </div>
+            </div>
+            <!-- Contacts Page -->
+            <div id="contacts-page" class="sub-page">
+                <h3 class="text-xl font-bold mb-4">Корисні Контакти</h3>
                 <div class="space-y-4">
-                    <article class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-                        <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                            <div>
-                                <div class="flex items-center gap-2">
-                                    <i data-lucide="user-circle" class="h-6 w-6 text-amber-500"></i>
-                                    <h4 class="text-lg font-semibold text-gray-800">Ірина Коваль</h4>
-                                </div>
-                                <p class="text-sm text-gray-500 mt-1">Наставниця зміни • перший поверх, кімн. 104</p>
-                                <p class="text-sm text-gray-500">Графік: пн-пт, 09:00 – 18:00</p>
-                            </div>
-                            <div class="flex flex-col gap-2 sm:items-end">
-                                <a href="tel:+380671112233" class="inline-flex items-center gap-2 rounded-lg bg-amber-500 px-3 py-2 font-semibold text-white shadow hover:bg-amber-600 transition">
-                                    <i data-lucide="phone" class="h-4 w-4"></i>
-                                    <span>Подзвонити</span>
-                                </a>
-                                <a href="mailto:iryna.koval@galya-baluwana.ua" class="inline-flex items-center gap-2 text-sm font-medium text-amber-700 hover:underline">
-                                    <i data-lucide="mail" class="h-4 w-4"></i>
-                                    <span>Написати лист</span>
-                                </a>
-                            </div>
+                    <div class="p-4 rounded-lg border" style="background-color: var(--secondary-background); border-color: var(--border);">
+                        <div class="flex items-center mb-3">
+                            <i data-lucide="user-check" class="w-6 h-6 mr-3" style="color: var(--primary);"></i>
+                            <h4 class="font-semibold" style="color: var(--card-foreground);">Ваш наставник</h4>
                         </div>
-                        <button type="button" class="mt-3 inline-flex items-center gap-2 text-sm font-medium text-amber-700 hover:underline" onclick="alert('Контакт додано до списку улюблених.');">
-                            <i data-lucide="bookmark-plus" class="h-4 w-4"></i>
-                            <span>Зберегти контакт</span>
-                        </button>
-                    </article>
-                    <article class="rounded-xl border border-gray-200 bg-gray-50 p-4 shadow-sm">
-                        <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                            <div>
-                                <div class="flex items-center gap-2">
-                                    <i data-lucide="headset" class="h-6 w-6 text-amber-500"></i>
-                                    <h4 class="text-lg font-semibold text-gray-800">Олексій Мартинюк</h4>
-                                </div>
-                                <p class="text-sm text-gray-500 mt-1">HR-менеджер • питання документів та графіків</p>
-                                <p class="text-sm text-gray-500">Доступний: пн-пт, 10:00 – 17:00</p>
-                            </div>
-                            <div class="flex flex-col gap-2 sm:items-end">
-                                <a href="tel:+380503334455" class="inline-flex items-center gap-2 rounded-lg border border-amber-500 px-3 py-2 font-semibold text-amber-700 shadow-sm hover:bg-amber-50 transition">
-                                    <i data-lucide="smartphone" class="h-4 w-4"></i>
-                                    <span>Подзвонити</span>
-                                </a>
-                                <a href="mailto:oleksii.martyniuk@galya-baluwana.ua" class="inline-flex items-center gap-2 text-sm font-medium text-amber-700 hover:underline">
-                                    <i data-lucide="mail" class="h-4 w-4"></i>
-                                    <span>Надіслати e-mail</span>
-                                </a>
-                            </div>
+                        <div class="space-y-2 text-sm" style="color: var(--muted-foreground);">
+                            <p><strong>Ім'я:</strong> Марія Іванівна</p>
+                            <p><strong>Посада:</strong> Старший кухар</p>
+                            <p><strong>Телефон:</strong> <a href="tel:+380501234567" class="hover:underline" style="color: var(--primary);">+38 (050) 123-45-67</a></p>
                         </div>
-                        <button type="button" class="mt-3 inline-flex items-center gap-2 text-sm font-medium text-amber-700 hover:underline" onclick="alert('Пам’ятка надіслана у ваш Telegram.');">
-                            <i data-lucide="send" class="h-4 w-4"></i>
-                            <span>Отримати інструкцію</span>
-                        </button>
-                    </article>
-                    <article class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
-                        <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                            <div>
-                                <div class="flex items-center gap-2">
-                                    <i data-lucide="life-buoy" class="h-6 w-6 text-amber-500"></i>
-                                    <h4 class="text-lg font-semibold text-gray-800">Служба безпеки</h4>
-                                </div>
-                                <p class="text-sm text-gray-500 mt-1">Аварійні ситуації, виклик швидкої допомоги або пожежної бригади</p>
-                                <p class="text-sm text-gray-500">Працює 24/7</p>
-                            </div>
-                            <div class="flex flex-col gap-2 sm:items-end">
-                                <a href="tel:+380322001122" class="inline-flex items-center gap-2 rounded-lg bg-red-500 px-3 py-2 font-semibold text-white shadow hover:bg-red-600 transition">
-                                    <i data-lucide="alert-triangle" class="h-4 w-4"></i>
-                                    <span>Терміновий дзвінок</span>
-                                </a>
-                                <a href="mailto:safety@galya-baluwana.ua" class="inline-flex items-center gap-2 text-sm font-medium text-amber-700 hover:underline">
-                                    <i data-lucide="mail" class="h-4 w-4"></i>
-                                    <span>Написати звіт</span>
-                                </a>
-                            </div>
+                    </div>
+                    <div class="p-4 rounded-lg border" style="background-color: var(--secondary-background); border-color: var(--border);">
+                        <div class="flex items-center mb-3">
+                            <i data-lucide="users" class="w-6 h-6 mr-3" style="color: var(--primary);"></i>
+                            <h4 class="font-semibold" style="color: var(--card-foreground);">HR відділ</h4>
                         </div>
-                        <button type="button" class="mt-3 inline-flex items-center gap-2 text-sm font-medium text-amber-700 hover:underline" onclick="alert('Контакти служби безпеки закріплено на головному екрані.');">
-                            <i data-lucide="pin" class="h-4 w-4"></i>
-                            <span>Закріпити вгорі</span>
-                        </button>
-                    </article>
+                        <div class="space-y-2 text-sm" style="color: var(--muted-foreground);">
+                            <p><strong>Менеджер:</strong> Олена Петрівна</p>
+                            <p><strong>Телефон:</strong> <a href="tel:+380501234568" class="hover:underline" style="color: var(--primary);">+38 (050) 123-45-68</a></p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -521,1106 +441,85 @@
 
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
-        lucide.createIcons();
-        
-        const catalogData = [
-          {
-            "name": "Бендерики курка сир - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/09/zobrazhennya_viber_2025-09-07_14-01-30-569.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/benderyky-kurka-syr/"
-          },
-          {
-            "name": "Піца Сирна (заморожена/гаряча) - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/frame-5.png",
-            "url": "https://galya-baluwana.lviv.ua/product/picza-syrna-zamorozhena-garyacha/"
-          },
-          {
-            "name": "Піца &quot;Мисливська&quot; (заморожена/гаряча) - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/frame-5-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/picza-myslyvska-zamorozhena-garyacha/"
-          },
-          {
-            "name": "Піца М&#039;ясна (заморожена/гаряча) - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/dsc_0798-min.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/picza-myasna-zamorozhena-garyacha/"
-          },
-          {
-            "name": "Піца Грибна (заморожена/гаряча) - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/frame-3-4.png",
-            "url": "https://galya-baluwana.lviv.ua/product/picza-grybna-zamorozhena-garyacha/"
-          },
-          {
-            "name": "Піца &quot;Гавайська&quot; (заморожена/гаряча) - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/009a9946-c167-4c67-9.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/picza-gavajska-zamorozhena-garyacha/"
-          },
-          {
-            "name": "Крем Чіз до Сінабонів - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/13488184.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/krem-chiz-do-sinaboniv/"
-          },
-          {
-            "name": "Карамель до Сінабонів - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/21751715.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/karamel-do-sinaboniv/"
-          },
-          {
-            "name": "Хінкалі з телятиною - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/dsc_0366.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/hinkali-z-telyatynoyu/"
-          },
-          {
-            "name": "Картопляні зрази з грибами - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-26.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kartoplyani-zrazy-z-grybamy/"
-          },
-          {
-            "name": "Чебурек з м&#039;ясом - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-87.png",
-            "url": "https://galya-baluwana.lviv.ua/product/cheburek-z-myasom/"
-          },
-          {
-            "name": "Чебурек з сиром та зеленню - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-89.png",
-            "url": "https://galya-baluwana.lviv.ua/product/cheburek-z-syrom-ta-zelennyu/"
-          },
-          {
-            "name": "Чебурек кримський - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-86.png",
-            "url": "https://galya-baluwana.lviv.ua/product/cheburek-krymskyj/"
-          },
-          {
-            "name": "Сінабони - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/69913057.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/sinabony/"
-          },
-          {
-            "name": "Крученики зі свинини з грибами - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/frame-21.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kruchenyky-zi-svynyny-z-grybamy/"
-          },
-          {
-            "name": "Нагетси курячі - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/frame-2.png",
-            "url": "https://galya-baluwana.lviv.ua/product/nagetsy-kuryachi/"
-          },
-          {
-            "name": "Паштет з індичої печінки &quot;від шефа&quot; - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/frame-14-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/pashtet-z-indychoyi-pechinky-vid-shefa/"
-          },
-          {
-            "name": "Сирні палички - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/2-min_2.jpg-1.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/syrni-palychky/"
-          },
-          {
-            "name": "Скумбрія фарширована - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/1.jpg-3.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/skumbriya-farshyrovana/"
-          },
-          {
-            "name": "Торт печінковий (Коржі) - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/frame-16.png",
-            "url": "https://galya-baluwana.lviv.ua/product/tort-pechinkovyj-korzhi/"
-          },
-          {
-            "name": "Фаршировані курячі бедра - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/2-min_3.jpg-1.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/farshyrovani-kuryachi-bedra/"
-          },
-          {
-            "name": "Сирники - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-84.png",
-            "url": "https://galya-baluwana.lviv.ua/product/syrnyky/"
-          },
-          {
-            "name": "Сирники з бананом - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/89224722.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/syrnyky-z-bananom/"
-          },
-          {
-            "name": "Сирники з бринзою та зеленню - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/photo.jpeg-1.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/syrnyky-z-brynzoyu-ta-zelennyu/"
-          },
-          {
-            "name": "Сирники з родзинками - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-80.png",
-            "url": "https://galya-baluwana.lviv.ua/product/syrnyky-z-rodzynkamy/"
-          },
-          {
-            "name": "Сирники з шоколадними дропсами - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-85.png",
-            "url": "https://galya-baluwana.lviv.ua/product/syrnyky-z-shokoladnymy-dropsamy/"
-          },
-          {
-            "name": "Пиріг з вишнями та маком - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-25.png",
-            "url": "https://galya-baluwana.lviv.ua/product/pyrig-z-vyshnyamy-ta-makom/"
-          },
-          {
-            "name": "Хачапурі з сиром - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/khachapuri-g8e3df0f8.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/hachapuri-z-syrom/"
-          },
-          {
-            "name": "Пельмені &quot;Три м&#039;яса&quot; - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/dsc_0156-min.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/pelmeni-try-myasa/"
-          },
-          {
-            "name": "Пельмені дитячі “Малятко” - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-74.png",
-            "url": "https://galya-baluwana.lviv.ua/product/pelmeni-dytyachi-malyatko/"
-          },
-          {
-            "name": "Пельмені з бараниною - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/jpeg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/pelmeni-kozaczki/"
-          },
-          {
-            "name": "Пельмені з індиком - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/34233181.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/pelmeni-z-indykom/"
-          },
-          {
-            "name": "Пельмені з куркою на кукурудзяному борошні - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-72.png",
-            "url": "https://galya-baluwana.lviv.ua/product/pelmeni-z-kurkoyu-na-kukurudzyanomu-boroshni/"
-          },
-          {
-            "name": "Пельмені з телятиною - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-75.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kopiyapelmeni-zi-svynyny-ta-yalovychyny/"
-          },
-          {
-            "name": "Пельмені зі свинини - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-77.png",
-            "url": "https://galya-baluwana.lviv.ua/product/pelmeni-zi-svynyny/"
-          },
-          {
-            "name": "Пельмені зі свинини та курятини - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/dsc_0250-min.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/pelmeni-zi-svynyny-ta-kuryatyny/"
-          },
-          {
-            "name": "Пельмені зі свинини та яловичини - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-76.png",
-            "url": "https://galya-baluwana.lviv.ua/product/pelmeni-zi-svynyny-ta-yalovychyny/"
-          },
-          {
-            "name": "Хінкалі з м&#039;ясом - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/dsc_0372.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/hinkali-z-myasom/"
-          },
-          {
-            "name": "Хінкалі шпинатні з сиром - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/photo.jpeg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/hinkali-shpynatni-z-syrom/"
-          },
-          {
-            "name": "Бендерики - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/18.png",
-            "url": "https://galya-baluwana.lviv.ua/product/benderyky/"
-          },
-          {
-            "name": "Бендерики з сиром - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/19.png",
-            "url": "https://galya-baluwana.lviv.ua/product/benderykycheese/"
-          },
-          {
-            "name": "Млинці з бананом та згущеним молоком - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/1-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/mlynczi-z-bananom-ta-zgushhenym-molokom/"
-          },
-          {
-            "name": "Млинці з бринзою та зеленню - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/2-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/mlynczi-z-brynzoyu-ta-zelennyu/"
-          },
-          {
-            "name": "Млинці з карамелізованим яблуком - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/13.png",
-            "url": "https://galya-baluwana.lviv.ua/product/mlynczi-z-karamelizovanym-yablukom/"
-          },
-          {
-            "name": "Млинці з куркою на кукурудзяному борошні - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/4-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/https-galya-baluwana-lviv-ua-mlynci-tproduct-429647187-834366079791-mlints-z-kurkoyu-na-kukurudzyanomu-boros/"
-          },
-          {
-            "name": "Млинці з куркою та грибами - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/3-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/mlynczi-z-kurkoyu-ta-grybamy/"
-          },
-          {
-            "name": "Млинці з лівером - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/5-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/mlynczi-z-liverom/"
-          },
-          {
-            "name": "Млинці з лососем та сиром - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/6-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/mlynczi-z-lososem-ta-syrom/"
-          },
-          {
-            "name": "Млинці з лососем та шпинатом - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/7-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/mlynczi-z-lososem-ta-shpynatom/"
-          },
-          {
-            "name": "Млинці з м&#039;ясом - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/9-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/mlynczi-z-myasom-2/"
-          },
-          {
-            "name": "Млинці з маком та вишнею - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/8-2.png",
-            "url": "https://galya-baluwana.lviv.ua/product/mlynczi-z-makom-ta-vyshneyu/"
-          },
-          {
-            "name": "Млинці з сиром та полуницею - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/10-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kopiyamlynczi-z-myasom/"
-          },
-          {
-            "name": "Млинці з сиром та чорницею - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/12-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/mlynczi-z-syrom-ta-chornyczeyu/"
-          },
-          {
-            "name": "Млинці з солодким сиром - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/11-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/mlynczi-z-solodkym-syrom/"
-          },
-          {
-            "name": "Млинці з шинкою та голландським сиром - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/17.png",
-            "url": "https://galya-baluwana.lviv.ua/product/mlynczi-z-shynkoyu-ta-gollandskym-syrom/"
-          },
-          {
-            "name": "Млинці цільнозернові з індичкою - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/16.png",
-            "url": "https://galya-baluwana.lviv.ua/product/mlynczi-czilnozernovi-z-indychkoyu/"
-          },
-          {
-            "name": "Млинці шоколадні з сиром, бананом та шоколадно-горіховим кремом - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/14.png",
-            "url": "https://galya-baluwana.lviv.ua/product/mlynczi-shokoladni-z-syrom-bananom-ta-shokoladno-gorihovym-kremom/"
-          },
-          {
-            "name": "Млинці шпинатні з крем сиром - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/4.png",
-            "url": "https://galya-baluwana.lviv.ua/product/mlynczi-shpynatni-z-krem-syrom/"
-          },
-          {
-            "name": "Котлети з курятини - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-60.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kotlety-z-kuryatyny/"
-          },
-          {
-            "name": "Тефтельки курячі в соусі Бешамель - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-48.png",
-            "url": "https://galya-baluwana.lviv.ua/product/teftelky-kuryachi-v-sousi-beshamel/"
-          },
-          {
-            "name": "Гречаники - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-57.png",
-            "url": "https://galya-baluwana.lviv.ua/product/grechanyky/"
-          },
-          {
-            "name": "Котлета &quot;Бургерна&quot; - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-69.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kotleta-burgerna/"
-          },
-          {
-            "name": "Котлета &quot;Бургерна&quot; з м&#039;яса індика - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-67.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kotleta-burgerna-z-myasa-indyka/"
-          },
-          {
-            "name": "Котлети &quot;Кордон Блю&quot; - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-63.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kotlety-kordon-blyu/"
-          },
-          {
-            "name": "Котлети з риби - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-54.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kotlety-z-ryby/"
-          },
-          {
-            "name": "Котлети зі свинини - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-51.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kotlety-zi-svynyny/"
-          },
-          {
-            "name": "Котлети зі свинини та яловичини - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-50.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kotlety-zi-svynyny-ta-yalovychyny/"
-          },
-          {
-            "name": "Котлети індичі - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-53.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kotlety-indychi/"
-          },
-          {
-            "name": "Тефтелі - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/71445be9-3104-4ad3-b.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/tefteli/"
-          },
-          {
-            "name": "Фрикадельки &quot;Дитячі на перепелиних яйцях&quot; - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/3-min.jpg-3.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/frykadelky-dytyachi-na-perepelynyh-yajczyah/"
-          },
-          {
-            "name": "Фрикадельки індичі - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/1-min.jpg-3.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/frykadelky-indychi/"
-          },
-          {
-            "name": "Ковбаса домашня - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-71.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kovbasa-domashnya/"
-          },
-          {
-            "name": "Ковбаски гриль курячі - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/a8b4567c-f042-4b7f-8.jpg.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/kovbasky-gryl-kuryachi/"
-          },
-          {
-            "name": "Голубці з грибами - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/4-min.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/golubczi-z-grybamy/"
-          },
-          {
-            "name": "Голубці з м&#039;ясом - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-47.png",
-            "url": "https://galya-baluwana.lviv.ua/product/golubczi-z-myasom/"
-          },
-          {
-            "name": "Голубці з телятиною та яловичиною - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/9a7e4cbe-4989-45a4-9.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/golubczi-z-telyatynoyu-ta-yalovychynoyu/"
-          },
-          {
-            "name": "Перець фарширований з грибами - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/193da09f-d574-4089-a.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/perecz-farshyrovanyj-z-grybamy/"
-          },
-          {
-            "name": "Перець фарширований з м&#039;ясом - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-46.png",
-            "url": "https://galya-baluwana.lviv.ua/product/perecz-farshyrovanyj-z-myasom/"
-          },
-          {
-            "name": "Вареники з вишнею - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/69368851.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/varenyky-z-vyshneyu/"
-          },
-          {
-            "name": "Вареники з капустою - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/dsc_0943.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/varenyky-z-kapustoyu/"
-          },
-          {
-            "name": "Вареники з капустою та білими грибами - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-33.png",
-            "url": "https://galya-baluwana.lviv.ua/product/varenyky-z-kapustoyu-ta-bilymy-grybamy/"
-          },
-          {
-            "name": "Вареники з картоплею - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/viber_2020-07-12_15.jpg.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/varenyky-z-kartopleyu/"
-          },
-          {
-            "name": "Вареники з картоплею і білими грибами - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-40.png",
-            "url": "https://galya-baluwana.lviv.ua/product/varenyky-z-kartopleyu-i-bilymy-grybamy/"
-          },
-          {
-            "name": "Вареники з картоплею та вершковим маслом - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/86365182.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/varenyky-z-kartopleyu-ta-vershkovym-maslom/"
-          },
-          {
-            "name": "Вареники з картоплею та грибами - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-39.png",
-            "url": "https://galya-baluwana.lviv.ua/product/varenyky-z-kartopleyu-ta-grybamy/"
-          },
-          {
-            "name": "Вареники з картоплею та сиром - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-34.png",
-            "url": "https://galya-baluwana.lviv.ua/product/varenyky-z-kartopleyu-ta-syrom/"
-          },
-          {
-            "name": "Вареники з лівером - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-32.png",
-            "url": "https://galya-baluwana.lviv.ua/product/varenyky-z-liverom/"
-          },
-          {
-            "name": "Вареники з м&#039;ясом - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/29056900.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/varenyky-z-myasom/"
-          },
-          {
-            "name": "Вареники з солодким сиром - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-42.png",
-            "url": "https://galya-baluwana.lviv.ua/product/varenyky-z-solodkym-syrom/"
-          },
-          {
-            "name": "Вареники з солоним сиром - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/dsc_1039_1-min.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/varenyky-z-solonym-syrom/"
-          },
-          {
-            "name": "Вареники з чорницею - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-31.png",
-            "url": "https://galya-baluwana.lviv.ua/product/varenyky-z-chornyczeyu/"
-          },
-          {
-            "name": "Вареники зі шпинатом та солоним сиром - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-41.png",
-            "url": "https://galya-baluwana.lviv.ua/product/varenyky-zi-shpynatom-ta-solonym-syrom/"
-          },
-          {
-            "name": "Ліниві вареники солодкі - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/46904837.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/linyvi-varenyky-solodki/"
-          },
-          {
-            "name": "Картопляні зрази з лівером - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/04bfc8d5-202e-4159-a.jpg.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/kartoplyani-zrazy-z-liverom/"
-          },
-          {
-            "name": "Картопляні зрази з м&#039;ясом - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-27.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kartoplyani-zrazy-z-myasom/"
-          },
-          {
-            "name": "Картопляні зрази з капустою - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/88988736.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/kartoplyani-zrazy-z-kapustoyu/"
-          },
-          {
-            "name": "Кіш з куркою та овочами - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/frame-3-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kish-z-kurkoyu-ta-ovochamy/"
-          },
-          {
-            "name": "Кіш з лососем, шпинатом та помідорами - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/frame-4.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kish-z-lososem-shpynatom-ta-pomidoramy/"
-          },
-          {
-            "name": "Лазанья з яловичиною - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/frame-8.png",
-            "url": "https://galya-baluwana.lviv.ua/product/lazanya-z-yalovychynoyu/"
-          },
-          {
-            "name": "Лазанья овочева - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/dsc_0798_1-min.png.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/lazanya-ovocheva/"
-          },
-          {
-            "name": "Лазанья зі свинини - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/frame-6.png",
-            "url": "https://galya-baluwana.lviv.ua/product/lazanya-zi-svynyny/"
-          },
-          {
-            "name": "Лазанья з куркою - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/frame-7.png",
-            "url": "https://galya-baluwana.lviv.ua/product/lazanya-z-kurkoyu/"
-          },
-          {
-            "name": "Бограч - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/da550585-f324-4767-a091-9af89174ee65_image-removebg-preview-e1754494729283.png",
-            "url": "https://galya-baluwana.lviv.ua/product/bograch/"
-          },
-          {
-            "name": "Крем - Суп шпинатний з куркою - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/chatgpt_image_6_serp._2025_r.__19_08_57-removebg-preview.png",
-            "url": "https://galya-baluwana.lviv.ua/product/krem-sup-shpynatnyj-z-kurkoyu/"
-          },
-          {
-            "name": "Банош - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/photo_2025-08-06_17-58-17-removebg-preview-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/banosh/"
-          },
-          {
-            "name": "Гарбузовий Крем - Суп - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8586-removebg-preview-e1754374664581.png",
-            "url": "https://galya-baluwana.lviv.ua/product/garbuzovyj-krem-sup/"
-          },
-          {
-            "name": "Крем - суп грибний - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/chatgpt_image_6_serp._2025_r.__18_53_35-removebg-preview-e1754496036439.png",
-            "url": "https://galya-baluwana.lviv.ua/product/krem-sup-grybnyj/"
-          },
-          {
-            "name": "Куліш - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_5389-removebg-preview-e1754377567454.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kulish/"
-          },
-          {
-            "name": "Морозиво Снікерс - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/84252890.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/morozyvo-snikers/"
-          },
-          {
-            "name": "Морозиво з Зеленим чаєм та Бергамотом - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/71144348.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/morozyvo-z-zelenym-chayem-ta-bergamotom/"
-          },
-          {
-            "name": "Морозиво Шварцвальдська Вишня - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/33091329.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/morozyvo-shvarczvaldska-vyshnya/"
-          },
-          {
-            "name": "Морозиво авторське з Горгондзолою - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/41878741.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/morozyvo-avtorske-z-gorgondzoloyu/"
-          },
-          {
-            "name": "Морозиво Солона Карамель - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/19066669.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/morozyvo-solona-karamel/"
-          },
-          {
-            "name": "Морозиво Пломбір - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/72336046.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/morozyvo-plombir/"
-          },
-          {
-            "name": "Морозиво Вишня Амарена - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/41988602.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/morozyvo-vyshnya-amarena/"
-          },
-          {
-            "name": "Морозиво Мокко - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/31062616.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/morozyvo-mokko/"
-          },
-          {
-            "name": "Морозиво Шоколадне - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/14695558.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/morozyvo-shokoladne/"
-          },
-          {
-            "name": "Морозиво Чорниця - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/34357909.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/morozyvo-chornyczya/"
-          },
-          {
-            "name": "Морозиво М&#039;ятне з чорним шоколадом - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/49325658.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/morozyvo-mango/"
-          },
-          {
-            "name": "Морозиво Страчателла - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/22305916.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/morozyvo-strachatella/"
-          },
-          {
-            "name": "Морозиво Горіхове - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/67859081.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/morozyvo-gorihove/"
-          },
-          {
-            "name": "Локшина Соба з яловичиною - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8566-removebg-preview-e1754372145496.png",
-            "url": "https://galya-baluwana.lviv.ua/product/lokshyna-soba-z-yalovychynoyu/"
-          },
-          {
-            "name": "Картопляне пʼюре з курячими фрикадельками - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8593-removebg-preview-e1754371976898.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kartoplyane-p%ca%bcyure-z-kuryachymy-frykadelkamy/"
-          },
-          {
-            "name": "Локшина Удон з куркою - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8576-removebg-preview-e1754372361789.png",
-            "url": "https://galya-baluwana.lviv.ua/product/lokshyna-udon-z-kurkoyu/"
-          },
-          {
-            "name": "Качина ніжка Конфі - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8575-removebg-preview-e1754372798748.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kachyna-nizhka-konfi/"
-          },
-          {
-            "name": "Паста Тоскана - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8574-removebg-preview-e1754373062497.png",
-            "url": "https://galya-baluwana.lviv.ua/product/pasta-toskana/"
-          },
-          {
-            "name": "Сирний Крем - Суп - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8573-removebg-preview-e1754373272609.png",
-            "url": "https://galya-baluwana.lviv.ua/product/syrnyj-krem-sup/"
-          },
-          {
-            "name": "Рвана свинина та кускус з овочами - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8572-removebg-preview-e1754373495495.png",
-            "url": "https://galya-baluwana.lviv.ua/product/rvana-svynyna-ta-kuskus-z-ovochamy/"
-          },
-          {
-            "name": "Паста Карбонара - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8571-removebg-preview-e1754373662238.png",
-            "url": "https://galya-baluwana.lviv.ua/product/pasta-karbonara/"
-          },
-          {
-            "name": "Суп Том Ям - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8570-removebg-preview-e1754373863914.png",
-            "url": "https://galya-baluwana.lviv.ua/product/sup-tom-yam/"
-          },
-          {
-            "name": "Рулет індичий з курагою та бататовим пʼюре - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8568-removebg-preview-e1754374220595.png",
-            "url": "https://galya-baluwana.lviv.ua/product/rulet-indychyj-z-kuragoyu-ta-batatovym-p%ca%bcyure/"
-          },
-          {
-            "name": "Ребра BBQ з печеною картоплею - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8584-removebg-preview-e1754374446615.png",
-            "url": "https://galya-baluwana.lviv.ua/product/rebra-bbq-z-pechenoyu-kartopleyu/"
-          },
-          {
-            "name": "Паширована Дорадо - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8583-removebg-preview-e1754374801420.png",
-            "url": "https://galya-baluwana.lviv.ua/product/pashyrovana-dorado/"
-          },
-          {
-            "name": "Свинний ошийок з булгуром та арахісом - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8582-removebg-preview-e1754375012567.png",
-            "url": "https://galya-baluwana.lviv.ua/product/svynnyj-oshyjok-z-bulgurom-ta-arahisom/"
-          },
-          {
-            "name": "Картоплянн пюре з курячою ніжкою - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8581-removebg-preview-e1754375194920.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kartoplyann-pyure-z-kuryachoyu-nizhkoyu/"
-          },
-          {
-            "name": "Гречка з курячим Фрікасе - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8580-removebg-preview-e1754375360580.png",
-            "url": "https://galya-baluwana.lviv.ua/product/grechka-z-kuryachym-frikase/"
-          },
-          {
-            "name": "Куряче стегно в солодко - гострому соусі - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8579-removebg-preview-e1754375530271.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kuryache-stegno-v-solodko-gostromu-sousi/"
-          },
-          {
-            "name": "Рибний галантин з овочами та рисом - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8577-removebg-preview-e1754376127167.png",
-            "url": "https://galya-baluwana.lviv.ua/product/rybnyj-galantyn-z-ovochamy-ta-rysom/"
-          },
-          {
-            "name": "Шпинатна паста з Лососем - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_5386.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/shpynatna-pasta-z-lososem/"
-          },
-          {
-            "name": "Птітім з хеком та соусом Шампань - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_5402.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/ptitim-z-hekom-ta-sousom-shampan/"
-          },
-          {
-            "name": "Палента з кролячою ніжкою - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_5395-removebg-preview-1-e1754377144601.png",
-            "url": "https://galya-baluwana.lviv.ua/product/palenta-z-krolyachoyu-nizhkoyu/"
-          },
-          {
-            "name": "Кебаб з овочами гриль - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_5393-removebg-preview-1-e1754377281178.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kebab-z-ovochamy-gryl/"
-          },
-          {
-            "name": "Бефстроганов з гречкою - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_5391-removebg-preview-e1754377411627.png",
-            "url": "https://galya-baluwana.lviv.ua/product/befstroganov-z-grechkoyu/"
-          },
-          {
-            "name": "Рісіні з кролячими фрикадельками - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_5387-removebg-preview-e1754377749977.png",
-            "url": "https://galya-baluwana.lviv.ua/product/risini-z-krolyachymy-frykadelkamy/"
-          },
-          {
-            "name": "Жульєн з картопляним пʼюре - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_5384-removebg-preview-e1754377885745.png",
-            "url": "https://galya-baluwana.lviv.ua/product/zhulyen-z-kartoplyanym-p%ca%bcyure/"
-          },
-          {
-            "name": "Солянка - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/photo_2025-05-20_15-47-29-removebg-preview-e1754378005844.png",
-            "url": "https://galya-baluwana.lviv.ua/product/solyanka/"
-          },
-          {
-            "name": "Окунь з овочами на пару - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_5397-removebg-preview-1-e1754376960680.png",
-            "url": "https://galya-baluwana.lviv.ua/product/okun-z-ovochamy-na-paru/"
-          },
-          {
-            "name": "Хрін &quot;Забіяка&quot; 200г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/62574737.png",
-            "url": "https://galya-baluwana.lviv.ua/product/hrin-zabiyaka-200g/"
-          },
-          {
-            "name": "Соус м&#039;ясний Болоньєзе &quot;Забіяка&quot; 330г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/52998485.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/sous-myasnyj-bolonyeze-zabiyaka-330g/"
-          },
-          {
-            "name": "Асорті овочеве &quot;Забіяка&quot; 480г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/61230526.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/asorti-ovocheve-zabiyaka-480g/"
-          },
-          {
-            "name": "Паштет печінковий з яловичини &quot;Забіяка&quot; 300г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/42513973.png",
-            "url": "https://galya-baluwana.lviv.ua/product/pashtet-pechinkovyj-z-yalovychyny-zabiyaka-300g/"
-          },
-          {
-            "name": "Томати мариновані &quot;Забіяка&quot; 680г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/67506892-1.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/tomaty-marynovani-zabiyaka-680g/"
-          },
-          {
-            "name": "Індик тушкований &quot;Забіяка&quot; 420г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/51196562.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/indyk-tushkovanyj-zabiyaka-420g/"
-          },
-          {
-            "name": "Кабачки мариновані &quot;Забіяка&quot; 650г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/71027796.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kabachky-marynovani-zabiyaka-650g/"
-          },
-          {
-            "name": "М&#039;ясний соус з курятиною Теріякі &quot;Забіяка&quot; 330г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/50268289.png",
-            "url": "https://galya-baluwana.lviv.ua/product/myasnyj-sous-z-kuryatynoyu-teriyaki-zabiyaka-330g/"
-          },
-          {
-            "name": "М&#039;ясний соус з курятиною Карі &quot;Забіяка&quot; 330г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/79719769.png",
-            "url": "https://galya-baluwana.lviv.ua/product/myasnyj-sous-z-kuryatynoyu-kari-zabiyaka-330g/"
-          },
-          {
-            "name": "Перець солодкий маринований &quot;Забіяка&quot; 500г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/52604444.png",
-            "url": "https://galya-baluwana.lviv.ua/product/perecz-solodkyj-marynovanyj-zabiyaka-500g/"
-          },
-          {
-            "name": "Огірки мариновані &quot;Забіяка&quot; 680г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/64592586.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/ogirky-marynovani-zabiyaka-680g/"
-          },
-          {
-            "name": "Томати печені з базиліком &quot;Забіяка&quot; 300г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/35295513.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/tomaty-pecheni-z-bazylikom-zabiyaka-300g/"
-          },
-          {
-            "name": "Пікулі з огірків медові &quot;Забіяка&quot; 450г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/86755493.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/pikuli-z-ogirkiv-medovi-zabiyaka-450g/"
-          },
-          {
-            "name": "Соус Ткемалі &quot;Забіяка&quot; 200г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/73919459.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/sous-tkemali-zabiyaka-200g/"
-          },
-          {
-            "name": "Ікра кабачкова &quot;Забіяка&quot; 450г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/24889049.png.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/ikra-kabachkova-zabiyaka-450g/"
-          },
-          {
-            "name": "М&#039;ясо курчат шинкове &quot;Забіяка&quot; 500г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/43471698.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/myaso-kurchat-shynkove-zabiyaka-500g/"
-          },
-          {
-            "name": "Шашлик зі свинини - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/frame-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/shashlyk-zi-svynyny/"
-          },
-          {
-            "name": "Овочева Суміш &quot;Мексиканська&quot; - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/60817415.jpg-1.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/ovocheva-sumish-meksykanska/"
-          },
-          {
-            "name": "Овочева Суміш &quot;Царська&quot; - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/54871042.png.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/ovocheva-sumish-czarska/"
-          },
-          {
-            "name": "Соус до шашлика Солодкий Чилі &quot;Забіяка&quot; 200г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/14373507.png",
-            "url": "https://galya-baluwana.lviv.ua/product/sous-do-shashlyka-solodkyj-chyli-zabiyaka-200g/"
-          },
-          {
-            "name": "Паштет По - Домашньому &quot;Забіяка&quot; 300г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/15281596.png",
-            "url": "https://galya-baluwana.lviv.ua/product/pashtet-po-domashnomu-zabiyaka-300g/"
-          },
-          {
-            "name": "Аджика &quot;Забіяка&quot; 300г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/95925403.png",
-            "url": "https://galya-baluwana.lviv.ua/product/adzhyka-zabiyaka-300g/"
-          }
-        ];
-        
+        // --- UTILITY FUNCTIONS ---
+        function createElement(tag, content, attributes = {}) {
+            const element = document.createElement(tag);
+            if (content) {
+                if (typeof content === 'string') element.textContent = content;
+                else element.appendChild(content);
+            }
+            Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, value));
+            return element;
+        }
+
+        // --- APP INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+
+            // --- STATE MANAGEMENT ---
+            let progressState = {
+                theme: 'light',
+                completedDays: [] // Stores numbers of completed days, e.g., [1, 2]
+            };
+
+            const PASS_THRESHOLD = 0.8; // 80% to pass the test
+
+            function saveProgress() {
+                localStorage.setItem('traineeProgress', JSON.stringify(progressState));
+            }
+
+            function loadProgress() {
+                const saved = localStorage.getItem('traineeProgress');
+                if (saved) {
+                    progressState = JSON.parse(saved);
+                }
+                applyTheme();
+                renderPlan(); 
+                renderQuizMenu();
+            }
+            
+            // --- THEME LOGIC ---
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeIcon = document.getElementById('theme-icon');
+            
+            function applyTheme() {
+                if (progressState.theme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                    themeIcon.setAttribute('data-lucide', 'sun');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    themeIcon.setAttribute('data-lucide', 'moon');
+                }
+                lucide.createIcons();
+            }
+
+            themeToggle.addEventListener('click', () => {
+                progressState.theme = progressState.theme === 'light' ? 'dark' : 'light';
+                saveProgress();
+                applyTheme();
+            });
+
+            // --- PAGE NAVIGATION ---
             const mainPage = document.getElementById('main-page');
             const subPages = document.querySelectorAll('.sub-page');
             const menuCards = document.querySelectorAll('.menu-card');
             const backButton = document.getElementById('backButton');
             const headerTitle = document.getElementById('headerTitle');
-            const productTabsContainer = document.getElementById('productTabsContainer');
-            const productList = document.getElementById('productList');
-            const productModal = document.getElementById('productModal');
-            const productModalImage = document.getElementById('productModalImage');
-            const productModalTitle = document.getElementById('productModalTitle');
-            const productModalClose = document.getElementById('productModalClose');
-            const productModalLink = document.getElementById('productModalLink');
-            const modalPlaceholderImage = 'https://placehold.co/400x400/FDE68A/4B5563?text=Фото';
             
             const pageTitles = {
-                'products-page': 'Наша Продукція',
-                'standards-page': 'Стандарти Роботи',
-                'plan-page': 'План Адаптації',
-                'quiz-page': 'Перевірка Знань',
-                'contacts-page': 'Корисні Контакти',
-            };
-
-            let lastFocusedElement = null;
-
-            const categorizeProducts = (catalog) => {
-                const normalizeText = (text = '') => String(text)
-                    .toLowerCase()
-                    .replace(/&quot;|&#039;|['"«»„“”]/g, '')
-                    .replace(/\s+/g, ' ')
-                    .trim();
-
-                const rawKeywords = [
-                    { keyword: 'пельмені', category: 'Пельмені' },
-                    { keyword: 'вареники', category: 'Вареники' },
-                    { keyword: 'сирники', category: 'Сирники' },
-                    { keyword: 'піца', category: 'Піца' },
-                    { keyword: 'млинці', category: 'Млинці' },
-                    { keyword: 'бендерики', category: 'Млинці' },
-                    { keyword: 'хінкалі', category: 'Хінкалі' },
-                    { keyword: 'чебурек', category: 'Чебуреки' },
-                    { keyword: 'котлети', category: 'Котлети' },
-                    { keyword: 'котлета', category: 'Котлети' },
-                    { keyword: 'фрикадельки', category: 'Котлети' },
-                    { keyword: 'тефтелі', category: 'Котлети' },
-                    { keyword: 'тефтельки', category: 'Котлети' },
-                    { keyword: 'голубці', category: 'Основні страви' },
-                    { keyword: 'зрази', category: 'Основні страви' },
-                    { keyword: 'лазанья', category: 'Основні страви' },
-                    { keyword: 'паста', category: 'Основні страви' },
-                    { keyword: 'суп', category: 'Супи' },
-                    { keyword: 'бограч', category: 'Супи' },
-                    { keyword: 'солянка', category: 'Супи' },
-                    { keyword: 'морозиво', category: 'Десерти' },
-                    { keyword: 'сінабони', category: 'Десерти' },
-                    { keyword: 'пиріг', category: 'Випічка' },
-                    { keyword: 'хачапурі', category: 'Випічка' },
-                    { keyword: 'соус', category: 'Соуси та консервація' },
-                    { keyword: 'паштет', category: 'Соуси та консервація' },
-                    { keyword: 'ікра', category: 'Соуси та консервація' },
-                ];
-
-                const keywords = rawKeywords.map(item => ({
-                    ...item,
-                    keyword: normalizeText(item.keyword),
-                }));
-
-                const grouped = catalog.reduce((acc, product) => {
-                    const productNameNormalized = normalizeText(product.name);
-                    let foundCategory = null;
-
-                    for (const item of keywords) {
-                        if (productNameNormalized.includes(item.keyword)) {
-                            foundCategory = item.category;
-                            break;
-                        }
-                    }
-                    const category = foundCategory || 'Інше';
-                    if (!acc[category]) {
-                        acc[category] = [];
-                    }
-                    acc[category].push(product);
-                    return acc;
-                }, {});
-                return grouped;
-            };
-
-            const formatProductName = (name = '') => String(name).replace(/\s*- Галя Балувана\s*$/, '').trim();
-            const escapeAttribute = (value = '') => String(value).replace(/"/g, '&quot;');
-
-            const renderProducts = (category, categoriesData) => {
-                productList.innerHTML = '';
-                const products = categoriesData[category] || [];
-                if (products.length === 0) {
-                    productList.innerHTML = `<p class="text-gray-500">Продукція в цій категорії скоро з'явиться.</p>`;
-                    return;
-                }
-                
-                const productsHtml = products.map(product => {
-                    const onErrorScript = `this.onerror=null;this.src='https://placehold.co/100x100/FDE68A/4B5563?text=Фото';`;
-                    const displayName = formatProductName(product.name || '');
-                    const imageUrl = product.image || '';
-                    const dataImage = escapeAttribute(imageUrl);
-                    const dataName = escapeAttribute(displayName);
-                    const dataUrl = escapeAttribute(product.url || '');
-                    const ariaLabel = escapeAttribute(`Переглянути ${displayName}`);
-                    return `
-                        <button type="button" class="product-card flex w-full items-start bg-white p-3 rounded-lg shadow-sm border text-left transition hover:border-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2" data-product-image="${dataImage}" data-product-name="${dataName}" data-product-url="${dataUrl}" aria-label="${ariaLabel}">
-                            <img src="${dataImage}" alt="${dataName}" class="w-16 h-16 md:w-20 md:h-20 rounded-md mr-4 object-cover flex-shrink-0" onerror="${onErrorScript}">
-                            <div>
-                                <h4 class="font-bold text-base md:text-lg">${displayName}</h4>
-                            </div>
-                        </button>
-                    `;
-                }).join('');
-                productList.innerHTML = productsHtml;
-            };
-
-            const openProductModal = (name = '', imageUrl = '', productUrl = '') => {
-                if (!productModal || !productModalImage || !productModalTitle) {
-                    return;
-                }
-
-                lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
-
-                const trimmedName = (name || '').trim();
-                const finalName = trimmedName || 'Наш продукт';
-                const trimmedImage = (imageUrl || '').trim();
-                const finalImage = trimmedImage || modalPlaceholderImage;
-                const trimmedUrl = (productUrl || '').trim();
-                const hasUrl = trimmedUrl.length > 0;
-
-                productModalImage.src = finalImage;
-                productModalImage.alt = finalName;
-                productModalTitle.textContent = finalName;
-                if (productModalLink) {
-                    if (hasUrl) {
-                        productModalLink.href = trimmedUrl;
-                        productModalLink.classList.remove('hidden');
-                        productModalLink.setAttribute('aria-disabled', 'false');
-                    } else {
-                        productModalLink.href = '#';
-                        productModalLink.classList.add('hidden');
-                        productModalLink.setAttribute('aria-disabled', 'true');
-                    }
-                }
-                productModal.classList.remove('hidden');
-                productModal.classList.add('flex');
-                productModal.setAttribute('aria-hidden', 'false');
-
-                if (productModalClose) {
-                    productModalClose.focus();
-                }
-
-                document.addEventListener('keydown', handleEscapeKey);
-            };
-
-            const closeProductModal = () => {
-                if (!productModal || !productModalImage || !productModalTitle) {
-                    return;
-                }
-
-                productModal.classList.add('hidden');
-                productModal.classList.remove('flex');
-                productModal.setAttribute('aria-hidden', 'true');
-                productModalImage.src = '';
-                productModalImage.alt = '';
-                productModalTitle.textContent = '';
-                if (productModalLink) {
-                    productModalLink.href = '#';
-                    productModalLink.classList.add('hidden');
-                    productModalLink.setAttribute('aria-disabled', 'true');
-                }
-
-                document.removeEventListener('keydown', handleEscapeKey);
-
-                if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
-                    lastFocusedElement.focus();
-                }
-                lastFocusedElement = null;
-            };
-
-            function handleEscapeKey(event) {
-                if (event.key === 'Escape' && productModal && !productModal.classList.contains('hidden')) {
-                    closeProductModal();
-                }
-            }
-
-            const renderCategoryTabs = (categories) => {
-                const sortedCategories = Object.keys(categories).sort();
-                if (sortedCategories.length === 0) {
-                    productTabsContainer.innerHTML = '';
-                    return;
-                }
-
-                const tabsHtml = sortedCategories.map((category, index) => {
-                    const isActive = index === 0;
-                    const activeClasses = 'border-amber-500 text-amber-600';
-                    const inactiveClasses = 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300';
-                    const tabId = `product-tab-${index}`;
-                    return `<button id="${tabId}" type="button" role="tab" aria-selected="${isActive}" tabindex="${isActive ? '0' : '-1'}" aria-controls="productList" data-category="${category}" class="product-tab whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm ${isActive ? activeClasses : inactiveClasses}">${category}</button>`;
-                }).join('');
-                productTabsContainer.innerHTML = tabsHtml;
-            };
-
-            const productCategories = categorizeProducts(catalogData);
-
-            const setActiveTab = (newTab) => {
-                const tabs = productTabsContainer.querySelectorAll('.product-tab');
-                tabs.forEach(tab => {
-                    const isActive = tab === newTab;
-                    tab.classList.toggle('border-amber-500', isActive);
-                    tab.classList.toggle('text-amber-600', isActive);
-                    tab.classList.toggle('border-transparent', !isActive);
-                    tab.classList.toggle('text-gray-500', !isActive);
-                    tab.classList.toggle('hover:text-gray-700', !isActive);
-                    tab.classList.toggle('hover:border-gray-300', !isActive);
-                    tab.setAttribute('aria-selected', String(isActive));
-                    tab.setAttribute('tabindex', isActive ? '0' : '-1');
-                });
-
-                if (newTab) {
-                    productList.setAttribute('aria-labelledby', newTab.id);
-                    const category = newTab.dataset.category;
-                    if (category) {
-                        renderProducts(category, productCategories);
-                    }
-                }
+                'products-page': 'Наша Продукція', 'standards-page': 'База Знань',
+                'plan-page': 'План Навчання', 'quiz-page': 'Перевірка Знань',
+                'contacts-page': 'Корисні Контакти', 'checklists-page': 'Щоденні Чек-листи'
             };
 
             const showPage = (pageId) => {
                 mainPage.style.display = 'none';
                 subPages.forEach(page => page.style.display = 'none');
-
                 const activePage = document.getElementById(pageId);
                 if (activePage) {
                     activePage.style.display = 'block';
                     headerTitle.textContent = pageTitles[pageId] || 'Деталі';
                     backButton.classList.remove('invisible');
-                }
-
-                if (pageId === 'products-page') {
-                    renderCategoryTabs(productCategories);
-                    const initialTab = productTabsContainer.querySelector('.product-tab[aria-selected="true"]') || productTabsContainer.querySelector('.product-tab');
-                    if (initialTab) {
-                        setActiveTab(initialTab);
-                    } else {
-                        productList.removeAttribute('aria-labelledby');
-                        productList.innerHTML = `<p class="text-gray-500">Категорії продукції скоро з'являться.</p>`;
-                    }
                 }
             };
 
@@ -1631,73 +530,296 @@
                 backButton.classList.add('invisible');
             };
 
-            menuCards.forEach(card => {
-                card.addEventListener('click', () => {
-                    const pageId = card.dataset.page;
-                    showPage(pageId);
-                });
-            });
-
+            menuCards.forEach(card => card.addEventListener('click', () => showPage(card.dataset.page)));
             backButton.addEventListener('click', showMainPage);
+            
+            // --- DYNAMIC CONTENT & PROGRESSION ---
+            const planContainer = document.getElementById('plan-container');
+            const planData = [
+                 { day: 1, title: "Знайомство, безпечний старт, тіньове спостереження", content: `<p class="font-semibold mb-2">Цілі дня: відчуття «мене тут чекають», розуміння бренду, як влаштована зміна, базові правила безпеки та сервісу.</p><ul class="list-disc pl-5 space-y-3 mt-2"><li><b>Теплий прийом (30 хв):</b> Вітання команди, історія бренду, план на 5 днів, знайомство з наставником.</li><li><b>Організаційні речі (30 хв):</b> Доступи, форма, графік, тур по магазину (кухні, склад, зони персоналу).</li><li><b>Мікро-безпека (20 хв):</b> Гігієна рук, "небезпечна зона температур" (холод/тепло), розділення сирого/готового.</li><li><b>Poster POS — тільки знайомство (30 хв):</b> Наставник показує інтерфейс, як виглядає чек, де звіти. Без самостійних дій.</li><li><b>Shadowing (Тіньове спостереження, 1-2 год):</b> Спостереження за роботою наставника в залі: діалоги з гостями, робота з вітриною (FIFO), пропозиції допродажу.</li><li><b>Підсумок дня (15 хв):</b> Обговорення з наставником: «Що дізнався? Що здивувало? Що хочеш спробувати завтра?».</li></ul>` },
+                { day: 2, title: "«Перші мікродії» (разом із наставником)", content: `<p class="font-semibold mb-2">Цілі: впевнено орієнтуватися в Poster, відкрити зміну, додати позиції, зробити X-звіт, фіксувати транзакції.</p><ul class="list-disc pl-5 space-y-3 mt-2"><li><b>Вхід у POS (20 хв):</b> Логін → PIN → «Залишок у касі» → Відкрити зміну (натискає наставник, стажер коментує).</li><li><b>Продаж (тренувально, 30 хв):</b> Додавання товарів (шт/вага), знижка, оплата, друк чека.</li><li><b>Готівкові транзакції (20 хв):</b> Демонстрація внесення, витрати та інкасації в меню POS.</li><li><b>X-звіт (15 хв):</b> Що показує і чим відрізняється від Z-звіту.</li><li><b>Shadowing та FIFO (1 год):</b> Спостереження за діалогами, практика FIFO на одній полиці.</li></ul>` },
+                { day: 3, title: "«Фіскалізація на тренажері» (ПРРО) + Z-звіт", content: `<p class="font-semibold mb-2">Цілі: розуміти фіскалізацію, індикатори чеків, повернення; вміти зняти Z-звіт разом з наставником.</p><ul class="list-disc pl-5 space-y-3 mt-2"><li><b>Теорія X vs Z (20 хв):</b> X — проміжний, для себе; Z — фінальний, для податкової.</li><li><b>ПРРО на касі (демо, 30 хв):</b> Де вмикається фіскалізація, індикатори успіху/помилки.</li><li><b>Сценарії (40 хв):</b> Продаж (готівка/картка) з фіскальним чеком; повернення фіскального чека.</li><li><b>Інкасація (20 хв):</b> Як оформити переведення виручки в сейф.</li><li><b>Z-звіт «разом» (30 хв):</b> X-звіт → звірка готівки → інкасація → «Закрити зміну» з Z-звітом.</li></ul>` },
+                { day: 4, title: "Клієнт, конфлікти, повернення/обміни", content: `<p class="font-semibold mb-2">Цілі: дати продавцю чітку рамку поведінки у складних діалогах; розібрати повернення/обмін згідно закону.</p><ul class="list-disc pl-5 space-y-3 mt-2"><li><b>Юридичні рамки (30 хв):</b> Коли можна і не можна повертати харчові товари. Що робити, якщо немає паперового чека.</li><li><b>Алгоритм деескалації LEARN (30 хв):</b> Listen (Вислухай) → Empathize (Поспівчувай) → Ask (Уточни) → Resolve (Виріши) → Next step (Наступний крок).</li><li><b>Рольові ігри-сценарії (45 хв)</b></li></ul>` },
+                { day: 5, title: "Знання товару, асортимент, алергени", content: `<p class="font-semibold mb-2">Цілі: розуміти категорії; вміти читати упаковку (термін, алергени), давати рекомендації, знижувати списання.</p><ul class="list-disc pl-5 space-y-3 mt-2"><li><b>Карта асортименту:</b> Чим відрізняються продукти всередині категорії (смаки, формати). Які позиції є "хітами".</li><li><b>Читання етикетки (Закон України):</b> Де шукати склад, термін придатності, умови зберігання та виділені <b>алергени</b>.</li><li><b>Практика - "Полка-кейс" (15 хв):</b> Привести одну полицю до ідеального FIFO.</li></ul>` },
+                { day: 6, title: "«Залік-лайт» та готовність до зміни", content: `<p class="font-semibold mb-2">Цілі: довести стабільність роботи (каса, сервіс, FIFO/HACCP); отримати допуск до самостійної зміни.</p><ul class="list-disc pl-5 space-y-3 mt-2"><li><b>Практичний залік (1 год, без підказок)</li><li><b>ПРРО-кейс (25 хв, тренувально)</li><li><b>Сервіс-залік (20 хв)</li></ul>` }
+            ];
 
-            productTabsContainer.addEventListener('click', (e) => {
-                const targetTab = e.target.closest('.product-tab');
-                if (!targetTab) return;
+            function renderPlan() {
+                planContainer.innerHTML = '';
+                planData.forEach((dayData, index) => {
+                    const day = index + 1;
+                    const isLocked = day > progressState.completedDays.length + 1;
+                    const isCompleted = progressState.completedDays.includes(day);
+                    
+                    const container = createElement('div', null, {'class': 'border rounded-lg', 'style': 'border-color: var(--border);'});
+                    const button = createElement('button', null, {
+                        'class': 'accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold',
+                        'disabled': isLocked
+                    });
+                     if(isLocked) button.classList.add('opacity-50', 'cursor-not-allowed');
 
-                setActiveTab(targetTab);
-            });
+                    const titleSpan = createElement('span', `День ${day}: ${dayData.title}`);
+                    let iconName = 'chevron-down';
+                    if (isLocked) iconName = 'lock';
+                    if (isCompleted) iconName = 'check-circle-2';
+                    const icon = createElement('i', null, {'data-lucide': iconName, 'class': 'w-5 h-5 transition-transform duration-300 flex-shrink-0 ml-2'});
+                     if (isCompleted) icon.style.color = 'var(--success)';
 
-            if (productList) {
-                productList.addEventListener('click', (event) => {
-                    const productCard = event.target.closest('.product-card');
-                    if (!productCard) return;
 
-                    const { productName = '', productImage = '', productUrl = '' } = productCard.dataset;
-                    openProductModal(productName, productImage, productUrl);
+                    button.append(titleSpan, icon);
+
+                    const contentWrapper = createElement('div', null, {'class': 'accordion-content'});
+                    const contentDiv = createElement('div', null, {'class': 'p-4 pt-0', 'style': 'color: var(--muted-foreground);'});
+                    contentDiv.innerHTML = dayData.content;
+                    contentWrapper.appendChild(contentDiv);
+                    
+                    container.append(button, contentWrapper);
+                    planContainer.appendChild(container);
                 });
+                lucide.createIcons();
+            }
+            
+            function updateUnlockedContent() {
+                renderPlan();
+                renderQuizMenu();
             }
 
-            if (productModalClose) {
-                productModalClose.addEventListener('click', () => {
-                    closeProductModal();
-                });
+            function updateMainProgressBar() {
+                const totalDays = planData.length;
+                const baseProgress = 5;
+                const progressPerDay = (100 - baseProgress) / totalDays;
+                const newProgress = baseProgress + (progressState.completedDays.length * progressPerDay);
+
+                const progressBar = document.getElementById('mainProgressBar');
+                const progressText = document.getElementById('mainProgressText');
+                
+                progressBar.style.width = `${newProgress}%`;
+                progressText.textContent = `${Math.round(newProgress)}%`;
             }
 
-            if (productModal) {
-                productModal.addEventListener('click', (event) => {
-                    if (event.target === productModal) {
-                        closeProductModal();
-                    }
-                });
+            // --- ACCORDION LOGIC ---
+            function handleAccordionToggle(toggle) {
+                if(!toggle || toggle.disabled) return;
+                const content = toggle.nextElementSibling;
+                const icon = toggle.querySelector('i[data-lucide="chevron-down"]');
+                if (!icon) return; // Don't toggle for lock/check icons
+                
+                const isCurrentlyOpen = content.style.maxHeight && content.style.maxHeight !== "0px";
+                const parent = toggle.closest('.space-y-2');
+                if (parent) {
+                    parent.querySelectorAll('.accordion-content').forEach(el => {
+                        if(el !== content) {
+                           el.style.maxHeight = null;
+                           const otherIcon = el.previousElementSibling.querySelector('i[data-lucide="chevron-down"]');
+                           if (otherIcon) otherIcon.classList.remove('rotate-180');
+                        }
+                    });
+                }
+                
+                if (!isCurrentlyOpen) {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                    icon.classList.add('rotate-180');
+                } else {
+                    content.style.maxHeight = null;
+                    icon.classList.remove('rotate-180');
+                }
             }
+            
+            planContainer.addEventListener('click', (e) => handleAccordionToggle(e.target.closest('.accordion-toggle')));
+            document.querySelector('#standards-page').addEventListener('click', (e) => handleAccordionToggle(e.target.closest('.accordion-toggle')));
+            document.querySelector('#checklists-page').addEventListener('click', (e) => handleAccordionToggle(e.target.closest('.accordion-toggle')));
 
-            // Accordion Logic
-            document.addEventListener('click', function(e) {
-                const toggle = e.target.closest('.accordion-toggle');
-                if (!toggle) return;
 
-                const contentId = toggle.getAttribute('aria-controls');
-                const content = contentId ? document.getElementById(contentId) : toggle.nextElementSibling;
-                const icon = toggle.querySelector('i');
-                const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
-                const newExpandedState = !isExpanded;
+            // --- QUIZ DATA & LOGIC ---
+            const allQuizzes = {
+                day1: { title: "Тест: День 1", description: "Знайомство та орієнтація", questions: [
+                    { question: "Що робить buddy/наставник у перший тиждень?", answers: ["Контролює касу замість вас", "Супроводжує, відповідає на питання, дає мікрозавдання", "Оцінює лише штрафи"], correct: 1 },
+                    { question: "Де в Poster на касі дивитись X/Z-звіт?", answers: ["В головному меню POS/касові зміни", "Лише в адмін-панелі", "Ніде"], correct: 0 },
+                    { question: "«Небезпечна температурна зона» для їжі — це приблизно:", answers: ["5–60 °C", "0–20 °C", "60–90 °C"], correct: 0 },
+                ]},
+                day2: { title: "Тест: День 2", description: "Перші дії в POS", questions: [
+                    { question: "Порядок старту зміни: логін → PIN → ... → «Відкрити». Який крок пропущено?", answers: ["Ввести «Залишок у касі»", "Зробити X-звіт", "Перевірити пошту"], correct: 0 },
+                    { question: "X-звіт — це:", answers: ["Перевірка стану продажів у середині зміни (не відправляється в ДПС)", "Фінальний звіт для податкової", "Звіт по залишках на складі"], correct: 0 }
+                ]},
+                day3: { title: "Тест: День 3", description: "ПРРО та Фіскалізація", questions: [
+                    { question: "Z-звіт — це...", answers: ["Добовий підсумок зміни, який відправляється в ДПС", "Звіт, який можна робити багато разів на день", "Звіт про популярні товари"], correct: 0 },
+                    { question: "Чим X-звіт відрізняється від Z-звіту?", answers: ["Не відправляється на фіскальний сервер і служить для внутрішнього контролю", "Нічим, це одне й те саме", "X-звіт містить більше даних"], correct: 0 },
+                ]},
+                day4: { title: "Тест: День 4", description: "Клієнтський сервіс", questions: [
+                    { question: "Чи можна відмовити у поверненні товару, якщо у клієнта немає паперового чека?", answers: ["Так, без паперового чека повернення неможливе", "Ні, якщо є інші докази покупки", "Тільки за дозволом директора"], correct: 1 },
+                    { question: "Що є першим кроком в алгоритмі деескалації конфлікту LEARN?", answers: ["L - Listen (Вислухати клієнта)", "E - Empathize (Поспівчувай)", "A - Ask (Поставити питання)"], correct: 0 }
+                ]},
+                day5: { title: "Тест: День 5", description: "Знання Товару", questions: [
+                    { question: "Що обов'язково має бути на харчовій етикетці?", answers: ["Тільки назва", "Назва + ціна", "Назва, склад, виділені алергени, умови зберігання"], correct: 2 },
+                    { question: "«Небезпечна зона температур» для продуктів:", answers: ["0–20 °C", "≈5–60 °C", "70–100 °C"], correct: 1 }
+                ]}
+            };
 
-                toggle.setAttribute('aria-expanded', String(newExpandedState));
+            let currentQuizKey = '';
+            let currentQuizData = []; let currentQuestion = 0; let score = 0; let userAnswers = [];
+            const quizMenu = document.getElementById('quiz-menu'); const quizStartScreen = document.getElementById('quiz-start');
+            const quizMainScreen = document.getElementById('quiz-main');
 
-                if (content) {
-                    if (newExpandedState) {
-                        content.style.maxHeight = content.scrollHeight + "px";
+            function renderQuizMenu() {
+                quizMenu.innerHTML = '';
+                Object.keys(allQuizzes).forEach(quizId => {
+                    const day = parseInt(quizId.replace('day', ''));
+                    const isLocked = day > progressState.completedDays.length + 1;
+                    const isCompleted = progressState.completedDays.includes(day);
+
+                    const quizInfo = allQuizzes[quizId];
+                    const button = createElement('button', null, { 
+                        'data-quiz-id': quizId, 
+                        'class': 'w-full text-left p-4 rounded-lg font-semibold transition-colors flex justify-between items-center',
+                        'disabled': isLocked
+                    });
+                    
+                    const textDiv = createElement('div');
+                    const title = createElement('span', quizInfo.title, {'class': 'block text-lg'});
+                    const description = createElement('span', quizInfo.description, {'class': 'block text-sm opacity-80 mt-1'});
+                    textDiv.append(title, description);
+
+                    const icon = createElement('i', null, {'class': 'w-6 h-6 flex-shrink-0 ml-4'});
+
+                    if(isLocked) {
+                        button.classList.add('opacity-50', 'cursor-not-allowed');
+                        button.style.backgroundColor = 'var(--secondary-background)';
+                        icon.setAttribute('data-lucide', 'lock');
+                    } else if (isCompleted) {
+                        button.style.backgroundColor = 'var(--secondary-background)';
+                        icon.setAttribute('data-lucide', 'check-circle-2');
+                        icon.style.color = 'var(--success)';
                     } else {
-                        content.style.maxHeight = null;
+                        button.style.backgroundColor = 'var(--primary)';
+                        button.style.color = 'var(--primary-foreground)';
+                        icon.setAttribute('data-lucide', 'play-circle');
                     }
-                    content.setAttribute('aria-hidden', String(!newExpandedState));
-                }
+                    
+                    button.append(textDiv, icon);
+                    quizMenu.appendChild(button);
+                });
+                lucide.createIcons();
+            }
 
-                if (icon) {
-                    icon.classList.toggle('rotate-180', newExpandedState);
+            function startQuiz(quizId) {
+                currentQuizKey = quizId;
+                currentQuizData = allQuizzes[quizId].questions;
+                document.getElementById('quiz-title').textContent = allQuizzes[quizId].title;
+                document.getElementById('quiz-description').textContent = allQuizzes[quizId].description;
+                
+                quizStartScreen.classList.add('hidden');
+                quizMainScreen.classList.remove('hidden');
+                document.getElementById('quiz-questions').classList.remove('hidden');
+                document.getElementById('quiz-results').classList.add('hidden');
+                restartQuizState();
+                showQuestion();
+            }
+
+            quizMenu.addEventListener('click', (e) => {
+                const button = e.target.closest('button');
+                if (button && button.dataset.quizId && !button.disabled) startQuiz(button.dataset.quizId);
+            });
+            
+            function showQuestion() {
+                const question = currentQuizData[currentQuestion];
+                document.getElementById('question-text').textContent = question.question;
+                document.getElementById('current-question').textContent = currentQuestion + 1;
+                document.getElementById('total-questions').textContent = currentQuizData.length;
+                document.getElementById('progress-bar').style.width = ((currentQuestion) / currentQuizData.length) * 100 + '%';
+                
+                const answersContainer = document.getElementById('answers-container');
+                answersContainer.innerHTML = '';
+                question.answers.forEach((answer, index) => {
+                    const answerDiv = createElement('div', null, { 'class': 'answer-option flex items-center p-3 rounded-lg cursor-pointer', 'style': 'border-color: var(--border);', 'data-answer': index });
+                    const radio = createElement('input', null, { type: 'radio', name: 'answer', value: index, class: 'mr-3 h-4 w-4' });
+                    const label = createElement('span', answer, { class: 'flex-1' });
+                    answerDiv.append(radio, label);
+                    answersContainer.appendChild(answerDiv);
+                    answerDiv.addEventListener('click', () => {
+                        radio.checked = true;
+                        userAnswers[currentQuestion] = index;
+                        document.querySelectorAll('.answer-option').forEach(el => { el.style.borderColor = 'var(--border)'; el.style.backgroundColor = 'transparent' });
+                        answerDiv.style.borderColor = 'var(--primary)';
+                        answerDiv.style.backgroundColor = 'var(--secondary-background)';
+                        updateCurrentScore();
+                    });
+                });
+
+                if (userAnswers[currentQuestion] !== undefined) {
+                    const prevAnswer = userAnswers[currentQuestion];
+                    const answerElement = answersContainer.children[prevAnswer];
+                    if (answerElement) {
+                        answerElement.querySelector('input').checked = true;
+                        answerElement.style.borderColor = 'var(--primary)';
+                        answerElement.style.backgroundColor = 'var(--secondary-background)';
+                    }
                 }
+                updateCurrentScore(); updateNavigationButtons();
+            }
+            
+            function updateCurrentScore() {
+                 score = 0;
+                 userAnswers.forEach((answer, index) => { if (answer === currentQuizData[index].correct) score++; });
+                document.getElementById('current-score').textContent = score;
+            }
+
+            function nextQuestion() {
+                const selectedAnswer = document.querySelector('input[name="answer"]:checked');
+                if (selectedAnswer) userAnswers[currentQuestion] = parseInt(selectedAnswer.value);
+                else if (userAnswers[currentQuestion] === undefined) userAnswers[currentQuestion] = null;
+                updateCurrentScore();
+                if (currentQuestion < currentQuizData.length - 1) { currentQuestion++; showQuestion(); } 
+                else showResults();
+            }
+            
+            function prevQuestion() {
+                const selectedAnswer = document.querySelector('input[name="answer"]:checked');
+                if (selectedAnswer) userAnswers[currentQuestion] = parseInt(selectedAnswer.value);
+                updateCurrentScore();
+                if(currentQuestion > 0) { currentQuestion--; showQuestion(); }
+            }
+
+            function updateNavigationButtons() {
+                document.getElementById('prev-question').classList.toggle('hidden', currentQuestion === 0);
+                document.getElementById('next-question').textContent = (currentQuestion === currentQuizData.length - 1) ? 'Завершити тест' : 'Наступне';
+            }
+
+            function showResults() {
+                updateCurrentScore();
+                document.getElementById('quiz-questions').classList.add('hidden');
+                document.getElementById('quiz-results').classList.remove('hidden');
+                document.getElementById('final-score').textContent = score;
+                document.getElementById('max-score').textContent = currentQuizData.length;
+                const resultMessage = document.getElementById('result-message');
+                const percentage = (score / currentQuizData.length);
+                
+                if (percentage >= PASS_THRESHOLD) {
+                    resultMessage.textContent = 'Відмінно! Ви добре знаєте матеріал. Наступний день розблоковано.';
+                    const dayNumber = parseInt(currentQuizKey.replace('day', ''));
+                    if (!progressState.completedDays.includes(dayNumber)) {
+                        progressState.completedDays.push(dayNumber);
+                        saveProgress();
+                        updateUnlockedContent();
+                        updateMainProgressBar();
+                    }
+                } else {
+                    resultMessage.textContent = 'Потрібно більше вивчити матеріал. Рекомендуємо пройти тест знову.';
+                }
+            }
+
+            function restartQuizState() { currentQuestion = 0; score = 0; userAnswers = []; }
+            function showTestMenu() { quizStartScreen.classList.remove('hidden'); quizMainScreen.classList.add('hidden'); }
+
+            document.getElementById('back-to-tests').addEventListener('click', showTestMenu);
+            document.getElementById('restart-quiz').addEventListener('click', () => {
+                 document.getElementById('quiz-questions').classList.remove('hidden');
+                 document.getElementById('quiz-results').classList.add('hidden');
+                 restartQuizState();
+                 showQuestion();
             });
 
+            // Initial Load
+            loadProgress();
         });
     </script>
 </body>
