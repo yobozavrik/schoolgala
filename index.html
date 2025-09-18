@@ -211,6 +211,131 @@
                         </ul>
                     </div>
                 </div>
+                <section aria-labelledby="checklists-title" class="mt-8 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <i data-lucide="list-checks" class="w-6 h-6 text-amber-500"></i>
+                        <h3 id="checklists-title" class="text-xl font-bold text-gray-800">Чек-листи</h3>
+                    </div>
+                    <p class="text-sm text-gray-600">Використовуйте ці нагадування, щоб підтримувати стабільний сервіс та виконувати вимоги змін.</p>
+                    <div class="space-y-4">
+                        <article class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+                            <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                                <div class="flex gap-3">
+                                    <span class="flex h-10 w-10 items-center justify-center rounded-full bg-amber-500 font-semibold text-white">A</span>
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <i data-lucide="sunrise" class="w-5 h-5 text-amber-500"></i>
+                                            <h4 class="text-lg font-semibold text-gray-800">Відкриття зміни</h4>
+                                        </div>
+                                        <ul class="mt-3 space-y-2 text-gray-700">
+                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Перевірити чистоту вхідної зони, вітрини та касової зони.</span></li>
+                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Увімкнути обладнання, зафіксувати робочі температури холодильників.</span></li>
+                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Підготувати касу: перевірити рулони, здачу, авторизуватися в системі.</span></li>
+                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Оновити викладку продукції згідно з планограмою та чек-листом викладки.</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-2 sm:items-end">
+                                    <button type="button" class="inline-flex items-center gap-2 rounded-lg bg-amber-500 px-3 py-2 font-semibold text-white shadow hover:bg-amber-600 transition" onclick="alert('Чек-лист буде надіслано на друк.');">
+                                        <i data-lucide="printer" class="w-4 h-4"></i>
+                                        <span>Друк</span>
+                                    </button>
+                                    <button type="button" class="inline-flex items-center gap-2 rounded-lg border border-amber-500 px-3 py-2 font-semibold text-amber-700 shadow-sm hover:bg-amber-50 transition" onclick="alert('Чек-лист відкриється у Telegram.');">
+                                        <i data-lucide="send" class="w-4 h-4"></i>
+                                        <span>Відкрити в Telegram</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </article>
+                        <article class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+                            <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                                <div class="flex gap-3">
+                                    <span class="flex h-10 w-10 items-center justify-center rounded-full bg-amber-500 font-semibold text-white">B</span>
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <i data-lucide="moon" class="w-5 h-5 text-amber-500"></i>
+                                            <h4 class="text-lg font-semibold text-gray-800">Закриття зміни + Z-звіт</h4>
+                                        </div>
+                                        <ul class="mt-3 space-y-2 text-gray-700">
+                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Провести інкасацію, зняти Z-звіт та прикріпити його до журналу.</span></li>
+                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Порахувати виручку, звірити із системою та підготувати касу для наступної зміни.</span></li>
+                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Очистити робочі поверхні, обладнання та касову зону.</span></li>
+                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Закрити та опломбувати холодильники, вимкнути освітлення у вітрині.</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-2 sm:items-end">
+                                    <button type="button" class="inline-flex items-center gap-2 rounded-lg bg-amber-500 px-3 py-2 font-semibold text-white shadow hover:bg-amber-600 transition" onclick="alert('Чек-лист буде надіслано на друк.');">
+                                        <i data-lucide="printer" class="w-4 h-4"></i>
+                                        <span>Друк</span>
+                                    </button>
+                                    <button type="button" class="inline-flex items-center gap-2 rounded-lg border border-amber-500 px-3 py-2 font-semibold text-amber-700 shadow-sm hover:bg-amber-50 transition" onclick="alert('Чек-лист відкриється у Telegram.');">
+                                        <i data-lucide="send" class="w-4 h-4"></i>
+                                        <span>Відкрити в Telegram</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </article>
+                        <article class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+                            <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                                <div class="flex gap-3">
+                                    <span class="flex h-10 w-10 items-center justify-center rounded-full bg-amber-500 font-semibold text-white">C</span>
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <i data-lucide="layers" class="w-5 h-5 text-amber-500"></i>
+                                            <h4 class="text-lg font-semibold text-gray-800">FIFO на полиці</h4>
+                                        </div>
+                                        <ul class="mt-3 space-y-2 text-gray-700">
+                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Перевірити дати виробництва та терміни придатності кожної позиції.</span></li>
+                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Переставити продукцію за принципом «першим прийшов — першим пішов».</span></li>
+                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Відмітити товари, що потребують списання або промо-цінника.</span></li>
+                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Оновити залишки у журналі обліку та повідомити про дефіцити.</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-2 sm:items-end">
+                                    <button type="button" class="inline-flex items-center gap-2 rounded-lg bg-amber-500 px-3 py-2 font-semibold text-white shadow hover:bg-amber-600 transition" onclick="alert('Чек-лист буде надіслано на друк.');">
+                                        <i data-lucide="printer" class="w-4 h-4"></i>
+                                        <span>Друк</span>
+                                    </button>
+                                    <button type="button" class="inline-flex items-center gap-2 rounded-lg border border-amber-500 px-3 py-2 font-semibold text-amber-700 shadow-sm hover:bg-amber-50 transition" onclick="alert('Чек-лист відкриється у Telegram.');">
+                                        <i data-lucide="send" class="w-4 h-4"></i>
+                                        <span>Відкрити в Telegram</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </article>
+                        <article class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+                            <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                                <div class="flex gap-3">
+                                    <span class="flex h-10 w-10 items-center justify-center rounded-full bg-amber-500 font-semibold text-white">D</span>
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <i data-lucide="shield-check" class="w-5 h-5 text-amber-500"></i>
+                                            <h4 class="text-lg font-semibold text-gray-800">HACCP мінімум</h4>
+                                        </div>
+                                        <ul class="mt-3 space-y-2 text-gray-700">
+                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Записати температури холодильників та морозильників у контрольний журнал.</span></li>
+                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Перевірити наявність і чистоту рукавичок, санітайзерів та одноразового пакування.</span></li>
+                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Переконатися у справності термометра та засобів для маркування алергенів.</span></li>
+                                            <li class="flex items-start gap-3"><i data-lucide="check-circle" class="mt-0.5 w-5 h-5 flex-shrink-0 text-amber-500"></i><span>Зафіксувати відхилення і повідомити відповідальну особу за безпеку харчових продуктів.</span></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col gap-2 sm:items-end">
+                                    <button type="button" class="inline-flex items-center gap-2 rounded-lg bg-amber-500 px-3 py-2 font-semibold text-white shadow hover:bg-amber-600 transition" onclick="alert('Чек-лист буде надіслано на друк.');">
+                                        <i data-lucide="printer" class="w-4 h-4"></i>
+                                        <span>Друк</span>
+                                    </button>
+                                    <button type="button" class="inline-flex items-center gap-2 rounded-lg border border-amber-500 px-3 py-2 font-semibold text-amber-700 shadow-sm hover:bg-amber-50 transition" onclick="alert('Чек-лист відкриється у Telegram.');">
+                                        <i data-lucide="send" class="w-4 h-4"></i>
+                                        <span>Відкрити в Telegram</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </section>
             </div>
             
             <div id="quiz-page" class="sub-page space-y-6">
