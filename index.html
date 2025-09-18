@@ -764,8 +764,8 @@
                     });
                 });
 
-                if (userAnswers[currentQuestion] !== undefined) {
-                    const prevAnswer = userAnswers[currentQuestion];
+                const prevAnswer = userAnswers[currentQuestion];
+                if (prevAnswer !== undefined && prevAnswer !== null) {
                     const answerElement = answersContainer.children[prevAnswer];
                     if (answerElement) {
                         answerElement.querySelector('input').checked = true;
@@ -785,7 +785,7 @@
             function nextQuestion() {
                 const selectedAnswer = document.querySelector('input[name="answer"]:checked');
                 if (selectedAnswer) userAnswers[currentQuestion] = parseInt(selectedAnswer.value);
-                else if (userAnswers[currentQuestion] === undefined) userAnswers[currentQuestion] = null;
+                else userAnswers[currentQuestion] = undefined;
                 updateCurrentScore();
                 if (currentQuestion < currentQuizData.length - 1) { currentQuestion++; showQuestion(); } 
                 else showResults();
