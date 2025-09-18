@@ -200,8 +200,179 @@
                 </div>
             </div>
             
-            <div id="quiz-page" class="sub-page"><h3 class="text-xl font-bold">Тут будуть тести та квізи</h3></div>
-            <div id="contacts-page" class="sub-page"><h3 class="text-xl font-bold">Тут будуть корисні контакти</h3></div>
+            <div id="quiz-page" class="sub-page space-y-6">
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Перевірка знань</h3>
+                    <p class="text-gray-600">Обирайте тест, який відповідає вашому етапу адаптації, та перевіряйте себе перед виходом на зміну.</p>
+                </div>
+                <div class="space-y-4">
+                    <article class="border border-amber-100 bg-amber-50 rounded-xl p-4 shadow-sm">
+                        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                            <div>
+                                <h4 class="text-lg font-semibold text-gray-800">Наша продукція. Частина 1</h4>
+                                <p class="text-sm text-gray-600 mt-1">Закріпіть назви та ключові характеристики хітових позицій меню.</p>
+                                <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm font-medium text-amber-700">
+                                    <div class="flex items-center gap-1">
+                                        <i data-lucide="help-circle" class="w-4 h-4"></i>
+                                        <span>10 запитань</span>
+                                    </div>
+                                    <div class="flex items-center gap-1">
+                                        <i data-lucide="clock" class="w-4 h-4"></i>
+                                        <span>7 хвилин</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-2 sm:items-end">
+                                <button type="button" class="inline-flex items-center justify-center gap-2 rounded-lg bg-amber-500 px-4 py-2 font-semibold text-white shadow hover:bg-amber-600 transition" onclick="alert('Тест буде відкрито найближчим часом!');">
+                                    <i data-lucide="play" class="w-4 h-4"></i>
+                                    <span>Почати</span>
+                                </button>
+                                <button type="button" class="text-sm font-medium text-amber-700 hover:underline" onclick="alert('Нагадування додано до вашого плану.');">Додати нагадування</button>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="border border-gray-200 bg-white rounded-xl p-4 shadow-sm">
+                        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                            <div>
+                                <h4 class="text-lg font-semibold text-gray-800">Обслуговування гостя</h4>
+                                <p class="text-sm text-gray-600 mt-1">Згадайте сценарії спілкування, відповіді на типові запитання та стандарти ввічливості.</p>
+                                <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm font-medium text-amber-700">
+                                    <div class="flex items-center gap-1">
+                                        <i data-lucide="message-circle" class="w-4 h-4"></i>
+                                        <span>8 кейсів</span>
+                                    </div>
+                                    <div class="flex items-center gap-1">
+                                        <i data-lucide="clock" class="w-4 h-4"></i>
+                                        <span>5 хвилин</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-2 sm:items-end">
+                                <button type="button" class="inline-flex items-center justify-center gap-2 rounded-lg bg-amber-500 px-4 py-2 font-semibold text-white shadow hover:bg-amber-600 transition" onclick="alert('Цей тренажер зараз у розробці.');">
+                                    <i data-lucide="play" class="w-4 h-4"></i>
+                                    <span>Почати</span>
+                                </button>
+                                <button type="button" class="text-sm font-medium text-amber-700 hover:underline" onclick="alert('Ми нагадаємо вам про цей тренажер.');">Отримати нагадування</button>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="border border-gray-200 bg-gray-50 rounded-xl p-4 shadow-sm">
+                        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                            <div>
+                                <h4 class="text-lg font-semibold text-gray-800">Безпека на кухні</h4>
+                                <p class="text-sm text-gray-600 mt-1">Перевірте знання правил користування обладнанням та алгоритму дій у надзвичайних ситуаціях.</p>
+                                <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm font-medium text-amber-700">
+                                    <div class="flex items-center gap-1">
+                                        <i data-lucide="shield-check" class="w-4 h-4"></i>
+                                        <span>12 карток</span>
+                                    </div>
+                                    <div class="flex items-center gap-1">
+                                        <i data-lucide="clock" class="w-4 h-4"></i>
+                                        <span>10 хвилин</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flex flex-col gap-2 sm:items-end">
+                                <button type="button" class="inline-flex items-center justify-center gap-2 rounded-lg border border-amber-500 px-4 py-2 font-semibold text-amber-700 shadow-sm hover:bg-amber-50 transition" onclick="alert('Збережено для повторення.');">
+                                    <i data-lucide="bookmark-check" class="w-4 h-4"></i>
+                                    <span>Запланувати</span>
+                                </button>
+                                <button type="button" class="text-sm font-medium text-amber-700 hover:underline" onclick="alert('Нотатник відкрито.');">Зробити нотатки</button>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+                <div class="rounded-xl border border-dashed border-gray-300 bg-white p-4 text-sm text-gray-500">
+                    <p class="font-medium text-gray-700">Порада наставниці</p>
+                    <p class="mt-1">Плануйте проходження одного тесту щодня та фіксуйте питання, які викликають труднощі, щоб обговорити їх на зустрічі з наставником.</p>
+                </div>
+            </div>
+            <div id="contacts-page" class="sub-page space-y-6">
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Корисні контакти</h3>
+                    <p class="text-gray-600">Зберігайте ці контакти під рукою, щоб швидко отримати підтримку з будь-яких питань під час стажування.</p>
+                </div>
+                <div class="space-y-4">
+                    <article class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+                        <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <i data-lucide="user-circle" class="h-6 w-6 text-amber-500"></i>
+                                    <h4 class="text-lg font-semibold text-gray-800">Ірина Коваль</h4>
+                                </div>
+                                <p class="text-sm text-gray-500 mt-1">Наставниця зміни • перший поверх, кімн. 104</p>
+                                <p class="text-sm text-gray-500">Графік: пн-пт, 09:00 – 18:00</p>
+                            </div>
+                            <div class="flex flex-col gap-2 sm:items-end">
+                                <a href="tel:+380671112233" class="inline-flex items-center gap-2 rounded-lg bg-amber-500 px-3 py-2 font-semibold text-white shadow hover:bg-amber-600 transition">
+                                    <i data-lucide="phone" class="h-4 w-4"></i>
+                                    <span>Подзвонити</span>
+                                </a>
+                                <a href="mailto:iryna.koval@galya-baluwana.ua" class="inline-flex items-center gap-2 text-sm font-medium text-amber-700 hover:underline">
+                                    <i data-lucide="mail" class="h-4 w-4"></i>
+                                    <span>Написати лист</span>
+                                </a>
+                            </div>
+                        </div>
+                        <button type="button" class="mt-3 inline-flex items-center gap-2 text-sm font-medium text-amber-700 hover:underline" onclick="alert('Контакт додано до списку улюблених.');">
+                            <i data-lucide="bookmark-plus" class="h-4 w-4"></i>
+                            <span>Зберегти контакт</span>
+                        </button>
+                    </article>
+                    <article class="rounded-xl border border-gray-200 bg-gray-50 p-4 shadow-sm">
+                        <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <i data-lucide="headset" class="h-6 w-6 text-amber-500"></i>
+                                    <h4 class="text-lg font-semibold text-gray-800">Олексій Мартинюк</h4>
+                                </div>
+                                <p class="text-sm text-gray-500 mt-1">HR-менеджер • питання документів та графіків</p>
+                                <p class="text-sm text-gray-500">Доступний: пн-пт, 10:00 – 17:00</p>
+                            </div>
+                            <div class="flex flex-col gap-2 sm:items-end">
+                                <a href="tel:+380503334455" class="inline-flex items-center gap-2 rounded-lg border border-amber-500 px-3 py-2 font-semibold text-amber-700 shadow-sm hover:bg-amber-50 transition">
+                                    <i data-lucide="smartphone" class="h-4 w-4"></i>
+                                    <span>Подзвонити</span>
+                                </a>
+                                <a href="mailto:oleksii.martyniuk@galya-baluwana.ua" class="inline-flex items-center gap-2 text-sm font-medium text-amber-700 hover:underline">
+                                    <i data-lucide="mail" class="h-4 w-4"></i>
+                                    <span>Надіслати e-mail</span>
+                                </a>
+                            </div>
+                        </div>
+                        <button type="button" class="mt-3 inline-flex items-center gap-2 text-sm font-medium text-amber-700 hover:underline" onclick="alert('Пам’ятка надіслана у ваш Telegram.');">
+                            <i data-lucide="send" class="h-4 w-4"></i>
+                            <span>Отримати інструкцію</span>
+                        </button>
+                    </article>
+                    <article class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+                        <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <i data-lucide="life-buoy" class="h-6 w-6 text-amber-500"></i>
+                                    <h4 class="text-lg font-semibold text-gray-800">Служба безпеки</h4>
+                                </div>
+                                <p class="text-sm text-gray-500 mt-1">Аварійні ситуації, виклик швидкої допомоги або пожежної бригади</p>
+                                <p class="text-sm text-gray-500">Працює 24/7</p>
+                            </div>
+                            <div class="flex flex-col gap-2 sm:items-end">
+                                <a href="tel:+380322001122" class="inline-flex items-center gap-2 rounded-lg bg-red-500 px-3 py-2 font-semibold text-white shadow hover:bg-red-600 transition">
+                                    <i data-lucide="alert-triangle" class="h-4 w-4"></i>
+                                    <span>Терміновий дзвінок</span>
+                                </a>
+                                <a href="mailto:safety@galya-baluwana.ua" class="inline-flex items-center gap-2 text-sm font-medium text-amber-700 hover:underline">
+                                    <i data-lucide="mail" class="h-4 w-4"></i>
+                                    <span>Написати звіт</span>
+                                </a>
+                            </div>
+                        </div>
+                        <button type="button" class="mt-3 inline-flex items-center gap-2 text-sm font-medium text-amber-700 hover:underline" onclick="alert('Контакти служби безпеки закріплено на головному екрані.');">
+                            <i data-lucide="pin" class="h-4 w-4"></i>
+                            <span>Закріпити вгорі</span>
+                        </button>
+                    </article>
+                </div>
+            </div>
 
         </main>
     </div>
