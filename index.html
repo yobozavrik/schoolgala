@@ -1654,7 +1654,7 @@
 
                 const contentId = toggle.getAttribute('aria-controls');
                 const content = contentId ? document.getElementById(contentId) : toggle.nextElementSibling;
-                const icon = toggle.querySelector('i');
+                const icon = toggle.querySelector('svg[data-lucide]') || toggle.querySelector('[data-lucide]');
                 const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
                 const newExpandedState = !isExpanded;
 
