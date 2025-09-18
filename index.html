@@ -179,25 +179,271 @@
             </div>
 
             <!-- Adaptation Plan Page -->
-            <div id="plan-page" class="sub-page">
-                <h3 class="text-xl font-bold mb-4">План на перший тиждень</h3>
-                <div class="space-y-4">
-                    <div>
-                        <h4 class="font-semibold mb-2">День 1</h4>
-                        <ul class="space-y-2">
-                           <li class="flex items-center"><span class="w-5 h-5 bg-amber-500 rounded-full mr-3 flex-shrink-0"></span><span>Познайомитись з наставником</span></li>
-                           <li class="flex items-center"><span class="w-5 h-5 bg-amber-500 rounded-full mr-3 flex-shrink-0"></span><span>Вивчити розділ "Стандарти гігієни"</span></li>
-                           <li class="flex items-center"><span class="w-5 h-5 bg-gray-200 rounded-full mr-3 flex-shrink-0"></span><span>Вивчити 5 видів пельменів</span></li>
-                        </ul>
+            <div id="plan-page" class="sub-page space-y-6">
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Таймлайн адаптації</h3>
+                    <p class="text-gray-600">Структурований план допоможе зосередитися на ключових компетенціях і мікрокурсах кожного етапу: від перших днів до самостійного ведення зміни.</p>
+                </div>
+                <div class="relative">
+                    <div class="absolute left-5 top-2 bottom-4 hidden md:block">
+                        <div class="h-full border-l-2 border-dashed border-amber-200"></div>
                     </div>
-                     <div>
-                        <h4 class="font-semibold mb-2">День 2</h4>
-                        <ul class="space-y-2">
-                           <li class="flex items-center"><span class="w-5 h-5 bg-gray-200 rounded-full mr-3 flex-shrink-0"></span><span>Практика: ліплення вареників</span></li>
-                           <li class="flex items-center"><span class="w-5 h-5 bg-gray-200 rounded-full mr-3 flex-shrink-0"></span><span>Пройти тест "Наша продукція. Частина 1"</span></li>
-                        </ul>
+                    <div class="space-y-8">
+                        <article class="relative pl-12">
+                            <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-full bg-amber-500 text-white shadow-md ring-4 ring-amber-100">
+                                <i data-lucide="sparkles" class="h-5 w-5"></i>
+                            </div>
+                            <div class="rounded-2xl border border-amber-100 bg-amber-50 p-5 shadow-sm">
+                                <p class="text-xs font-semibold uppercase tracking-wide text-amber-700">Пре-бординг (−7…0)</p>
+                                <h4 class="mt-1 text-lg font-semibold text-gray-900">Підготовка до старту</h4>
+                                <p class="mt-2 text-sm text-gray-600">Формуємо базу: налаштовуємо доступи, знайомимося з культурою сервісу та онлайн-курсами, плануємо перший тиждень з наставником.</p>
+                                <ul class="mt-4 space-y-2 text-sm text-gray-700">
+                                    <li class="flex gap-2">
+                                        <i data-lucide="check-circle" class="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-500"></i>
+                                        <span>Заповнити анкету працівника, отримати графік та погодити контакт наставниці.</span>
+                                    </li>
+                                    <li class="flex gap-2">
+                                        <i data-lucide="check-circle" class="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-500"></i>
+                                        <span>Пройти мікрокурс <strong>Poster Onboarding</strong> та створити власний чек-лист касових сценаріїв.</span>
+                                    </li>
+                                    <li class="flex gap-2">
+                                        <i data-lucide="check-circle" class="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-500"></i>
+                                        <span>Переглянути відео-огляд принципів сервісу «Галя Балувана» й підготувати 3 запитання до зустрічі з наставником.</span>
+                                    </li>
+                                </ul>
+                                <div class="mt-4 flex flex-wrap gap-2 text-xs font-medium text-amber-700">
+                                    <a href="https://support.joinposter.com/uk" class="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 shadow-sm hover:bg-amber-100" target="_blank" rel="noopener">Poster</a>
+                                    <a href="https://tax.gov.ua/podatki-ta-zbori/zagalnoderzhavni-podatki/prro/" class="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 shadow-sm hover:bg-amber-100" target="_blank" rel="noopener">PRRO</a>
+                                    <a href="https://www.edx.org/learn/customer-service" class="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 shadow-sm hover:bg-amber-100" target="_blank" rel="noopener">Сервіс 101</a>
+                                </div>
+                            </div>
+                        </article>
+                        <article class="relative pl-12">
+                            <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-full bg-amber-500 text-white shadow-md ring-4 ring-amber-100">
+                                <i data-lucide="calendar-day" class="h-5 w-5"></i>
+                            </div>
+                            <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+                                <p class="text-xs font-semibold uppercase tracking-wide text-amber-700">Day 1</p>
+                                <h4 class="mt-1 text-lg font-semibold text-gray-900">Орієнтація в команді</h4>
+                                <p class="mt-2 text-sm text-gray-600">Знайомимося з командою, обладнанням та очікуваннями щодо сервісу й стандартів на зміні.</p>
+                                <ul class="mt-4 space-y-2 text-sm text-gray-700">
+                                    <li class="flex gap-2">
+                                        <i data-lucide="check-circle" class="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-500"></i>
+                                        <span>Зустріч з наставницею, спільне заповнення карти цілей та налаштування особистого плану у Trello/Notion.</span>
+                                    </li>
+                                    <li class="flex gap-2">
+                                        <i data-lucide="check-circle" class="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-500"></i>
+                                        <span>Тур по кухні, інвентаризація робочого місця, знайомство з чергою санітарних процедур.</span>
+                                    </li>
+                                    <li class="flex gap-2">
+                                        <i data-lucide="check-circle" class="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-500"></i>
+                                        <span>Розбір касових сценаріїв у Poster: продаж, повернення, акційні позиції.</span>
+                                    </li>
+                                </ul>
+                                <div class="mt-4 flex flex-wrap gap-2 text-xs font-medium text-amber-700">
+                                    <a href="https://support.joinposter.com/uk/articles" class="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 shadow-sm hover:bg-amber-100" target="_blank" rel="noopener">Poster База знань</a>
+                                    <a href="https://www.galya-baluwana.lviv.ua/service-manual" class="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 shadow-sm hover:bg-amber-100" target="_blank" rel="noopener">Кодекс сервісу</a>
+                                </div>
+                            </div>
+                        </article>
+                        <article class="relative pl-12">
+                            <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-full bg-amber-500 text-white shadow-md ring-4 ring-amber-100">
+                                <i data-lucide="utensils" class="h-5 w-5"></i>
+                            </div>
+                            <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+                                <p class="text-xs font-semibold uppercase tracking-wide text-amber-700">Day 2</p>
+                                <h4 class="mt-1 text-lg font-semibold text-gray-900">Оволодіння кухнею</h4>
+                                <p class="mt-2 text-sm text-gray-600">Відпрацьовуємо технологічні карти, санітарні протоколи та ланцюг FIFO.</p>
+                                <ul class="mt-4 space-y-2 text-sm text-gray-700">
+                                    <li class="flex gap-2">
+                                        <i data-lucide="check-circle" class="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-500"></i>
+                                        <span>Мікрокурс <strong>FIFO Basics</strong> та практичне сортування складу з наставницею.</span>
+                                    </li>
+                                    <li class="flex gap-2">
+                                        <i data-lucide="check-circle" class="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-500"></i>
+                                        <span>Ознайомлення з чек-листом <strong>HACCP</strong>: критичні точки, температурні режими.</span>
+                                    </li>
+                                    <li class="flex gap-2">
+                                        <i data-lucide="check-circle" class="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-500"></i>
+                                        <span>Shadowing на лінії видачі: правила комунікації з гостем і швидкість роботи.</span>
+                                    </li>
+                                </ul>
+                                <div class="mt-4 flex flex-wrap gap-2 text-xs font-medium text-amber-700">
+                                    <a href="https://en.wikipedia.org/wiki/First_in_first_out" class="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 shadow-sm hover:bg-amber-100" target="_blank" rel="noopener">FIFO</a>
+                                    <a href="https://uk.wikipedia.org/wiki/HACCP" class="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 shadow-sm hover:bg-amber-100" target="_blank" rel="noopener">HACCP</a>
+                                    <a href="https://www.youtube.com/results?search_query=food+service+mentoring" class="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 shadow-sm hover:bg-amber-100" target="_blank" rel="noopener">Відео сервіс</a>
+                                </div>
+                            </div>
+                        </article>
+                        <article class="relative pl-12">
+                            <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-full bg-amber-500 text-white shadow-md ring-4 ring-amber-100">
+                                <i data-lucide="briefcase" class="h-5 w-5"></i>
+                            </div>
+                            <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+                                <p class="text-xs font-semibold uppercase tracking-wide text-amber-700">Day 3</p>
+                                <h4 class="mt-1 text-lg font-semibold text-gray-900">Самостійна каса та контроль якості</h4>
+                                <p class="mt-2 text-sm text-gray-600">Відпрацьовуємо касові операції, контроль документів і комунікацію у пікові години.</p>
+                                <ul class="mt-4 space-y-2 text-sm text-gray-700">
+                                    <li class="flex gap-2">
+                                        <i data-lucide="check-circle" class="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-500"></i>
+                                        <span>Практика з <strong>PRRO</strong>: чек, скасування, службове внесення/вилучення.</span>
+                                    </li>
+                                    <li class="flex gap-2">
+                                        <i data-lucide="check-circle" class="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-500"></i>
+                                        <span>Контроль HACCP-журналів, коригування температурних карт.</span>
+                                    </li>
+                                    <li class="flex gap-2">
+                                        <i data-lucide="check-circle" class="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-500"></i>
+                                        <span>Ролеві вправи з сервісу: роботи зі скаргами й рекомендаційним продажем.</span>
+                                    </li>
+                                </ul>
+                                <div class="mt-4 flex flex-wrap gap-2 text-xs font-medium text-amber-700">
+                                    <a href="https://tax.gov.ua/podatki-ta-zbori/zagalnoderzhavni-podatki/prro/" class="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 shadow-sm hover:bg-amber-100" target="_blank" rel="noopener">PRRO довідник</a>
+                                    <a href="https://www.service-design-network.org/community-knowledge/handling-guest-complaints" class="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 shadow-sm hover:bg-amber-100" target="_blank" rel="noopener">Сервісні кейси</a>
+                                </div>
+                            </div>
+                        </article>
+                        <article class="relative pl-12">
+                            <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-full bg-amber-500 text-white shadow-md ring-4 ring-amber-100">
+                                <i data-lucide="calendar-range" class="h-5 w-5"></i>
+                            </div>
+                            <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+                                <p class="text-xs font-semibold uppercase tracking-wide text-amber-700">Тиждень 2</p>
+                                <h4 class="mt-1 text-lg font-semibold text-gray-900">Закріплення стандартів</h4>
+                                <p class="mt-2 text-sm text-gray-600">Розширюємо зони відповідальності: працюємо з інвентаризацією, допрацьовуємо сервісні сценарії, отримуємо зворотний зв'язок.</p>
+                                <ul class="mt-4 space-y-2 text-sm text-gray-700">
+                                    <li class="flex gap-2">
+                                        <i data-lucide="check-circle" class="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-500"></i>
+                                        <span>Провести контрольну інвентаризацію складу разом із наставницею.</span>
+                                    </li>
+                                    <li class="flex gap-2">
+                                        <i data-lucide="check-circle" class="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-500"></i>
+                                        <span>Взяти участь у role-play сервісних ситуацій та записати власні «золоті фрази» для продажів.</span>
+                                    </li>
+                                    <li class="flex gap-2">
+                                        <i data-lucide="check-circle" class="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-500"></i>
+                                        <span>Зібрати фідбек від колег і наставниці, оновити індивідуальний план розвитку.</span>
+                                    </li>
+                                </ul>
+                                <div class="mt-4 flex flex-wrap gap-2 text-xs font-medium text-amber-700">
+                                    <a href="https://uk.wikipedia.org/wiki/HACCP" class="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 shadow-sm hover:bg-amber-100" target="_blank" rel="noopener">HACCP чек-лист</a>
+                                    <a href="https://www.edx.org/learn/customer-service" class="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 shadow-sm hover:bg-amber-100" target="_blank" rel="noopener">Культура сервісу</a>
+                                    <a href="https://hbr.org/2020/02/what-the-best-mentors-do" class="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 shadow-sm hover:bg-amber-100" target="_blank" rel="noopener">Наставництво</a>
+                                </div>
+                            </div>
+                        </article>
+                        <article class="relative pl-12">
+                            <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-full bg-amber-500 text-white shadow-md ring-4 ring-amber-100">
+                                <i data-lucide="target" class="h-5 w-5"></i>
+                            </div>
+                            <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+                                <p class="text-xs font-semibold uppercase tracking-wide text-amber-700">Дні 15–30</p>
+                                <h4 class="mt-1 text-lg font-semibold text-gray-900">Вихід на самостійну зміну</h4>
+                                <p class="mt-2 text-sm text-gray-600">Фокус на якості, швидкості та персональному сервісі. Готуємося до атестації на закріплення.</p>
+                                <ul class="mt-4 space-y-2 text-sm text-gray-700">
+                                    <li class="flex gap-2">
+                                        <i data-lucide="check-circle" class="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-500"></i>
+                                        <span>Провести щонайменше дві зміни у статусі «молодша зміна» з наставницею в ролі спостерігача.</span>
+                                    </li>
+                                    <li class="flex gap-2">
+                                        <i data-lucide="check-circle" class="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-500"></i>
+                                        <span>Зібрати відгуки гостей за NPS-опитуваннями, визначити 2 напрями для покращення.</span>
+                                    </li>
+                                    <li class="flex gap-2">
+                                        <i data-lucide="check-circle" class="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-500"></i>
+                                        <span>Підготуватися до міні-атестації: гігієна, сервіс, знання меню та каси.</span>
+                                    </li>
+                                </ul>
+                                <div class="mt-4 flex flex-wrap gap-2 text-xs font-medium text-amber-700">
+                                    <a href="https://support.joinposter.com/uk/training" class="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 shadow-sm hover:bg-amber-100" target="_blank" rel="noopener">Poster тренажер</a>
+                                    <a href="https://www.service-design-network.org/community-knowledge/handling-guest-complaints" class="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 shadow-sm hover:bg-amber-100" target="_blank" rel="noopener">Сервісні сценарії</a>
+                                </div>
+                            </div>
+                        </article>
+                        <article class="relative pl-12">
+                            <div class="absolute left-0 top-0 flex h-10 w-10 items-center justify-center rounded-full bg-amber-500 text-white shadow-md ring-4 ring-amber-100">
+                                <i data-lucide="route" class="h-5 w-5"></i>
+                            </div>
+                            <div class="rounded-2xl border border-amber-100 bg-amber-50 p-5 shadow-sm">
+                                <p class="text-xs font-semibold uppercase tracking-wide text-amber-700">30/60/90</p>
+                                <h4 class="mt-1 text-lg font-semibold text-gray-900">Стратегія довгострокового росту</h4>
+                                <p class="mt-2 text-sm text-gray-600">Фіксуємо, які результати очікуємо в кінці кожного місяця, та узгоджуємо наступні ролі з наставницею та менеджером.</p>
+                                <ul class="mt-4 space-y-2 text-sm text-gray-700">
+                                    <li class="flex gap-2">
+                                        <i data-lucide="check-circle" class="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-500"></i>
+                                        <span>30 днів: пройти внутрішню атестацію на касу, підтвердити знання PRRO і HACCP, отримати позитивний зворотний зв'язок від наставниці.</span>
+                                    </li>
+                                    <li class="flex gap-2">
+                                        <i data-lucide="check-circle" class="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-500"></i>
+                                        <span>60 днів: вести вечірні зміни самостійно, виконувати план продажів і вміти навчити нову людину базовим операціям.</span>
+                                    </li>
+                                    <li class="flex gap-2">
+                                        <i data-lucide="check-circle" class="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-500"></i>
+                                        <span>90 днів: запропонувати покращення сервісної або виробничої зони, презентувати результати менеджеру та стати наставником для наступного стажера.</span>
+                                    </li>
+                                </ul>
+                                <div class="mt-4 flex flex-wrap gap-2 text-xs font-medium text-amber-700">
+                                    <a href="https://hbr.org/2020/02/what-the-best-mentors-do" class="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 shadow-sm hover:bg-amber-100" target="_blank" rel="noopener">Менторство</a>
+                                    <a href="https://www.galya-baluwana.lviv.ua/career-path" class="inline-flex items-center gap-1 rounded-full bg-white px-3 py-1 shadow-sm hover:bg-amber-100" target="_blank" rel="noopener">Кар'єрні треки</a>
+                                </div>
+                            </div>
+                        </article>
                     </div>
                 </div>
+                <section class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+                    <h4 class="text-lg font-semibold text-gray-900">Очікувані результати на 30/60/90 днів</h4>
+                    <p class="mt-2 text-sm text-gray-600">Зберігайте ці орієнтири в календарі і прогрес-барі, щоб синхронізуватися з наставницею та HR щодо наступних кроків.</p>
+                    <div class="mt-4 grid gap-4 md:grid-cols-3">
+                        <div class="rounded-xl border border-amber-100 bg-amber-50/60 p-4">
+                            <div class="flex items-center gap-2 text-amber-700">
+                                <i data-lucide="flag" class="h-5 w-5"></i>
+                                <span class="text-sm font-semibold uppercase tracking-wide">30 днів</span>
+                            </div>
+                            <ul class="mt-3 space-y-2 text-sm text-gray-700">
+                                <li class="flex gap-2">
+                                    <i data-lucide="check" class="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-500"></i>
+                                    <span>Сертифікація на касу Poster та підтверджені знання PRRO.</span>
+                                </li>
+                                <li class="flex gap-2">
+                                    <i data-lucide="check" class="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-500"></i>
+                                    <span>Стабільне виконання стандартів HACCP і гігієни без зауважень.</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="rounded-xl border border-gray-200 bg-white p-4">
+                            <div class="flex items-center gap-2 text-amber-700">
+                                <i data-lucide="award" class="h-5 w-5"></i>
+                                <span class="text-sm font-semibold uppercase tracking-wide">60 днів</span>
+                            </div>
+                            <ul class="mt-3 space-y-2 text-sm text-gray-700">
+                                <li class="flex gap-2">
+                                    <i data-lucide="check" class="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-500"></i>
+                                    <span>Самостійне ведення зміни та планового обліку FIFO.</span>
+                                </li>
+                                <li class="flex gap-2">
+                                    <i data-lucide="check" class="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-500"></i>
+                                    <span>Підтримка сервісних KPI (NPS, середній чек) на рівні команди.</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="rounded-xl border border-gray-200 bg-white p-4">
+                            <div class="flex items-center gap-2 text-amber-700">
+                                <i data-lucide="trending-up" class="h-5 w-5"></i>
+                                <span class="text-sm font-semibold uppercase tracking-wide">90 днів</span>
+                            </div>
+                            <ul class="mt-3 space-y-2 text-sm text-gray-700">
+                                <li class="flex gap-2">
+                                    <i data-lucide="check" class="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-500"></i>
+                                    <span>Розроблений план покращень процесу або сервісу, погоджений з менеджером.</span>
+                                </li>
+                                <li class="flex gap-2">
+                                    <i data-lucide="check" class="mt-0.5 h-4 w-4 flex-shrink-0 text-amber-500"></i>
+                                    <span>Готовність виступати наставником для нового стажера.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
             </div>
             
             <div id="quiz-page" class="sub-page space-y-6">
