@@ -103,6 +103,19 @@
                     </div>
                 </div>
                 <div id="productList" class="space-y-3" role="tabpanel" tabindex="0"></div>
+                <div id="productModal" class="fixed inset-0 z-30 hidden items-center justify-center bg-black/50 p-4" aria-hidden="true">
+                    <div class="relative w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl" role="dialog" aria-modal="true" aria-labelledby="productModalTitle">
+                        <button type="button" id="productModalClose" class="absolute right-4 top-4 text-gray-400 transition hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2" aria-label="Закрити">
+                            <i data-lucide="x" class="h-5 w-5"></i>
+                        </button>
+                        <div class="flex flex-col items-center gap-4 text-center">
+                            <div class="w-full overflow-hidden rounded-xl bg-gray-100">
+                                <img id="productModalImage" src="" alt="" class="h-60 w-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x400/FDE68A/4B5563?text=Фото';">
+                            </div>
+                            <h4 id="productModalTitle" class="text-lg font-semibold text-gray-800"></h4>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Standards Page -->
@@ -1237,6 +1250,11 @@
             const headerTitle = document.getElementById('headerTitle');
             const productTabsContainer = document.getElementById('productTabsContainer');
             const productList = document.getElementById('productList');
+            const productModal = document.getElementById('productModal');
+            const productModalImage = document.getElementById('productModalImage');
+            const productModalTitle = document.getElementById('productModalTitle');
+            const productModalClose = document.getElementById('productModalClose');
+            const modalPlaceholderImage = 'https://placehold.co/400x400/FDE68A/4B5563?text=Фото';
             
             const pageTitles = {
                 'products-page': 'Наша Продукція',
@@ -1245,6 +1263,8 @@
                 'quiz-page': 'Перевірка Знань',
                 'contacts-page': 'Корисні Контакти',
             };
+
+            let lastFocusedElement = null;
 
             const categorizeProducts = (catalog) => {
                 const normalizeText = (text = '') => String(text)
@@ -1308,6 +1328,9 @@
                 return grouped;
             };
 
+            const formatProductName = (name = '') => String(name).replace(/\s*- Галя Балувана\s*$/, '').trim();
+            const escapeAttribute = (value = '') => String(value).replace(/"/g, '&quot;');
+
             const renderProducts = (category, categoriesData) => {
                 productList.innerHTML = '';
                 const products = categoriesData[category] || [];
@@ -1318,19 +1341,74 @@
                 
                 const productsHtml = products.map(product => {
                     const onErrorScript = `this.onerror=null;this.src='https://placehold.co/100x100/FDE68A/4B5563?text=Фото';`;
-                    const productUrl = product.url || '#';
-                    const targetAttributes = product.url ? ' target="_blank" rel="noopener noreferrer"' : '';
+                    const displayName = formatProductName(product.name || '');
+                    const imageUrl = product.image || '';
+                    const dataImage = escapeAttribute(imageUrl);
+                    const dataName = escapeAttribute(displayName);
+                    const ariaLabel = escapeAttribute(`Переглянути ${displayName}`);
                     return `
-                        <a href="${productUrl}" class="flex items-start bg-white p-3 rounded-lg shadow-sm border"${targetAttributes}>
-                            <img src="${product.image}" alt="${product.name}" class="w-16 h-16 md:w-20 md:h-20 rounded-md mr-4 object-cover flex-shrink-0" onerror="${onErrorScript}">
+                        <button type="button" class="product-card flex w-full items-start bg-white p-3 rounded-lg shadow-sm border text-left transition hover:border-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2" data-product-image="${dataImage}" data-product-name="${dataName}" aria-label="${ariaLabel}">
+                            <img src="${dataImage}" alt="${dataName}" class="w-16 h-16 md:w-20 md:h-20 rounded-md mr-4 object-cover flex-shrink-0" onerror="${onErrorScript}">
                             <div>
-                                <h4 class="font-bold text-base md:text-lg">${product.name.replace(' - Галя Балувана', '')}</h4>
+                                <h4 class="font-bold text-base md:text-lg">${displayName}</h4>
                             </div>
-                        </a>
+                        </button>
                     `;
                 }).join('');
                 productList.innerHTML = productsHtml;
             };
+
+            const openProductModal = (name = '', imageUrl = '') => {
+                if (!productModal || !productModalImage || !productModalTitle) {
+                    return;
+                }
+
+                lastFocusedElement = document.activeElement instanceof HTMLElement ? document.activeElement : null;
+
+                const trimmedName = (name || '').trim();
+                const finalName = trimmedName || 'Наш продукт';
+                const trimmedImage = (imageUrl || '').trim();
+                const finalImage = trimmedImage || modalPlaceholderImage;
+
+                productModalImage.src = finalImage;
+                productModalImage.alt = finalName;
+                productModalTitle.textContent = finalName;
+                productModal.classList.remove('hidden');
+                productModal.classList.add('flex');
+                productModal.setAttribute('aria-hidden', 'false');
+
+                if (productModalClose) {
+                    productModalClose.focus();
+                }
+
+                document.addEventListener('keydown', handleEscapeKey);
+            };
+
+            const closeProductModal = () => {
+                if (!productModal || !productModalImage || !productModalTitle) {
+                    return;
+                }
+
+                productModal.classList.add('hidden');
+                productModal.classList.remove('flex');
+                productModal.setAttribute('aria-hidden', 'true');
+                productModalImage.src = '';
+                productModalImage.alt = '';
+                productModalTitle.textContent = '';
+
+                document.removeEventListener('keydown', handleEscapeKey);
+
+                if (lastFocusedElement && typeof lastFocusedElement.focus === 'function') {
+                    lastFocusedElement.focus();
+                }
+                lastFocusedElement = null;
+            };
+
+            function handleEscapeKey(event) {
+                if (event.key === 'Escape' && productModal && !productModal.classList.contains('hidden')) {
+                    closeProductModal();
+                }
+            }
 
             const renderCategoryTabs = (categories) => {
                 const sortedCategories = Object.keys(categories).sort();
@@ -1419,6 +1497,30 @@
 
                 setActiveTab(targetTab);
             });
+
+            if (productList) {
+                productList.addEventListener('click', (event) => {
+                    const productCard = event.target.closest('.product-card');
+                    if (!productCard) return;
+
+                    const { productName = '', productImage = '' } = productCard.dataset;
+                    openProductModal(productName, productImage);
+                });
+            }
+
+            if (productModalClose) {
+                productModalClose.addEventListener('click', () => {
+                    closeProductModal();
+                });
+            }
+
+            if (productModal) {
+                productModal.addEventListener('click', (event) => {
+                    if (event.target === productModal) {
+                        closeProductModal();
+                    }
+                });
+            }
 
             // Accordion Logic
             document.addEventListener('click', function(e) {
