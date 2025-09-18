@@ -606,7 +606,8 @@
                 const totalDays = planData.length;
                 const baseProgress = 5;
                 const progressPerDay = (100 - baseProgress) / totalDays;
-                const newProgress = baseProgress + (progressState.completedDays.length * progressPerDay);
+                const calculatedProgress = baseProgress + (progressState.completedDays.length * progressPerDay);
+                const newProgress = Math.min(100, calculatedProgress);
 
                 const progressBar = document.getElementById('mainProgressBar');
                 const progressText = document.getElementById('mainProgressText');
@@ -670,6 +671,11 @@
                 day5: { title: "Тест: День 5", description: "Знання Товару", questions: [
                     { question: "Що обов'язково має бути на харчовій етикетці?", answers: ["Тільки назва", "Назва + ціна", "Назва, склад, виділені алергени, умови зберігання"], correct: 2 },
                     { question: "«Небезпечна зона температур» для продуктів:", answers: ["0–20 °C", "≈5–60 °C", "70–100 °C"], correct: 1 }
+                ]},
+                day6: { title: "Тест: День 6", description: "Залік та готовність до зміни", questions: [
+                    { question: "Яка головна мета практичного \"Заліку-лайт\" шостого дня?", answers: ["Перевірити лише теоретичні знання", "Підтвердити стабільну роботу з касою, сервісом та HACCP", "Вивчити нові товари"], correct: 1 },
+                    { question: "Що демонструє стажер перед допуском до самостійної зміни?", answers: ["Стійке володіння касою, сервісними сценаріями та дотримання FIFO/HACCP", "Лише швидкість пробиття чеків", "Тільки знання законодавства"], correct: 0 },
+                    { question: "Що робити після успішного проходження шостого дня?", answers: ["Одразу закрити зміну без фіскалізації", "Залишити прогрес без змін", "Перейти до самостійної роботи, маючи підтвердження наставника"], correct: 2 }
                 ]}
             };
 
