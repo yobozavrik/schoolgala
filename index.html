@@ -744,7 +744,7 @@
                 document.getElementById('question-text').textContent = question.question;
                 document.getElementById('current-question').textContent = currentQuestion + 1;
                 document.getElementById('total-questions').textContent = currentQuizData.length;
-                document.getElementById('progress-bar').style.width = ((currentQuestion) / currentQuizData.length) * 100 + '%';
+                document.getElementById('progress-bar').style.width = ((currentQuestion + 1) / currentQuizData.length) * 100 + '%';
                 
                 const answersContainer = document.getElementById('answers-container');
                 answersContainer.innerHTML = '';
@@ -807,6 +807,7 @@
                 updateCurrentScore();
                 document.getElementById('quiz-questions').classList.add('hidden');
                 document.getElementById('quiz-results').classList.remove('hidden');
+                document.getElementById('progress-bar').style.width = '100%';
                 document.getElementById('final-score').textContent = score;
                 document.getElementById('max-score').textContent = currentQuizData.length;
                 const resultMessage = document.getElementById('result-message');
