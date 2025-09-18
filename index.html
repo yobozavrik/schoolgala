@@ -99,23 +99,23 @@
                 <h3 class="text-xl font-bold mb-4">Каталог Продукції</h3>
                 <div class="mb-4">
                     <div class="border-b border-gray-200">
-                        <nav class="-mb-px flex space-x-4 overflow-x-auto no-scrollbar" id="productTabsContainer"></nav>
+                        <nav class="-mb-px flex space-x-4 overflow-x-auto no-scrollbar" id="productTabsContainer" role="tablist" aria-label="Категорії продукції"></nav>
                     </div>
                 </div>
-                <div id="productList" class="space-y-3"></div>
+                <div id="productList" class="space-y-3" role="tabpanel" tabindex="0"></div>
             </div>
-            
+
             <!-- Standards Page -->
             <div id="standards-page" class="sub-page">
                 <h3 class="text-xl font-bold mb-4">Стандарти Роботи</h3>
                 <div class="space-y-2">
                     <!-- Accordion Item 1 -->
                     <div class="border border-gray-200 rounded-lg">
-                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold text-gray-800">
+                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold text-gray-800" id="standard-accordion-button-1" aria-expanded="false" aria-controls="standard-accordion-panel-1">
                             <span>1. Гігієна та Санітарія</span>
                             <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
                         </button>
-                        <div class="accordion-content">
+                        <div class="accordion-content" id="standard-accordion-panel-1" role="region" aria-labelledby="standard-accordion-button-1" aria-hidden="true">
                             <div class="p-4 pt-0 text-gray-600">
                                 <ul class="list-disc pl-5 space-y-2">
                                     <li>Обов'язкове миття рук перед початком роботи та після кожної операції.</li>
@@ -128,11 +128,11 @@
                     </div>
                     <!-- Accordion Item 2 -->
                     <div class="border border-gray-200 rounded-lg">
-                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold text-gray-800">
+                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold text-gray-800" id="standard-accordion-button-2" aria-expanded="false" aria-controls="standard-accordion-panel-2">
                             <span>2. Робота з Клієнтами</span>
                             <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
                         </button>
-                        <div class="accordion-content">
+                        <div class="accordion-content" id="standard-accordion-panel-2" role="region" aria-labelledby="standard-accordion-button-2" aria-hidden="true">
                              <div class="p-4 pt-0 text-gray-600">
                                 <ul class="list-disc pl-5 space-y-2">
                                     <li>Завжди вітатися з клієнтом першим.</li>
@@ -145,11 +145,11 @@
                     </div>
                     <!-- Accordion Item 3 -->
                     <div class="border border-gray-200 rounded-lg">
-                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold text-gray-800">
+                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold text-gray-800" id="standard-accordion-button-3" aria-expanded="false" aria-controls="standard-accordion-panel-3">
                             <span>3. Зберігання Продукції</span>
-                             <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
+                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
                         </button>
-                        <div class="accordion-content">
+                        <div class="accordion-content" id="standard-accordion-panel-3" role="region" aria-labelledby="standard-accordion-button-3" aria-hidden="true">
                             <div class="p-4 pt-0 text-gray-600">
                                 <ul class="list-disc pl-5 space-y-2">
                                     <li>Суворе дотримання температурних режимів у холодильниках та морозильних камерах.</li>
@@ -161,11 +161,11 @@
                     </div>
                     <!-- Accordion Item 4 -->
                     <div class="border border-gray-200 rounded-lg">
-                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold text-gray-800">
+                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold text-gray-800" id="standard-accordion-button-4" aria-expanded="false" aria-controls="standard-accordion-panel-4">
                             <span>4. Техніка Безпеки</span>
                             <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
                         </button>
-                        <div class="accordion-content">
+                        <div class="accordion-content" id="standard-accordion-panel-4" role="region" aria-labelledby="standard-accordion-button-4" aria-hidden="true">
                             <div class="p-4 pt-0 text-gray-600">
                                 <ul class="list-disc pl-5 space-y-2">
                                     <li>Обережно поводитись з гострими предметами (ножі, слайсери).</li>
@@ -1163,35 +1163,65 @@
 
             const renderCategoryTabs = (categories) => {
                 const sortedCategories = Object.keys(categories).sort();
-                if (sortedCategories.length === 0) return;
+                if (sortedCategories.length === 0) {
+                    productTabsContainer.innerHTML = '';
+                    return;
+                }
 
                 const tabsHtml = sortedCategories.map((category, index) => {
                     const isActive = index === 0;
                     const activeClasses = 'border-amber-500 text-amber-600';
                     const inactiveClasses = 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300';
-                    return `<button data-category="${category}" class="product-tab whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm ${isActive ? activeClasses : inactiveClasses}">${category}</button>`;
+                    const tabId = `product-tab-${index}`;
+                    return `<button id="${tabId}" type="button" role="tab" aria-selected="${isActive}" tabindex="${isActive ? '0' : '-1'}" aria-controls="productList" data-category="${category}" class="product-tab whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm ${isActive ? activeClasses : inactiveClasses}">${category}</button>`;
                 }).join('');
                 productTabsContainer.innerHTML = tabsHtml;
             };
 
             const productCategories = categorizeProducts(catalogData);
 
+            const setActiveTab = (newTab) => {
+                const tabs = productTabsContainer.querySelectorAll('.product-tab');
+                tabs.forEach(tab => {
+                    const isActive = tab === newTab;
+                    tab.classList.toggle('border-amber-500', isActive);
+                    tab.classList.toggle('text-amber-600', isActive);
+                    tab.classList.toggle('border-transparent', !isActive);
+                    tab.classList.toggle('text-gray-500', !isActive);
+                    tab.classList.toggle('hover:text-gray-700', !isActive);
+                    tab.classList.toggle('hover:border-gray-300', !isActive);
+                    tab.setAttribute('aria-selected', String(isActive));
+                    tab.setAttribute('tabindex', isActive ? '0' : '-1');
+                });
+
+                if (newTab) {
+                    productList.setAttribute('aria-labelledby', newTab.id);
+                    const category = newTab.dataset.category;
+                    if (category) {
+                        renderProducts(category, productCategories);
+                    }
+                }
+            };
+
             const showPage = (pageId) => {
                 mainPage.style.display = 'none';
                 subPages.forEach(page => page.style.display = 'none');
-                
+
                 const activePage = document.getElementById(pageId);
                 if (activePage) {
                     activePage.style.display = 'block';
                     headerTitle.textContent = pageTitles[pageId] || 'Деталі';
                     backButton.classList.remove('invisible');
                 }
-                
+
                 if (pageId === 'products-page') {
                     renderCategoryTabs(productCategories);
-                    const firstCategory = Object.keys(productCategories).sort()[0] || '';
-                    if (firstCategory) {
-                        renderProducts(firstCategory, productCategories);
+                    const initialTab = productTabsContainer.querySelector('.product-tab[aria-selected="true"]') || productTabsContainer.querySelector('.product-tab');
+                    if (initialTab) {
+                        setActiveTab(initialTab);
+                    } else {
+                        productList.removeAttribute('aria-labelledby');
+                        productList.innerHTML = `<p class="text-gray-500">Категорії продукції скоро з'являться.</p>`;
                     }
                 }
             };
@@ -1216,31 +1246,33 @@
                 const targetTab = e.target.closest('.product-tab');
                 if (!targetTab) return;
 
-                productTabsContainer.querySelectorAll('.product-tab').forEach(tab => {
-                    tab.classList.remove('border-amber-500', 'text-amber-600');
-                    tab.classList.add('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
-                });
-                
-                targetTab.classList.add('border-amber-500', 'text-amber-600');
-                targetTab.classList.remove('border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300');
-                
-                renderProducts(targetTab.dataset.category, productCategories);
+                setActiveTab(targetTab);
             });
-            
+
             // Accordion Logic
             document.addEventListener('click', function(e) {
                 const toggle = e.target.closest('.accordion-toggle');
                 if (!toggle) return;
 
-                const content = toggle.nextElementSibling;
+                const contentId = toggle.getAttribute('aria-controls');
+                const content = contentId ? document.getElementById(contentId) : toggle.nextElementSibling;
                 const icon = toggle.querySelector('i');
+                const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+                const newExpandedState = !isExpanded;
 
-                if (content.style.maxHeight) {
-                    content.style.maxHeight = null;
-                    icon.classList.remove('rotate-180');
-                } else {
-                    content.style.maxHeight = content.scrollHeight + "px";
-                    icon.classList.add('rotate-180');
+                toggle.setAttribute('aria-expanded', String(newExpandedState));
+
+                if (content) {
+                    if (newExpandedState) {
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    } else {
+                        content.style.maxHeight = null;
+                    }
+                    content.setAttribute('aria-hidden', String(!newExpandedState));
+                }
+
+                if (icon) {
+                    icon.classList.toggle('rotate-180', newExpandedState);
                 }
             });
 
