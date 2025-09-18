@@ -686,11 +686,12 @@
                     const isCompleted = progressState.completedDays.includes(day);
 
                     const quizInfo = allQuizzes[quizId];
-                    const button = createElement('button', null, { 
-                        'data-quiz-id': quizId, 
-                        'class': 'w-full text-left p-4 rounded-lg font-semibold transition-colors flex justify-between items-center',
-                        'disabled': isLocked
+                    const button = createElement('button', null, {
+                        'data-quiz-id': quizId,
+                        'class': 'w-full text-left p-4 rounded-lg font-semibold transition-colors flex justify-between items-center'
                     });
+
+                    button.disabled = isLocked;
                     
                     const textDiv = createElement('div');
                     const title = createElement('span', quizInfo.title, {'class': 'block text-lg'});
