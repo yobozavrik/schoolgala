@@ -113,6 +113,10 @@
                                 <img id="productModalImage" src="" alt="" class="h-60 w-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x400/FDE68A/4B5563?text=Фото';">
                             </div>
                             <h4 id="productModalTitle" class="text-lg font-semibold text-gray-800"></h4>
+                            <a id="productModalLink" href="#" target="_blank" rel="noopener noreferrer" aria-disabled="true" class="hidden inline-flex items-center gap-2 rounded-lg bg-amber-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-amber-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2">
+                                <span>Перейти в каталог</span>
+                                <i data-lucide="external-link" class="h-4 w-4"></i>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -1063,7 +1067,7 @@
           {
             "name": "Морозиво Снікерс - Галя Балувана",
             "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/84252890.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/morozyvo-polunyczya/"
+            "url": "https://galya-baluwana.lviv.ua/product/morozyvo-snikers/"
           },
           {
             "name": "Морозиво з Зеленим чаєм та Бергамотом - Галя Балувана",
@@ -1379,6 +1383,7 @@
             const productModalImage = document.getElementById('productModalImage');
             const productModalTitle = document.getElementById('productModalTitle');
             const productModalClose = document.getElementById('productModalClose');
+            const productModalLink = document.getElementById('productModalLink');
             const modalPlaceholderImage = 'https://placehold.co/400x400/FDE68A/4B5563?text=Фото';
             
             const pageTitles = {
@@ -1470,9 +1475,10 @@
                     const imageUrl = product.image || '';
                     const dataImage = escapeAttribute(imageUrl);
                     const dataName = escapeAttribute(displayName);
+                    const dataUrl = escapeAttribute(product.url || '');
                     const ariaLabel = escapeAttribute(`Переглянути ${displayName}`);
                     return `
-                        <button type="button" class="product-card flex w-full items-start bg-white p-3 rounded-lg shadow-sm border text-left transition hover:border-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2" data-product-image="${dataImage}" data-product-name="${dataName}" aria-label="${ariaLabel}">
+                        <button type="button" class="product-card flex w-full items-start bg-white p-3 rounded-lg shadow-sm border text-left transition hover:border-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2" data-product-image="${dataImage}" data-product-name="${dataName}" data-product-url="${dataUrl}" aria-label="${ariaLabel}">
                             <img src="${dataImage}" alt="${dataName}" class="w-16 h-16 md:w-20 md:h-20 rounded-md mr-4 object-cover flex-shrink-0" onerror="${onErrorScript}">
                             <div>
                                 <h4 class="font-bold text-base md:text-lg">${displayName}</h4>
@@ -1483,7 +1489,7 @@
                 productList.innerHTML = productsHtml;
             };
 
-            const openProductModal = (name = '', imageUrl = '') => {
+            const openProductModal = (name = '', imageUrl = '', productUrl = '') => {
                 if (!productModal || !productModalImage || !productModalTitle) {
                     return;
                 }
@@ -1494,10 +1500,23 @@
                 const finalName = trimmedName || 'Наш продукт';
                 const trimmedImage = (imageUrl || '').trim();
                 const finalImage = trimmedImage || modalPlaceholderImage;
+                const trimmedUrl = (productUrl || '').trim();
+                const hasUrl = trimmedUrl.length > 0;
 
                 productModalImage.src = finalImage;
                 productModalImage.alt = finalName;
                 productModalTitle.textContent = finalName;
+                if (productModalLink) {
+                    if (hasUrl) {
+                        productModalLink.href = trimmedUrl;
+                        productModalLink.classList.remove('hidden');
+                        productModalLink.setAttribute('aria-disabled', 'false');
+                    } else {
+                        productModalLink.href = '#';
+                        productModalLink.classList.add('hidden');
+                        productModalLink.setAttribute('aria-disabled', 'true');
+                    }
+                }
                 productModal.classList.remove('hidden');
                 productModal.classList.add('flex');
                 productModal.setAttribute('aria-hidden', 'false');
@@ -1520,6 +1539,11 @@
                 productModalImage.src = '';
                 productModalImage.alt = '';
                 productModalTitle.textContent = '';
+                if (productModalLink) {
+                    productModalLink.href = '#';
+                    productModalLink.classList.add('hidden');
+                    productModalLink.setAttribute('aria-disabled', 'true');
+                }
 
                 document.removeEventListener('keydown', handleEscapeKey);
 
@@ -1628,8 +1652,8 @@
                     const productCard = event.target.closest('.product-card');
                     if (!productCard) return;
 
-                    const { productName = '', productImage = '' } = productCard.dataset;
-                    openProductModal(productName, productImage);
+                    const { productName = '', productImage = '', productUrl = '' } = productCard.dataset;
+                    openProductModal(productName, productImage, productUrl);
                 });
             }
 
