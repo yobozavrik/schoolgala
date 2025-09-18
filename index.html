@@ -210,853 +210,6 @@
     <script>
         lucide.createIcons();
         
-        const catalogData = [
-          {
-            "name": "Бендерики курка сир - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/09/zobrazhennya_viber_2025-09-07_14-01-30-569.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/benderyky-kurka-syr/"
-          },
-          {
-            "name": "Піца Сирна (заморожена/гаряча) - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/frame-5.png",
-            "url": "https://galya-baluwana.lviv.ua/product/picza-syrna-zamorozhena-garyacha/"
-          },
-          {
-            "name": "Піца &quot;Мисливська&quot; (заморожена/гаряча) - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/frame-5-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/picza-myslyvska-zamorozhena-garyacha/"
-          },
-          {
-            "name": "Піца М&#039;ясна (заморожена/гаряча) - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/dsc_0798-min.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/picza-myasna-zamorozhena-garyacha/"
-          },
-          {
-            "name": "Піца Грибна (заморожена/гаряча) - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/frame-3-4.png",
-            "url": "https://galya-baluwana.lviv.ua/product/picza-grybna-zamorozhena-garyacha/"
-          },
-          {
-            "name": "Піца &quot;Гавайська&quot; (заморожена/гаряча) - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/009a9946-c167-4c67-9.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/picza-gavajska-zamorozhena-garyacha/"
-          },
-          {
-            "name": "Крем Чіз до Сінабонів - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/13488184.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/krem-chiz-do-sinaboniv/"
-          },
-          {
-            "name": "Карамель до Сінабонів - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/21751715.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/karamel-do-sinaboniv/"
-          },
-          {
-            "name": "Хінкалі з телятиною - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/dsc_0366.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/hinkali-z-telyatynoyu/"
-          },
-          {
-            "name": "Картопляні зрази з грибами - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-26.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kartoplyani-zrazy-z-grybamy/"
-          },
-          {
-            "name": "Чебурек з м&#039;ясом - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-87.png",
-            "url": "https://galya-baluwana.lviv.ua/product/cheburek-z-myasom/"
-          },
-          {
-            "name": "Чебурек з сиром та зеленню - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-89.png",
-            "url": "https://galya-baluwana.lviv.ua/product/cheburek-z-syrom-ta-zelennyu/"
-          },
-          {
-            "name": "Чебурек кримський - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-86.png",
-            "url": "https://galya-baluwana.lviv.ua/product/cheburek-krymskyj/"
-          },
-          {
-            "name": "Сінабони - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/69913057.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/sinabony/"
-          },
-          {
-            "name": "Крученики зі свинини з грибами - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/frame-21.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kruchenyky-zi-svynyny-z-grybamy/"
-          },
-          {
-            "name": "Нагетси курячі - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/frame-2.png",
-            "url": "https://galya-baluwana.lviv.ua/product/nagetsy-kuryachi/"
-          },
-          {
-            "name": "Паштет з індичої печінки &quot;від шефа&quot; - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/frame-14-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/pashtet-z-indychoyi-pechinky-vid-shefa/"
-          },
-          {
-            "name": "Сирні палички - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/2-min_2.jpg-1.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/syrni-palychky/"
-          },
-          {
-            "name": "Скумбрія фарширована - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/1.jpg-3.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/skumbriya-farshyrovana/"
-          },
-          {
-            "name": "Торт печінковий (Коржі) - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/frame-16.png",
-            "url": "https://galya-baluwana.lviv.ua/product/tort-pechinkovyj-korzhi/"
-          },
-          {
-            "name": "Фаршировані курячі бедра - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/2-min_3.jpg-1.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/farshyrovani-kuryachi-bedra/"
-          },
-          {
-            "name": "Сирники - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-84.png",
-            "url": "https://galya-baluwana.lviv.ua/product/syrnyky/"
-          },
-          {
-            "name": "Сирники з бананом - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/89224722.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/syrnyky-z-bananom/"
-          },
-          {
-            "name": "Сирники з бринзою та зеленню - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/photo.jpeg-1.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/syrnyky-z-brynzoyu-ta-zelennyu/"
-          },
-          {
-            "name": "Сирники з родзинками - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-80.png",
-            "url": "https://galya-baluwana.lviv.ua/product/syrnyky-z-rodzynkamy/"
-          },
-          {
-            "name": "Сирники з шоколадними дропсами - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-85.png",
-            "url": "https://galya-baluwana.lviv.ua/product/syrnyky-z-shokoladnymy-dropsamy/"
-          },
-          {
-            "name": "Пиріг з вишнями та маком - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-25.png",
-            "url": "https://galya-baluwana.lviv.ua/product/pyrig-z-vyshnyamy-ta-makom/"
-          },
-          {
-            "name": "Хачапурі з сиром - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/khachapuri-g8e3df0f8.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/hachapuri-z-syrom/"
-          },
-          {
-            "name": "Пельмені &quot;Три м&#039;яса&quot; - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/dsc_0156-min.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/pelmeni-try-myasa/"
-          },
-          {
-            "name": "Пельмені дитячі “Малятко” - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-74.png",
-            "url": "https://galya-baluwana.lviv.ua/product/pelmeni-dytyachi-malyatko/"
-          },
-          {
-            "name": "Пельмені з бараниною - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/jpeg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/pelmeni-kozaczki/"
-          },
-          {
-            "name": "Пельмені з індиком - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/34233181.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/pelmeni-z-indykom/"
-          },
-          {
-            "name": "Пельмені з куркою на кукурудзяному борошні - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-72.png",
-            "url": "https://galya-baluwana.lviv.ua/product/pelmeni-z-kurkoyu-na-kukurudzyanomu-boroshni/"
-          },
-          {
-            "name": "Пельмені з телятиною - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-75.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kopiyapelmeni-zi-svynyny-ta-yalovychyny/"
-          },
-          {
-            "name": "Пельмені зі свинини - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-77.png",
-            "url": "https://galya-baluwana.lviv.ua/product/pelmeni-zi-svynyny/"
-          },
-          {
-            "name": "Пельмені зі свинини та курятини - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/dsc_0250-min.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/pelmeni-zi-svynyny-ta-kuryatyny/"
-          },
-          {
-            "name": "Пельмені зі свинини та яловичини - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-76.png",
-            "url": "https://galya-baluwana.lviv.ua/product/pelmeni-zi-svynyny-ta-yalovychyny/"
-          },
-          {
-            "name": "Хінкалі з м&#039;ясом - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/dsc_0372.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/hinkali-z-myasom/"
-          },
-          {
-            "name": "Хінкалі шпинатні з сиром - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/photo.jpeg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/hinkali-shpynatni-z-syrom/"
-          },
-          {
-            "name": "Бендерики - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/18.png",
-            "url": "https://galya-baluwana.lviv.ua/product/benderyky/"
-          },
-          {
-            "name": "Бендерики з сиром - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/19.png",
-            "url": "https://galya-baluwana.lviv.ua/product/benderykycheese/"
-          },
-          {
-            "name": "Млинці з бананом та згущеним молоком - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/1-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/mlynczi-z-bananom-ta-zgushhenym-molokom/"
-          },
-          {
-            "name": "Млинці з бринзою та зеленню - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/2-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/mlynczi-z-brynzoyu-ta-zelennyu/"
-          },
-          {
-            "name": "Млинці з карамелізованим яблуком - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/13.png",
-            "url": "https://galya-baluwana.lviv.ua/product/mlynczi-z-karamelizovanym-yablukom/"
-          },
-          {
-            "name": "Млинці з куркою на кукурудзяному борошні - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/4-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/https-galya-baluwana-lviv-ua-mlynci-tproduct-429647187-834366079791-mlints-z-kurkoyu-na-kukurudzyanomu-boros/"
-          },
-          {
-            "name": "Млинці з куркою та грибами - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/3-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/mlynczi-z-kurkoyu-ta-grybamy/"
-          },
-          {
-            "name": "Млинці з лівером - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/5-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/mlynczi-z-liverom/"
-          },
-          {
-            "name": "Млинці з лососем та сиром - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/6-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/mlynczi-z-lososem-ta-syrom/"
-          },
-          {
-            "name": "Млинці з лососем та шпинатом - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/7-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/mlynczi-z-lososem-ta-shpynatom/"
-          },
-          {
-            "name": "Млинці з м&#039;ясом - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/9-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/mlynczi-z-myasom-2/"
-          },
-          {
-            "name": "Млинці з маком та вишнею - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/8-2.png",
-            "url": "https://galya-baluwana.lviv.ua/product/mlynczi-z-makom-ta-vyshneyu/"
-          },
-          {
-            "name": "Млинці з сиром та полуницею - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/10-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kopiyamlynczi-z-myasom/"
-          },
-          {
-            "name": "Млинці з сиром та чорницею - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/12-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/mlynczi-z-syrom-ta-chornyczeyu/"
-          },
-          {
-            "name": "Млинці з солодким сиром - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/11-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/mlynczi-z-solodkym-syrom/"
-          },
-          {
-            "name": "Млинці з шинкою та голландським сиром - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/17.png",
-            "url": "https://galya-baluwana.lviv.ua/product/mlynczi-z-shynkoyu-ta-gollandskym-syrom/"
-          },
-          {
-            "name": "Млинці цільнозернові з індичкою - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/16.png",
-            "url": "https://galya-baluwana.lviv.ua/product/mlynczi-czilnozernovi-z-indychkoyu/"
-          },
-          {
-            "name": "Млинці шоколадні з сиром, бананом та шоколадно-горіховим кремом - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/14.png",
-            "url": "https://galya-baluwana.lviv.ua/product/mlynczi-shokoladni-z-syrom-bananom-ta-shokoladno-gorihovym-kremom/"
-          },
-          {
-            "name": "Млинці шпинатні з крем сиром - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/4.png",
-            "url": "https://galya-baluwana.lviv.ua/product/mlynczi-shpynatni-z-krem-syrom/"
-          },
-          {
-            "name": "Котлети з курятини - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-60.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kotlety-z-kuryatyny/"
-          },
-          {
-            "name": "Тефтельки курячі в соусі Бешамель - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-48.png",
-            "url": "https://galya-baluwana.lviv.ua/product/teftelky-kuryachi-v-sousi-beshamel/"
-          },
-          {
-            "name": "Гречаники - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-57.png",
-            "url": "https://galya-baluwana.lviv.ua/product/grechanyky/"
-          },
-          {
-            "name": "Котлета &quot;Бургерна&quot; - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-69.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kotleta-burgerna/"
-          },
-          {
-            "name": "Котлета &quot;Бургерна&quot; з м&#039;яса індика - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-67.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kotleta-burgerna-z-myasa-indyka/"
-          },
-          {
-            "name": "Котлети &quot;Кордон Блю&quot; - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-63.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kotlety-kordon-blyu/"
-          },
-          {
-            "name": "Котлети з риби - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-54.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kotlety-z-ryby/"
-          },
-          {
-            "name": "Котлети зі свинини - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-51.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kotlety-zi-svynyny/"
-          },
-          {
-            "name": "Котлети зі свинини та яловичини - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-50.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kotlety-zi-svynyny-ta-yalovychyny/"
-          },
-          {
-            "name": "Котлети індичі - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-53.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kotlety-indychi/"
-          },
-          {
-            "name": "Тефтелі - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/71445be9-3104-4ad3-b.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/tefteli/"
-          },
-          {
-            "name": "Фрикадельки &quot;Дитячі на перепелиних яйцях&quot; - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/3-min.jpg-3.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/frykadelky-dytyachi-na-perepelynyh-yajczyah/"
-          },
-          {
-            "name": "Фрикадельки індичі - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/1-min.jpg-3.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/frykadelky-indychi/"
-          },
-          {
-            "name": "Ковбаса домашня - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-71.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kovbasa-domashnya/"
-          },
-          {
-            "name": "Ковбаски гриль курячі - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/a8b4567c-f042-4b7f-8.jpg.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/kovbasky-gryl-kuryachi/"
-          },
-          {
-            "name": "Голубці з грибами - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/4-min.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/golubczi-z-grybamy/"
-          },
-          {
-            "name": "Голубці з м&#039;ясом - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-47.png",
-            "url": "https://galya-baluwana.lviv.ua/product/golubczi-z-myasom/"
-          },
-          {
-            "name": "Голубці з телятиною та яловичиною - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/9a7e4cbe-4989-45a4-9.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/golubczi-z-telyatynoyu-ta-yalovychynoyu/"
-          },
-          {
-            "name": "Перець фарширований з грибами - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/193da09f-d574-4089-a.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/perecz-farshyrovanyj-z-grybamy/"
-          },
-          {
-            "name": "Перець фарширований з м&#039;ясом - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-46.png",
-            "url": "https://galya-baluwana.lviv.ua/product/perecz-farshyrovanyj-z-myasom/"
-          },
-          {
-            "name": "Вареники з вишнею - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/69368851.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/varenyky-z-vyshneyu/"
-          },
-          {
-            "name": "Вареники з капустою - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/dsc_0943.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/varenyky-z-kapustoyu/"
-          },
-          {
-            "name": "Вареники з капустою та білими грибами - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-33.png",
-            "url": "https://galya-baluwana.lviv.ua/product/varenyky-z-kapustoyu-ta-bilymy-grybamy/"
-          },
-          {
-            "name": "Вареники з картоплею - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/viber_2020-07-12_15.jpg.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/varenyky-z-kartopleyu/"
-          },
-          {
-            "name": "Вареники з картоплею і білими грибами - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-40.png",
-            "url": "https://galya-baluwana.lviv.ua/product/varenyky-z-kartopleyu-i-bilymy-grybamy/"
-          },
-          {
-            "name": "Вареники з картоплею та вершковим маслом - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/86365182.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/varenyky-z-kartopleyu-ta-vershkovym-maslom/"
-          },
-          {
-            "name": "Вареники з картоплею та грибами - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-39.png",
-            "url": "https://galya-baluwana.lviv.ua/product/varenyky-z-kartopleyu-ta-grybamy/"
-          },
-          {
-            "name": "Вареники з картоплею та сиром - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-34.png",
-            "url": "https://galya-baluwana.lviv.ua/product/varenyky-z-kartopleyu-ta-syrom/"
-          },
-          {
-            "name": "Вареники з лівером - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-32.png",
-            "url": "https://galya-baluwana.lviv.ua/product/varenyky-z-liverom/"
-          },
-          {
-            "name": "Вареники з м&#039;ясом - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/29056900.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/varenyky-z-myasom/"
-          },
-          {
-            "name": "Вареники з солодким сиром - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-42.png",
-            "url": "https://galya-baluwana.lviv.ua/product/varenyky-z-solodkym-syrom/"
-          },
-          {
-            "name": "Вареники з солоним сиром - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/dsc_1039_1-min.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/varenyky-z-solonym-syrom/"
-          },
-          {
-            "name": "Вареники з чорницею - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-31.png",
-            "url": "https://galya-baluwana.lviv.ua/product/varenyky-z-chornyczeyu/"
-          },
-          {
-            "name": "Вареники зі шпинатом та солоним сиром - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-41.png",
-            "url": "https://galya-baluwana.lviv.ua/product/varenyky-zi-shpynatom-ta-solonym-syrom/"
-          },
-          {
-            "name": "Ліниві вареники солодкі - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/46904837.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/linyvi-varenyky-solodki/"
-          },
-          {
-            "name": "Картопляні зрази з лівером - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/04bfc8d5-202e-4159-a.jpg.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/kartoplyani-zrazy-z-liverom/"
-          },
-          {
-            "name": "Картопляні зрази з м&#039;ясом - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/frame-27.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kartoplyani-zrazy-z-myasom/"
-          },
-          {
-            "name": "Картопляні зрази з капустою - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/06/88988736.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/kartoplyani-zrazy-z-kapustoyu/"
-          },
-          {
-            "name": "Кіш з куркою та овочами - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/frame-3-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kish-z-kurkoyu-ta-ovochamy/"
-          },
-          {
-            "name": "Кіш з лососем, шпинатом та помідорами - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/frame-4.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kish-z-lososem-shpynatom-ta-pomidoramy/"
-          },
-          {
-            "name": "Лазанья з яловичиною - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/frame-8.png",
-            "url": "https://galya-baluwana.lviv.ua/product/lazanya-z-yalovychynoyu/"
-          },
-          {
-            "name": "Лазанья овочева - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/dsc_0798_1-min.png.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/lazanya-ovocheva/"
-          },
-          {
-            "name": "Лазанья зі свинини - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/frame-6.png",
-            "url": "https://galya-baluwana.lviv.ua/product/lazanya-zi-svynyny/"
-          },
-          {
-            "name": "Лазанья з куркою - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/frame-7.png",
-            "url": "https://galya-baluwana.lviv.ua/product/lazanya-z-kurkoyu/"
-          },
-          {
-            "name": "Бограч - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/da550585-f324-4767-a091-9af89174ee65_image-removebg-preview-e1754494729283.png",
-            "url": "https://galya-baluwana.lviv.ua/product/bograch/"
-          },
-          {
-            "name": "Крем - Суп шпинатний з куркою - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/chatgpt_image_6_serp._2025_r.__19_08_57-removebg-preview.png",
-            "url": "https://galya-baluwana.lviv.ua/product/krem-sup-shpynatnyj-z-kurkoyu/"
-          },
-          {
-            "name": "Банош - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/photo_2025-08-06_17-58-17-removebg-preview-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/banosh/"
-          },
-          {
-            "name": "Гарбузовий Крем - Суп - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8586-removebg-preview-e1754374664581.png",
-            "url": "https://galya-baluwana.lviv.ua/product/garbuzovyj-krem-sup/"
-          },
-          {
-            "name": "Крем - суп грибний - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/chatgpt_image_6_serp._2025_r.__18_53_35-removebg-preview-e1754496036439.png",
-            "url": "https://galya-baluwana.lviv.ua/product/krem-sup-grybnyj/"
-          },
-          {
-            "name": "Куліш - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_5389-removebg-preview-e1754377567454.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kulish/"
-          },
-          {
-            "name": "Морозиво Снікерс - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/84252890.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/morozyvo-polunyczya/"
-          },
-          {
-            "name": "Морозиво з Зеленим чаєм та Бергамотом - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/71144348.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/morozyvo-z-zelenym-chayem-ta-bergamotom/"
-          },
-          {
-            "name": "Морозиво Шварцвальдська Вишня - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/33091329.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/morozyvo-shvarczvaldska-vyshnya/"
-          },
-          {
-            "name": "Морозиво авторське з Горгондзолою - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/41878741.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/morozyvo-avtorske-z-gorgondzoloyu/"
-          },
-          {
-            "name": "Морозиво Солона Карамель - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/19066669.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/morozyvo-solona-karamel/"
-          },
-          {
-            "name": "Морозиво Пломбір - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/72336046.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/morozyvo-plombir/"
-          },
-          {
-            "name": "Морозиво Вишня Амарена - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/41988602.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/morozyvo-vyshnya-amarena/"
-          },
-          {
-            "name": "Морозиво Мокко - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/31062616.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/morozyvo-mokko/"
-          },
-          {
-            "name": "Морозиво Шоколадне - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/14695558.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/morozyvo-shokoladne/"
-          },
-          {
-            "name": "Морозиво Чорниця - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/34357909.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/morozyvo-chornyczya/"
-          },
-          {
-            "name": "Морозиво М&#039;ятне з чорним шоколадом - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/49325658.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/morozyvo-mango/"
-          },
-          {
-            "name": "Морозиво Страчателла - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/22305916.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/morozyvo-strachatella/"
-          },
-          {
-            "name": "Морозиво Горіхове - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/67859081.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/morozyvo-gorihove/"
-          },
-          {
-            "name": "Локшина Соба з яловичиною - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8566-removebg-preview-e1754372145496.png",
-            "url": "https://galya-baluwana.lviv.ua/product/lokshyna-soba-z-yalovychynoyu/"
-          },
-          {
-            "name": "Картопляне пʼюре з курячими фрикадельками - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8593-removebg-preview-e1754371976898.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kartoplyane-p%ca%bcyure-z-kuryachymy-frykadelkamy/"
-          },
-          {
-            "name": "Локшина Удон з куркою - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8576-removebg-preview-e1754372361789.png",
-            "url": "https://galya-baluwana.lviv.ua/product/lokshyna-udon-z-kurkoyu/"
-          },
-          {
-            "name": "Качина ніжка Конфі - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8575-removebg-preview-e1754372798748.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kachyna-nizhka-konfi/"
-          },
-          {
-            "name": "Паста Тоскана - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8574-removebg-preview-e1754373062497.png",
-            "url": "https://galya-baluwana.lviv.ua/product/pasta-toskana/"
-          },
-          {
-            "name": "Сирний Крем - Суп - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8573-removebg-preview-e1754373272609.png",
-            "url": "https://galya-baluwana.lviv.ua/product/syrnyj-krem-sup/"
-          },
-          {
-            "name": "Рвана свинина та кускус з овочами - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8572-removebg-preview-e1754373495495.png",
-            "url": "https://galya-baluwana.lviv.ua/product/rvana-svynyna-ta-kuskus-z-ovochamy/"
-          },
-          {
-            "name": "Паста Карбонара - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8571-removebg-preview-e1754373662238.png",
-            "url": "https://galya-baluwana.lviv.ua/product/pasta-karbonara/"
-          },
-          {
-            "name": "Суп Том Ям - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8570-removebg-preview-e1754373863914.png",
-            "url": "https://galya-baluwana.lviv.ua/product/sup-tom-yam/"
-          },
-          {
-            "name": "Рулет індичий з курагою та бататовим пʼюре - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8568-removebg-preview-e1754374220595.png",
-            "url": "https://galya-baluwana.lviv.ua/product/rulet-indychyj-z-kuragoyu-ta-batatovym-p%ca%bcyure/"
-          },
-          {
-            "name": "Ребра BBQ з печеною картоплею - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8584-removebg-preview-e1754374446615.png",
-            "url": "https://galya-baluwana.lviv.ua/product/rebra-bbq-z-pechenoyu-kartopleyu/"
-          },
-          {
-            "name": "Паширована Дорадо - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8583-removebg-preview-e1754374801420.png",
-            "url": "https://galya-baluwana.lviv.ua/product/pashyrovana-dorado/"
-          },
-          {
-            "name": "Свинний ошийок з булгуром та арахісом - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8582-removebg-preview-e1754375012567.png",
-            "url": "https://galya-baluwana.lviv.ua/product/svynnyj-oshyjok-z-bulgurom-ta-arahisom/"
-          },
-          {
-            "name": "Картоплянн пюре з курячою ніжкою - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8581-removebg-preview-e1754375194920.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kartoplyann-pyure-z-kuryachoyu-nizhkoyu/"
-          },
-          {
-            "name": "Гречка з курячим Фрікасе - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8580-removebg-preview-e1754375360580.png",
-            "url": "https://galya-baluwana.lviv.ua/product/grechka-z-kuryachym-frikase/"
-          },
-          {
-            "name": "Куряче стегно в солодко - гострому соусі - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8579-removebg-preview-e1754375530271.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kuryache-stegno-v-solodko-gostromu-sousi/"
-          },
-          {
-            "name": "Рибний галантин з овочами та рисом - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_8577-removebg-preview-e1754376127167.png",
-            "url": "https://galya-baluwana.lviv.ua/product/rybnyj-galantyn-z-ovochamy-ta-rysom/"
-          },
-          {
-            "name": "Шпинатна паста з Лососем - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_5386.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/shpynatna-pasta-z-lososem/"
-          },
-          {
-            "name": "Птітім з хеком та соусом Шампань - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_5402.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/ptitim-z-hekom-ta-sousom-shampan/"
-          },
-          {
-            "name": "Палента з кролячою ніжкою - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_5395-removebg-preview-1-e1754377144601.png",
-            "url": "https://galya-baluwana.lviv.ua/product/palenta-z-krolyachoyu-nizhkoyu/"
-          },
-          {
-            "name": "Кебаб з овочами гриль - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_5393-removebg-preview-1-e1754377281178.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kebab-z-ovochamy-gryl/"
-          },
-          {
-            "name": "Бефстроганов з гречкою - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_5391-removebg-preview-e1754377411627.png",
-            "url": "https://galya-baluwana.lviv.ua/product/befstroganov-z-grechkoyu/"
-          },
-          {
-            "name": "Рісіні з кролячими фрикадельками - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_5387-removebg-preview-e1754377749977.png",
-            "url": "https://galya-baluwana.lviv.ua/product/risini-z-krolyachymy-frykadelkamy/"
-          },
-          {
-            "name": "Жульєн з картопляним пʼюре - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_5384-removebg-preview-e1754377885745.png",
-            "url": "https://galya-baluwana.lviv.ua/product/zhulyen-z-kartoplyanym-p%ca%bcyure/"
-          },
-          {
-            "name": "Солянка - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/photo_2025-05-20_15-47-29-removebg-preview-e1754378005844.png",
-            "url": "https://galya-baluwana.lviv.ua/product/solyanka/"
-          },
-          {
-            "name": "Окунь з овочами на пару - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/08/img_5397-removebg-preview-1-e1754376960680.png",
-            "url": "https://galya-baluwana.lviv.ua/product/okun-z-ovochamy-na-paru/"
-          },
-          {
-            "name": "Хрін &quot;Забіяка&quot; 200г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/62574737.png",
-            "url": "https://galya-baluwana.lviv.ua/product/hrin-zabiyaka-200g/"
-          },
-          {
-            "name": "Соус м&#039;ясний Болоньєзе &quot;Забіяка&quot; 330г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/52998485.jpg.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/sous-myasnyj-bolonyeze-zabiyaka-330g/"
-          },
-          {
-            "name": "Асорті овочеве &quot;Забіяка&quot; 480г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/61230526.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/asorti-ovocheve-zabiyaka-480g/"
-          },
-          {
-            "name": "Паштет печінковий з яловичини &quot;Забіяка&quot; 300г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/42513973.png",
-            "url": "https://galya-baluwana.lviv.ua/product/pashtet-pechinkovyj-z-yalovychyny-zabiyaka-300g/"
-          },
-          {
-            "name": "Томати мариновані &quot;Забіяка&quot; 680г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/67506892-1.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/tomaty-marynovani-zabiyaka-680g/"
-          },
-          {
-            "name": "Індик тушкований &quot;Забіяка&quot; 420г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/51196562.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/indyk-tushkovanyj-zabiyaka-420g/"
-          },
-          {
-            "name": "Кабачки мариновані &quot;Забіяка&quot; 650г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/71027796.png",
-            "url": "https://galya-baluwana.lviv.ua/product/kabachky-marynovani-zabiyaka-650g/"
-          },
-          {
-            "name": "М&#039;ясний соус з курятиною Теріякі &quot;Забіяка&quot; 330г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/50268289.png",
-            "url": "https://galya-baluwana.lviv.ua/product/myasnyj-sous-z-kuryatynoyu-teriyaki-zabiyaka-330g/"
-          },
-          {
-            "name": "М&#039;ясний соус з курятиною Карі &quot;Забіяка&quot; 330г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/79719769.png",
-            "url": "https://galya-baluwana.lviv.ua/product/myasnyj-sous-z-kuryatynoyu-kari-zabiyaka-330g/"
-          },
-          {
-            "name": "Перець солодкий маринований &quot;Забіяка&quot; 500г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/52604444.png",
-            "url": "https://galya-baluwana.lviv.ua/product/perecz-solodkyj-marynovanyj-zabiyaka-500g/"
-          },
-          {
-            "name": "Огірки мариновані &quot;Забіяка&quot; 680г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/64592586.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/ogirky-marynovani-zabiyaka-680g/"
-          },
-          {
-            "name": "Томати печені з базиліком &quot;Забіяка&quot; 300г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/35295513.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/tomaty-pecheni-z-bazylikom-zabiyaka-300g/"
-          },
-          {
-            "name": "Пікулі з огірків медові &quot;Забіяка&quot; 450г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/86755493.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/pikuli-z-ogirkiv-medovi-zabiyaka-450g/"
-          },
-          {
-            "name": "Соус Ткемалі &quot;Забіяка&quot; 200г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/73919459.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/sous-tkemali-zabiyaka-200g/"
-          },
-          {
-            "name": "Ікра кабачкова &quot;Забіяка&quot; 450г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/24889049.png.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/ikra-kabachkova-zabiyaka-450g/"
-          },
-          {
-            "name": "М&#039;ясо курчат шинкове &quot;Забіяка&quot; 500г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/43471698.jpg",
-            "url": "https://galya-baluwana.lviv.ua/product/myaso-kurchat-shynkove-zabiyaka-500g/"
-          },
-          {
-            "name": "Шашлик зі свинини - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/frame-1.png",
-            "url": "https://galya-baluwana.lviv.ua/product/shashlyk-zi-svynyny/"
-          },
-          {
-            "name": "Овочева Суміш &quot;Мексиканська&quot; - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/60817415.jpg-1.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/ovocheva-sumish-meksykanska/"
-          },
-          {
-            "name": "Овочева Суміш &quot;Царська&quot; - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/54871042.png.webp",
-            "url": "https://galya-baluwana.lviv.ua/product/ovocheva-sumish-czarska/"
-          },
-          {
-            "name": "Соус до шашлика Солодкий Чилі &quot;Забіяка&quot; 200г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/14373507.png",
-            "url": "https://galya-baluwana.lviv.ua/product/sous-do-shashlyka-solodkyj-chyli-zabiyaka-200g/"
-          },
-          {
-            "name": "Паштет По - Домашньому &quot;Забіяка&quot; 300г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/15281596.png",
-            "url": "https://galya-baluwana.lviv.ua/product/pashtet-po-domashnomu-zabiyaka-300g/"
-          },
-          {
-            "name": "Аджика &quot;Забіяка&quot; 300г - Галя Балувана",
-            "image": "https://galya-baluwana.lviv.ua/wp-content/uploads/2025/07/95925403.png",
-            "url": "https://galya-baluwana.lviv.ua/product/adzhyka-zabiyaka-300g/"
-          }
-        ];
         
         document.addEventListener('DOMContentLoaded', () => {
             const mainPage = document.getElementById('main-page');
@@ -1066,6 +219,7 @@
             const headerTitle = document.getElementById('headerTitle');
             const productTabsContainer = document.getElementById('productTabsContainer');
             const productList = document.getElementById('productList');
+            const productsPage = document.getElementById('products-page');
             
             const pageTitles = {
                 'products-page': 'Наша Продукція',
@@ -1074,6 +228,35 @@
                 'quiz-page': 'Перевірка Знань',
                 'contacts-page': 'Корисні Контакти',
             };
+
+            const notificationContainer = document.createElement('div');
+            notificationContainer.id = 'catalogNotification';
+            notificationContainer.className = 'hidden mb-4 rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-700';
+            notificationContainer.setAttribute('role', 'alert');
+            notificationContainer.setAttribute('aria-live', 'assertive');
+            const tabsWrapper = productsPage.querySelector('.mb-4');
+            if (tabsWrapper) {
+                productsPage.insertBefore(notificationContainer, tabsWrapper);
+            } else {
+                productsPage.appendChild(notificationContainer);
+            }
+
+            const showNotification = (message) => {
+                notificationContainer.textContent = message;
+                notificationContainer.classList.remove('hidden');
+            };
+
+            const hideNotification = () => {
+                notificationContainer.textContent = '';
+                notificationContainer.classList.add('hidden');
+            };
+
+            const setLoadingState = () => {
+                productTabsContainer.innerHTML = '';
+                productList.innerHTML = `<p class="text-gray-500">Завантаження каталогу...</p>`;
+            };
+
+            let productCategories = {};
 
             const categorizeProducts = (catalog) => {
                 const keywords = [
@@ -1148,7 +331,10 @@
 
             const renderCategoryTabs = (categories) => {
                 const sortedCategories = Object.keys(categories).sort();
-                if (sortedCategories.length === 0) return;
+                if (sortedCategories.length === 0) {
+                    productTabsContainer.innerHTML = '';
+                    return;
+                }
 
                 const tabsHtml = sortedCategories.map((category, index) => {
                     const isActive = index === 0;
@@ -1159,12 +345,10 @@
                 productTabsContainer.innerHTML = tabsHtml;
             };
 
-            const productCategories = categorizeProducts(catalogData);
-
             const showPage = (pageId) => {
                 mainPage.style.display = 'none';
                 subPages.forEach(page => page.style.display = 'none');
-                
+
                 const activePage = document.getElementById(pageId);
                 if (activePage) {
                     activePage.style.display = 'block';
@@ -1173,10 +357,14 @@
                 }
                 
                 if (pageId === 'products-page') {
-                    renderCategoryTabs(productCategories);
-                    const firstCategory = Object.keys(productCategories).sort()[0] || '';
-                    if (firstCategory) {
-                        renderProducts(firstCategory, productCategories);
+                    if (Object.keys(productCategories).length > 0) {
+                        renderCategoryTabs(productCategories);
+                        const firstCategory = Object.keys(productCategories).sort()[0] || '';
+                        if (firstCategory) {
+                            renderProducts(firstCategory, productCategories);
+                        }
+                    } else if (notificationContainer.classList.contains('hidden') && productList.innerHTML.trim() === '') {
+                        setLoadingState();
                     }
                 }
             };
@@ -1188,6 +376,42 @@
                 backButton.classList.add('invisible');
             };
 
+            const loadCatalog = async () => {
+                hideNotification();
+                setLoadingState();
+                try {
+                    const response = await fetch('catalog.json');
+                    if (!response.ok) {
+                        throw new Error(`Failed to load catalog: ${response.status}`);
+                    }
+
+                    const catalog = await response.json();
+                    if (!Array.isArray(catalog)) {
+                        throw new Error('Invalid catalog format');
+                    }
+
+                    productCategories = categorizeProducts(catalog);
+
+                    if (Object.keys(productCategories).length === 0) {
+                        productTabsContainer.innerHTML = '';
+                        productList.innerHTML = `<p class="text-gray-500">Каталог поки порожній.</p>`;
+                        return;
+                    }
+
+                    renderCategoryTabs(productCategories);
+                    const firstCategory = Object.keys(productCategories).sort()[0];
+                    if (firstCategory) {
+                        renderProducts(firstCategory, productCategories);
+                    }
+                } catch (error) {
+                    console.error('Error loading catalog:', error);
+                    productCategories = {};
+                    showNotification('Не вдалося завантажити каталог продукції. Перевірте підключення до мережі та спробуйте ще раз.');
+                    productTabsContainer.innerHTML = '';
+                    productList.innerHTML = `<p class="text-red-600">Не вдалося завантажити каталог.</p>`;
+                }
+            };
+
             menuCards.forEach(card => {
                 card.addEventListener('click', () => {
                     const pageId = card.dataset.page;
@@ -1196,6 +420,8 @@
             });
 
             backButton.addEventListener('click', showMainPage);
+
+            loadCatalog();
 
             productTabsContainer.addEventListener('click', (e) => {
                 const targetTab = e.target.closest('.product-tab');
