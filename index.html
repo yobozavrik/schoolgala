@@ -142,10 +142,13 @@
                 </div>
             </div>
 
-            <!-- Products Page (Placeholder) -->
+            <!-- Products Page -->
             <div id="products-page" class="sub-page">
-                <h3 class="text-xl font-bold">Тут буде каталог продукції</h3>
-                <p class="mt-2" style="color: var(--muted-foreground);">Цей розділ буде наповнено пізніше.</p>
+                <h3 class="text-xl font-bold mb-4" style="color: var(--card-foreground);">Каталог продукції</h3>
+                <p class="text-sm mb-4" style="color: var(--muted-foreground);">Ознайомтеся з асортиментом бренду «Галя Балувана».</p>
+                <div id="products-loading" class="hidden text-sm text-center mb-4" style="color: var(--muted-foreground);">Каталог завантажується...</div>
+                <div id="products-error" class="hidden text-sm text-center mb-4 font-medium" style="color: #dc2626;"></div>
+                <div id="products-container" class="grid grid-cols-1 gap-4 sm:grid-cols-2"></div>
             </div>
             
             <!-- Standards Page (Knowledge Base) -->
@@ -463,6 +466,102 @@
             };
 
             const PASS_THRESHOLD = 0.8; // 80% to pass the test
+
+            const productsContainer = document.getElementById('products-container');
+            const productsLoading = document.getElementById('products-loading');
+            const productsError = document.getElementById('products-error');
+
+            function createProductCard(product) {
+                const card = createElement('article', null, {
+                    'class': 'border rounded-lg overflow-hidden flex flex-col shadow-sm',
+                    'style': 'border-color: var(--border); background-color: var(--card-background);'
+                });
+
+                if (product.image) {
+                    const image = createElement('img', null, {
+                        src: product.image,
+                        alt: product.name || 'Продукт',
+                        'class': 'h-40 w-full object-cover'
+                    });
+                    card.appendChild(image);
+                }
+
+                const content = createElement('div', null, { 'class': 'p-4 flex flex-col flex-1' });
+                content.appendChild(createElement('h4', product.name || 'Без назви', {
+                    'class': 'font-semibold text-base mb-3',
+                    'style': 'color: var(--card-foreground);'
+                }));
+
+                if (product.url) {
+                    content.appendChild(createElement('a', 'Переглянути', {
+                        href: product.url,
+                        target: '_blank',
+                        rel: 'noopener noreferrer',
+                        'class': 'mt-auto inline-flex items-center justify-center px-4 py-2 rounded-md font-medium transition-colors',
+                        'style': 'background-color: var(--primary); color: var(--primary-foreground);'
+                    }));
+                }
+
+                card.appendChild(content);
+                return card;
+            }
+
+            function loadProducts() {
+                if (!productsContainer || !productsLoading || !productsError) return;
+
+                productsLoading.classList.remove('hidden');
+                productsError.classList.add('hidden');
+                productsError.textContent = '';
+                productsContainer.innerHTML = '';
+
+                fetch('catalog.json')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (!Array.isArray(data)) {
+                            throw new Error('Invalid catalog format');
+                        }
+
+                        if (data.length === 0) {
+                            productsContainer.appendChild(createElement('p', 'Каталог наразі порожній.', {
+                                'class': 'text-sm text-center',
+                                'style': 'color: var(--muted-foreground);'
+                            }));
+                            return;
+                        }
+
+                        const fragment = document.createDocumentFragment();
+                        let hasCards = false;
+
+                        data.forEach(product => {
+                            if (!product || (!product.name && !product.image && !product.url)) return;
+                            fragment.appendChild(createProductCard(product));
+                            hasCards = true;
+                        });
+
+                        if (!hasCards) {
+                            productsContainer.appendChild(createElement('p', 'Каталог наразі недоступний.', {
+                                'class': 'text-sm text-center',
+                                'style': 'color: var(--muted-foreground);'
+                            }));
+                            return;
+                        }
+
+                        productsContainer.appendChild(fragment);
+                    })
+                    .catch(error => {
+                        console.error('Не вдалося завантажити каталог:', error);
+                        productsError.textContent = 'Каталог тимчасово недоступний. Спробуйте оновити сторінку пізніше.';
+                        productsError.classList.remove('hidden');
+                    })
+                    .finally(() => {
+                        productsLoading.classList.add('hidden');
+                    });
+            }
 
             function saveProgress() {
                 localStorage.setItem('traineeProgress', JSON.stringify(progressState));
@@ -838,6 +937,7 @@
             });
 
             // Initial Load
+            loadProducts();
             loadProgress();
         });
     </script>
