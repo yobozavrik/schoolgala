@@ -1076,7 +1076,13 @@
             };
 
             const categorizeProducts = (catalog) => {
-                const keywords = [
+                const normalizeText = (text = '') => String(text)
+                    .toLowerCase()
+                    .replace(/&quot;|&#039;|['"«»„“”]/g, '')
+                    .replace(/\s+/g, ' ')
+                    .trim();
+
+                const rawKeywords = [
                     { keyword: 'пельмені', category: 'Пельмені' },
                     { keyword: 'вареники', category: 'Вареники' },
                     { keyword: 'сирники', category: 'Сирники' },
@@ -1086,8 +1092,10 @@
                     { keyword: 'хінкалі', category: 'Хінкалі' },
                     { keyword: 'чебурек', category: 'Чебуреки' },
                     { keyword: 'котлети', category: 'Котлети' },
+                    { keyword: 'котлета', category: 'Котлети' },
                     { keyword: 'фрикадельки', category: 'Котлети' },
                     { keyword: 'тефтелі', category: 'Котлети' },
+                    { keyword: 'тефтельки', category: 'Котлети' },
                     { keyword: 'голубці', category: 'Основні страви' },
                     { keyword: 'зрази', category: 'Основні страви' },
                     { keyword: 'лазанья', category: 'Основні страви' },
@@ -1104,12 +1112,17 @@
                     { keyword: 'ікра', category: 'Соуси та консервація' },
                 ];
 
+                const keywords = rawKeywords.map(item => ({
+                    ...item,
+                    keyword: normalizeText(item.keyword),
+                }));
+
                 const grouped = catalog.reduce((acc, product) => {
-                    const productNameLower = product.name.toLowerCase();
+                    const productNameNormalized = normalizeText(product.name);
                     let foundCategory = null;
 
                     for (const item of keywords) {
-                        if (productNameLower.includes(item.keyword)) {
+                        if (productNameNormalized.includes(item.keyword)) {
                             foundCategory = item.category;
                             break;
                         }
