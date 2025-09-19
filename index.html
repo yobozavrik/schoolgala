@@ -703,6 +703,7 @@
                 'plan-page': 'План Навчання', 'quiz-page': 'Перевірка Знань',
                 'contacts-page': 'Корисні Контакти', 'checklists-page': 'Щоденні Чек-листи'
             };
+            let productsLoaded = false;
 
             const showPage = (pageId) => {
                 mainPage.style.display = 'none';
@@ -712,6 +713,10 @@
                     activePage.style.display = 'block';
                     headerTitle.textContent = pageTitles[pageId] || 'Деталі';
                     backButton.classList.remove('invisible');
+                    if (pageId === 'products-page' && !productsLoaded) {
+                        loadProducts();
+                        productsLoaded = true;
+                    }
                 }
             };
 
@@ -1036,7 +1041,6 @@
             });
 
             // Initial Load
-            loadProducts();
             loadProgress();
         });
     </script>
