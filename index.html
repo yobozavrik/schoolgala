@@ -571,21 +571,73 @@
             const productsLoading = document.getElementById('products-loading');
             const productsError = document.getElementById('products-error');
 
+            const DEFAULT_IMAGE_WIDTH = 640;
+            const DEFAULT_IMAGE_HEIGHT = 480;
+
+            function createOptimizedImageUrl(src) {
+                if (!src) return '';
+                try {
+                    return `https://wsrv.nl/?url=${encodeURIComponent(src)}&w=${DEFAULT_IMAGE_WIDTH}&h=${DEFAULT_IMAGE_HEIGHT}&fit=cover&output=webp`;
+                } catch (error) {
+                    console.warn('Не вдалося оптимізувати URL зображення', error);
+                    return src;
+                }
+            }
+
+            function getProductImageSources(product) {
+                if (!product) {
+                    return { displaySrc: '', fullSrc: '' };
+                }
+
+                const original = product.image || '';
+                const display = product.thumbnail || createOptimizedImageUrl(original);
+
+                return {
+                    displaySrc: display,
+                    fullSrc: original || display
+                };
+            }
+
             function createProductCard(product) {
                 const card = createElement('article', null, {
                     'class': 'border rounded-lg overflow-hidden flex flex-col shadow-sm',
                     'style': 'border-color: var(--border); background-color: var(--card-background);'
                 });
 
-                if (product.image) {
-                    const image = createElement('img', null, {
-                        src: product.image,
-                        alt: product.name || 'Продукт',
-                        'class': 'h-40 w-full object-cover'
+                const { displaySrc, fullSrc } = getProductImageSources(product);
+
+                if (displaySrc) {
+                    const imageWrapper = createElement('div', null, {
+                        'class': 'relative w-full overflow-hidden h-40',
+                        'style': 'background-color: var(--secondary-background);'
                     });
-                    card.appendChild(image);
-                    card.addEventListener('click', () => openImageModal(product.image, product.name || 'Продукт'));
-                    card.style.cursor = 'pointer';
+
+                    const image = createElement('img', null, {
+                        src: displaySrc,
+                        alt: product.name || 'Продукт',
+                        loading: 'lazy',
+                        decoding: 'async',
+                        width: String(DEFAULT_IMAGE_WIDTH),
+                        height: String(DEFAULT_IMAGE_HEIGHT),
+                        'class': 'w-full h-full object-cover block',
+                        'style': 'opacity: 0; transition: opacity 0.3s ease;'
+                    });
+
+                    image.addEventListener('load', () => {
+                        image.style.opacity = '1';
+                    });
+
+                    image.addEventListener('error', () => {
+                        image.style.opacity = '1';
+                    });
+
+                    imageWrapper.appendChild(image);
+                    card.appendChild(imageWrapper);
+
+                    if (fullSrc) {
+                        card.addEventListener('click', () => openImageModal(fullSrc, product.name || 'Продукт'));
+                        card.style.cursor = 'pointer';
+                    }
                 }
 
                 const content = createElement('div', null, { 'class': 'p-4 flex flex-col flex-1' });
