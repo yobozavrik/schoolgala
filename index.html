@@ -1041,15 +1041,16 @@
                 if (selectedAnswer) userAnswers[currentQuestion] = parseInt(selectedAnswer.value);
                 else userAnswers[currentQuestion] = undefined;
                 updateCurrentScore();
-                if (currentQuestion < currentQuizData.length - 1) { currentQuestion++; showQuestion(); } 
-                else showResults();
+                if (currentQuestion < currentQuizData.length - 1) { currentQuestion++; showQuestion(); }
+                else { showResults(); updateNavigationButtons(); }
             }
-            
+
             function prevQuestion() {
                 const selectedAnswer = document.querySelector('input[name="answer"]:checked');
                 if (selectedAnswer) userAnswers[currentQuestion] = parseInt(selectedAnswer.value);
                 updateCurrentScore();
                 if(currentQuestion > 0) { currentQuestion--; showQuestion(); }
+                else updateNavigationButtons();
             }
 
             function updateNavigationButtons() {
@@ -1083,6 +1084,12 @@
 
             function restartQuizState() { currentQuestion = 0; score = 0; userAnswers = []; }
             function showTestMenu() { quizStartScreen.classList.remove('hidden'); quizMainScreen.classList.add('hidden'); }
+
+            const nextQuestionButton = document.getElementById('next-question');
+            if (nextQuestionButton) nextQuestionButton.addEventListener('click', nextQuestion);
+
+            const prevQuestionButton = document.getElementById('prev-question');
+            if (prevQuestionButton) prevQuestionButton.addEventListener('click', prevQuestion);
 
             document.getElementById('back-to-tests').addEventListener('click', showTestMenu);
             document.getElementById('restart-quiz').addEventListener('click', () => {
