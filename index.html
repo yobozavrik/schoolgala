@@ -45,6 +45,32 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
+        @supports (padding: max(0px)) {
+            body {
+                padding-top: max(env(safe-area-inset-top), 0px);
+                padding-bottom: max(env(safe-area-inset-bottom), 0px);
+            }
+        }
+
+        html[data-platform="ios"] body {
+            font-family: "SF Pro Text", "SF Pro Display", "Inter", system-ui, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html[data-platform="android"] body {
+            font-family: "Roboto", "Inter", "Segoe UI", system-ui, sans-serif;
+        }
+
+        html[data-platform="windows"] body {
+            font-family: "Segoe UI", "Inter", system-ui, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html[data-platform="mac"] body {
+            font-family: "SF Pro Display", "Inter", system-ui, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
         .app-shell {
             max-width: 720px;
             margin: 0 auto;
@@ -814,6 +840,18 @@
         (function () {
             const WEBHOOK_URL = "https://example.com/gb-assistant";
             const tg = window.Telegram ? window.Telegram.WebApp : undefined;
+
+            function detectPlatform() {
+                const ua = navigator.userAgent || '';
+                const platform = navigator.userAgentData?.platform || navigator.platform || '';
+                if (/iPad|iPhone|iPod/.test(ua)) return 'ios';
+                if (/Android/.test(ua)) return 'android';
+                if (/Mac/.test(platform)) return 'mac';
+                if (/Win/.test(platform)) return 'windows';
+                return 'other';
+            }
+
+            document.documentElement.dataset.platform = detectPlatform();
             if (tg) {
                 try {
                     tg.ready();
@@ -829,25 +867,38 @@
             const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
             const themeToggle = document.getElementById('themeToggle');
 
+            function persistTheme(theme) {
+                try {
+                    localStorage.setItem('ideal-seller-theme', theme);
+                } catch (error) {
+                    console.warn('Cannot persist theme preference', error);
+                }
+            }
+
             function applyTheme(theme) {
                 if (theme === 'dark') {
                     document.documentElement.classList.add('dark');
-                    themeToggle.textContent = '🌙';
+                    themeToggle?.textContent = '🌙';
                 } else {
                     document.documentElement.classList.remove('dark');
-                    themeToggle.textContent = '☀️';
+                    themeToggle?.textContent = '☀️';
                 }
-                localStorage.setItem('ideal-seller-theme', theme);
+                persistTheme(theme);
             }
 
-            const savedTheme = localStorage.getItem('ideal-seller-theme');
+            let savedTheme = null;
+            try {
+                savedTheme = localStorage.getItem('ideal-seller-theme');
+            } catch (error) {
+                console.warn('Cannot read saved theme', error);
+            }
             if (tg?.colorScheme === 'dark' || savedTheme === 'dark' || (!savedTheme && prefersDark)) {
                 applyTheme('dark');
             } else {
                 applyTheme('light');
             }
 
-            themeToggle.addEventListener('click', () => {
+            themeToggle?.addEventListener('click', () => {
                 const isDark = document.documentElement.classList.toggle('dark');
                 applyTheme(isDark ? 'dark' : 'light');
             });
@@ -865,6 +916,15 @@
             const appMain = document.getElementById('appMain');
             let currentPage = 'home';
 
+            function focusFirstInteractive(pageId) {
+                window.requestAnimationFrame(() => {
+                    const page = document.getElementById(pageId);
+                    if (!page) return;
+                    const focusable = page.querySelector('button, a, textarea, input');
+                    focusable?.focus({ preventScroll: true });
+                });
+            }
+
             function setPage(pageId) {
                 pages.forEach((page) => {
                     page.classList.toggle('active', page.id === pageId);
@@ -872,8 +932,11 @@
                 currentPage = pageId;
                 const isHome = pageId === 'home';
                 backButton.disabled = isHome;
-                headerTitle.textContent = isHome ? 'Ідеальний Продавець 2.0' : document.getElementById(pageId).querySelector('h2, h3')?.textContent || 'Ідеальний Продавець 2.0';
+                const activePage = document.getElementById(pageId);
+                const pageHeading = activePage?.querySelector('h2, h3');
+                headerTitle.textContent = isHome ? 'Ідеальний Продавець 2.0' : pageHeading?.textContent || 'Ідеальний Продавець 2.0';
                 headerSubtitle.textContent = isHome ? 'Все для успішної зміни' : 'Поверніться, щоб обрати інший розділ';
+                focusFirstInteractive(pageId);
             }
 
             backButton.addEventListener('click', () => {
@@ -1253,11 +1316,14 @@
                     }
                     productsState.textContent = `Доступно позицій: ${products.length}`;
                     productGrid.innerHTML = '';
+                    const fragment = document.createDocumentFragment();
                     products.forEach((product) => {
                         const card = document.createElement('article');
                         card.classList.add('product-card');
                         const img = document.createElement('img');
                         img.alt = product.name || 'Продукт';
+                        img.loading = 'lazy';
+                        img.decoding = 'async';
                         if (product.thumbnail) {
                             img.src = product.thumbnail;
                         } else if (product.image) {
@@ -1270,8 +1336,9 @@
                         card.addEventListener('click', () => {
                             openModal(product.image || product.thumbnail, product.name);
                         });
-                        productGrid.appendChild(card);
+                        fragment.appendChild(card);
                     });
+                    productGrid.appendChild(fragment);
                     productsLoaded = true;
                 } catch (error) {
                     console.error('Помилка каталогу', error);
@@ -1305,13 +1372,6 @@
                 if (event.key === 'Escape') {
                     closeModal();
                 }
-            });
-
-            // accessibility focus trap for new page
-            appMain.addEventListener('transitionend', () => {
-                const activePage = document.querySelector('.page.active');
-                const focusable = activePage?.querySelector('button, a, textarea, input');
-                focusable?.focus({ preventScroll: true });
             });
 
             // initial knowledge open first
