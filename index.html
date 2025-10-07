@@ -1,1108 +1,1325 @@
 <!DOCTYPE html>
-<html lang="uk" class="">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Навігатор Стажера - Галя Балувана</title>
-    <link rel="stylesheet" href="assets/tailwind.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Ідеальний Продавець 2.0</title>
+    <meta name="theme-color" content="#111827" media="(prefers-color-scheme: dark)">
+    <meta name="theme-color" content="#f3f4f6" media="(prefers-color-scheme: light)">
     <style>
-        /* CSS Variables for Theming */
         :root {
-            --background: #f8f9fa; /* Softer light gray */
-            --foreground: #212529; /* Softer black */
-            --card-background: #ffffff;
-            --card-foreground: #343a40;
-            --muted-foreground: #6c757d;
-            --primary: #fca311; /* Richer amber */
-            --primary-foreground: #ffffff;
-            --secondary-background: #e9ecef; /* Light gray for elements */
-            --border: #dee2e6;
-            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.08), 0 1px 2px -1px rgb(0 0 0 / 0.04);
-            --success: #28a745;
-            --success-foreground: #ffffff;
+            --background: #f3f4f6;
+            --foreground: #111827;
+            --card: #ffffff;
+            --muted: #6b7280;
+            --border: #e5e7eb;
+            --primary: #f97316;
+            --primary-foreground: #0f172a;
+            --accent: #111827;
+            --shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04);
+            --radius-lg: 1.25rem;
         }
 
         html.dark {
-            --background: #181a1b; /* Rich dark background */
-            --foreground: #e8e6e3; /* Soft white text */
-            --card-background: #242627;
-            --card-foreground: #f1f3f5;
-            --muted-foreground: #adb5bd;
-            --primary: #fcc419; /* Brighter yellow for dark mode */
-            --primary-foreground: #181a1b;
-            --secondary-background: #33373a;
-            --border: #495057;
-            --success: #20c997;
-            --success-foreground: #181a1b;
+            --background: #111827;
+            --foreground: #f9fafb;
+            --card: #1f2937;
+            --muted: #9ca3af;
+            --border: #374151;
+            --primary: #f59e0b;
+            --primary-foreground: #111827;
+            --accent: #f9fafb;
+            --shadow: 0 15px 30px -10px rgb(249 250 251 / 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Inter", "SF Pro Display", "Segoe UI", system-ui, sans-serif;
             background-color: var(--background);
             color: var(--foreground);
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .main-page { display: block; }
-        .sub-page { display: none; }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .accordion-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
-        }
-        .answer-option {
-            border-width: 2px;
-            transition: all 0.2s ease-in-out;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        .image-modal {
-            position: fixed;
-            inset: 0;
+        .app-shell {
+            max-width: 720px;
+            margin: 0 auto;
+            min-height: 100vh;
             display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: rgba(0, 0, 0, 0.75);
-            z-index: 1000;
-            padding: 1.5rem;
-        }
-
-        .image-modal.hidden {
-            display: none;
-        }
-
-        .image-modal-content {
-            position: relative;
-            max-width: min(90vw, 640px);
-            max-height: 90vh;
-        }
-
-        .image-modal-content img {
-            width: 100%;
-            height: auto;
-            max-height: 90vh;
-            border-radius: 0.75rem;
+            flex-direction: column;
+            background-color: var(--card);
             box-shadow: var(--shadow);
         }
 
-        .image-modal-close {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            width: 2.5rem;
-            height: 2.5rem;
-            border: none;
-            border-radius: 9999px;
-            background-color: rgba(0, 0, 0, 0.65);
-            color: #ffffff;
-            font-size: 1.5rem;
-            line-height: 1;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            backdrop-filter: blur(12px);
+            background-color: color-mix(in srgb, var(--card) 90%, transparent);
+            border-bottom: 1px solid var(--border);
         }
 
-        .image-modal-close:focus {
-            outline: 2px solid var(--primary);
+        .header-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.875rem 1.25rem;
+        }
+
+        .header-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .icon-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 999px;
+            border: 1px solid transparent;
+            background: color-mix(in srgb, var(--primary) 12%, transparent);
+            color: var(--foreground);
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .icon-button:hover {
+            background: color-mix(in srgb, var(--primary) 18%, transparent);
+            transform: translateY(-1px);
+        }
+
+        .icon-button:disabled {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        main {
+            flex: 1;
+            padding: 1.5rem 1.25rem 2.5rem;
+        }
+
+        .page {
+            display: none;
+            animation: fade-in 0.25s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1, h2, h3, h4 {
+            margin: 0;
+        }
+
+        .welcome-card {
+            text-align: center;
+            margin-bottom: 1.75rem;
+        }
+
+        .welcome-card strong {
+            display: block;
+            font-size: 1.75rem;
+            margin-bottom: 0.35rem;
+        }
+
+        .welcome-card span {
+            color: var(--muted);
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 1rem;
+        }
+
+        .menu-card {
+            position: relative;
+            padding: 1.25rem 1rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            background: color-mix(in srgb, var(--card) 80%, var(--primary) 3%);
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px -10px rgb(0 0 0 / 0.2);
+        }
+
+        .menu-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 18px;
+            background: color-mix(in srgb, var(--primary) 14%, transparent);
+            display: grid;
+            place-items: center;
+            font-size: 1.35rem;
+        }
+
+        .section-title {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .card {
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            background: color-mix(in srgb, var(--card) 90%, transparent);
+            margin-bottom: 1rem;
+        }
+
+        details {
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1rem 1.25rem;
+            background: color-mix(in srgb, var(--card) 85%, transparent);
+        }
+
+        details + details {
+            margin-top: 0.75rem;
+        }
+
+        summary {
+            font-weight: 600;
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        summary::after {
+            content: "⌄";
+            font-size: 1.1rem;
+            transition: transform 0.2s ease;
+        }
+
+        details[open] summary::after {
+            transform: rotate(180deg);
+        }
+
+        details ul,
+        details ol {
+            margin: 0.85rem 0 0;
+            padding-left: 1.1rem;
+            color: var(--muted);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            background: color-mix(in srgb, var(--primary) 14%, transparent);
+            border-radius: 999px;
+            padding: 0.3rem 0.8rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        .persona-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .persona-card {
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1.1rem;
+            background: color-mix(in srgb, var(--card) 90%, transparent);
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .persona-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary);
+        }
+
+        .persona-card strong {
+            font-size: 1.05rem;
+        }
+
+        .chat-shell {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+        }
+
+        .chat-header-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .chat-header span {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .chat-window {
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1rem;
+            min-height: 320px;
+            max-height: 480px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+            background: color-mix(in srgb, var(--card) 85%, transparent);
+        }
+
+        .message {
+            max-width: 88%;
+            padding: 0.75rem 0.95rem;
+            border-radius: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.45;
+            position: relative;
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: var(--primary);
+            color: var(--primary-foreground);
+            border-bottom-right-radius: 0.5rem;
+        }
+
+        .message.assistant {
+            align-self: flex-start;
+            background: color-mix(in srgb, var(--primary) 12%, transparent);
+            border-bottom-left-radius: 0.5rem;
+        }
+
+        .message.system {
+            align-self: center;
+            background: transparent;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .typing {
+            display: inline-flex;
+            gap: 0.25rem;
+        }
+
+        .typing span {
+            width: 7px;
+            height: 7px;
+            border-radius: 999px;
+            background: currentColor;
+            opacity: 0.3;
+            animation: typing 1s infinite;
+        }
+
+        .typing span:nth-child(2) {
+            animation-delay: 0.15s;
+        }
+
+        .typing span:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        @keyframes typing {
+            0%, 100% { opacity: 0.25; transform: translateY(0); }
+            50% { opacity: 0.8; transform: translateY(-2px); }
+        }
+
+        .quick-replies {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .quick-replies button {
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: transparent;
+            color: var(--muted);
+            padding: 0.4rem 0.85rem;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .quick-replies button:hover {
+            border-color: var(--primary);
+            color: var(--foreground);
+            transform: translateY(-1px);
+        }
+
+        .composer {
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            gap: 0.75rem;
+            align-items: end;
+        }
+
+        .composer textarea {
+            resize: none;
+            min-height: 64px;
+            max-height: 130px;
+            border-radius: 0.9rem;
+            border: 1px solid var(--border);
+            padding: 0.75rem;
+            background: color-mix(in srgb, var(--card) 90%, transparent);
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: inherit;
+        }
+
+        .composer textarea:focus {
+            outline: 2px solid color-mix(in srgb, var(--primary) 30%, transparent);
             outline-offset: 2px;
+        }
+
+        .send-button {
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.9rem;
+            border: none;
+            font-weight: 600;
+            background: linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 65%, #fb7185));
+            color: var(--primary-foreground);
+            cursor: pointer;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .send-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .record-button {
+            border-radius: 0.9rem;
+            border: 1px solid var(--border);
+            background: color-mix(in srgb, var(--primary) 10%, transparent);
+            color: var(--foreground);
+            padding: 0.65rem 0.95rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+        }
+
+        .record-button svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .record-button.is-recording {
+            border-color: transparent;
+            background: #dc2626;
+            color: #ffffff;
+            animation: pulse 1.2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.35); }
+            50% { box-shadow: 0 0 0 8px rgba(220, 38, 38, 0); }
+        }
+
+        .record-status {
+            font-size: 0.8rem;
+            color: var(--muted);
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .product-card {
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            overflow: hidden;
+            background: color-mix(in srgb, var(--card) 88%, transparent);
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px -12px rgb(0 0 0 / 0.3);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            background: color-mix(in srgb, var(--primary) 6%, transparent);
+        }
+
+        .product-card span {
+            padding: 0.85rem;
+            font-size: 0.95rem;
+        }
+
+        .products-info {
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            z-index: 50;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: min(92vw, 640px);
+            max-height: 90vh;
+        }
+
+        .modal-content img {
+            width: 100%;
+            height: auto;
+            max-height: 90vh;
+            border-radius: 1rem;
+            box-shadow: 0 25px 30px -10px rgb(0 0 0 / 0.45);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 0.85rem;
+            right: 0.85rem;
+            width: 42px;
+            height: 42px;
+            border-radius: 999px;
+            border: none;
+            background: rgba(15, 23, 42, 0.85);
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 1.25rem;
+        }
+
+        .contact-list {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .contact-card {
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1rem;
+            background: color-mix(in srgb, var(--card) 92%, transparent);
+        }
+
+        .contact-card strong {
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .knowledge-list li + li,
+        .checklist li + li {
+            margin-top: 0.35rem;
+        }
+
+        .quiz-placeholder {
+            border: 1px dashed var(--border);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            display: grid;
+            gap: 0.75rem;
+            text-align: center;
+            background: color-mix(in srgb, var(--card) 80%, transparent);
+        }
+
+        .subtle-link {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .subtle-link:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 640px) {
+            main {
+                padding: 1.25rem 1rem 2.5rem;
+            }
+
+            .menu-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .chat-window {
+                min-height: 280px;
+                max-height: 420px;
+            }
+
+            .persona-grid {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            }
         }
     </style>
 </head>
-<body class="antialiased">
-
-    <div class="container mx-auto max-w-lg min-h-screen" style="background-color: var(--card-background);">
-        <!-- HEADER -->
-        <header class="sticky top-0 z-10 border-b" style="background-color: var(--card-background); border-color: var(--border);">
-            <div class="flex items-center justify-between p-4">
-                <button id="backButton" class="invisible" style="color: var(--muted-foreground);">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-                </button>
-                <h1 id="headerTitle" class="text-xl font-bold" style="color: var(--card-foreground);">Навігатор Стажера</h1>
-                <button id="theme-toggle" class="p-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--primary)]" style="color: var(--muted-foreground); background-color: var(--secondary-background);">
-                    <i id="theme-icon" data-lucide="moon" class="w-5 h-5"></i>
-                </button>
+<body>
+    <div class="app-shell">
+        <header>
+            <div class="header-inner">
+                <div class="header-group">
+                    <button id="backButton" class="icon-button" aria-label="Назад" disabled>←</button>
+                    <div>
+                        <h1 id="headerTitle" style="font-size: 1.1rem; font-weight: 700;">Ідеальний Продавець 2.0</h1>
+                        <span id="headerSubtitle" style="font-size: 0.85rem; color: var(--muted);">Все для успішної зміни</span>
+                    </div>
+                </div>
+                <div class="header-group">
+                    <button id="refreshButton" class="icon-button" aria-label="Оновити" title="Оновити дані">⟳</button>
+                    <button id="themeToggle" class="icon-button" aria-label="Змінити тему">☀️</button>
+                </div>
             </div>
         </header>
 
-        <!-- MAIN CONTENT -->
-        <main class="p-4 md:p-6 pb-20">
+        <main id="appMain">
+            <section id="home" class="page active" aria-labelledby="headerTitle">
+                <div class="welcome-card">
+                    <strong id="welcomeHeadline">Вітаємо, колего!</strong>
+                    <span>Обирайте інструмент і вирушайте в зміну з посмішкою.</span>
+                </div>
+                <div class="menu-grid" role="menu">
+                    <article class="menu-card" data-target="assistant">
+                        <div class="menu-icon">🤖</div>
+                        <div>
+                            <h3 style="margin-bottom: 0.25rem;">ШІ-помічник</h3>
+                            <p style="color: var(--muted); font-size: 0.85rem;">Миттєві відповіді на робочі запитання.</p>
+                        </div>
+                    </article>
+                    <article class="menu-card" data-target="knowledge">
+                        <div class="menu-icon">📚</div>
+                        <div>
+                            <h3 style="margin-bottom: 0.25rem;">База Знань</h3>
+                            <p style="color: var(--muted); font-size: 0.85rem;">Покрокові інструкції та скрипти.</p>
+                        </div>
+                    </article>
+                    <article class="menu-card" data-target="checklists">
+                        <div class="menu-icon">✅</div>
+                        <div>
+                            <h3 style="margin-bottom: 0.25rem;">Чек-листи</h3>
+                            <p style="color: var(--muted); font-size: 0.85rem;">Контроль щоденних рутин.</p>
+                        </div>
+                    </article>
+                    <article class="menu-card" data-target="products">
+                        <div class="menu-icon">🛒</div>
+                        <div>
+                            <h3 style="margin-bottom: 0.25rem;">Наша Продукція</h3>
+                            <p style="color: var(--muted); font-size: 0.85rem;">Каталог «Галя Балувана».</p>
+                        </div>
+                    </article>
+                    <article class="menu-card" data-target="quiz">
+                        <div class="menu-icon">🎯</div>
+                        <div>
+                            <h3 style="margin-bottom: 0.25rem;">Перевірка Знань</h3>
+                            <p style="color: var(--muted); font-size: 0.85rem;">Тести та тренажери.</p>
+                        </div>
+                    </article>
+                    <article class="menu-card" data-target="contacts">
+                        <div class="menu-icon">📞</div>
+                        <div>
+                            <h3 style="margin-bottom: 0.25rem;">Корисні Контакти</h3>
+                            <p style="color: var(--muted); font-size: 0.85rem;">Зв'язок з наставниками.</p>
+                        </div>
+                    </article>
+                </div>
+            </section>
 
-            <!-- Main Page -->
-            <div id="main-page" class="main-page">
-                <div class="text-center mb-6">
-                    <div class="w-24 h-24 mx-auto mb-4 rounded-full flex items-center justify-center" style="background-color: var(--secondary-background);">
-                        <img src="https://i.ibb.co/688w7Vq/image-f723c9.jpg" alt="Галя Балувана" class="h-20 w-20 rounded-full">
+            <section id="assistant" class="page" aria-live="polite">
+                <h2 class="section-title">ШІ-помічник</h2>
+                <div id="personaSelection">
+                    <p style="color: var(--muted); margin-bottom: 1.25rem;">Оберіть «особистість» помічника, щоб отримати релевантні відповіді.</p>
+                    <div class="persona-grid">
+                        <article class="persona-card" data-persona="seller">
+                            <span class="badge">🔸 Рекомендовано</span>
+                            <strong>ШІ-продавець</strong>
+                            <p style="color: var(--muted); font-size: 0.9rem;">Рішення для каси, повернень, сервісу та роботи з клієнтами.</p>
+                        </article>
+                        <article class="persona-card" data-persona="cosmetologist">
+                            <strong>ШІ-косметолог</strong>
+                            <p style="color: var(--muted); font-size: 0.9rem;">Поради з догляду та консультації щодо асортименту косметики.</p>
+                        </article>
+                        <article class="persona-card" data-persona="study">
+                            <strong>Помічник з уроками</strong>
+                            <p style="color: var(--muted); font-size: 0.9rem;">Пояснить навчальні матеріали, допоможе закріпити знання.</p>
+                        </article>
+                        <article class="persona-card" data-persona="chitchat">
+                            <strong>Просто потеревенькати</strong>
+                            <p style="color: var(--muted); font-size: 0.9rem;">Підтримка настрою та неформальні розмови під час перерви.</p>
+                        </article>
                     </div>
-                    <h2 class="text-2xl font-bold" style="color: var(--card-foreground);">Ласкаво просимо, Анно!</h2>
-                    <p style="color: var(--muted-foreground);">Ваш шлях у "Галя Балувана" починається тут.</p>
                 </div>
 
-                <!-- Progress -->
-                <div class="mb-8">
-                    <div class="flex justify-between mb-1">
-                        <span class="text-base font-medium" style="color: var(--primary);">Ваш прогрес</span>
-                        <span id="mainProgressText" class="text-sm font-medium" style="color: var(--primary);">5%</span>
+                <div id="chatArea" class="chat-shell" hidden>
+                    <div class="chat-header">
+                        <div class="chat-header-info">
+                            <strong id="personaTitle">ШІ-продавець</strong>
+                            <span id="personaSubtitle">Ваш цифровий наставник</span>
+                        </div>
+                        <button id="changePersona" class="record-button" type="button">Змінити персону</button>
                     </div>
-                    <div class="w-full rounded-full h-2.5" style="background-color: var(--secondary-background);">
-                        <div id="mainProgressBar" class="h-2.5 rounded-full" style="background-color: var(--primary); width: 5%; transition: width 0.5s ease-in-out;"></div>
-                    </div>
-                </div>
 
-                <!-- Menu Grid -->
-                <div class="grid grid-cols-2 gap-4">
-                    <button data-page="plan-page" class="menu-card group flex flex-col items-center justify-center p-4 rounded-lg transition-transform transform hover:scale-105" style="background-color: var(--secondary-background); box-shadow: var(--shadow-sm);">
-                        <div class="p-3 rounded-full mb-3" style="background-color: var(--card-background); box-shadow: var(--shadow);">
-                            <i data-lucide="clipboard-list" class="w-8 h-8" style="color: var(--primary);"></i>
-                        </div>
-                        <span class="font-semibold text-center" style="color: var(--card-foreground);">План Навчання</span>
-                    </button>
-                     <button data-page="checklists-page" class="menu-card group flex flex-col items-center justify-center p-4 rounded-lg transition-transform transform hover:scale-105" style="background-color: var(--secondary-background); box-shadow: var(--shadow-sm);">
-                         <div class="p-3 rounded-full mb-3" style="background-color: var(--card-background); box-shadow: var(--shadow);">
-                            <i data-lucide="check-square" class="w-8 h-8" style="color: var(--primary);"></i>
-                        </div>
-                        <span class="font-semibold text-center" style="color: var(--card-foreground);">Чек-листи</span>
-                    </button>
-                    <button data-page="standards-page" class="menu-card group flex flex-col items-center justify-center p-4 rounded-lg transition-transform transform hover:scale-105" style="background-color: var(--secondary-background); box-shadow: var(--shadow-sm);">
-                         <div class="p-3 rounded-full mb-3" style="background-color: var(--card-background); box-shadow: var(--shadow);">
-                            <i data-lucide="gem" class="w-8 h-8" style="color: var(--primary);"></i>
-                        </div>
-                        <span class="font-semibold text-center" style="color: var(--card-foreground);">База Знань</span>
-                    </button>
-                    <button data-page="quiz-page" class="menu-card group flex flex-col items-center justify-center p-4 rounded-lg transition-transform transform hover:scale-105" style="background-color: var(--secondary-background); box-shadow: var(--shadow-sm);">
-                         <div class="p-3 rounded-full mb-3" style="background-color: var(--card-background); box-shadow: var(--shadow);">
-                            <i data-lucide="graduation-cap" class="w-8 h-8" style="color: var(--primary);"></i>
-                        </div>
-                        <span class="font-semibold text-center" style="color: var(--card-foreground);">Перевірка Знань</span>
-                    </button>
-                    <button data-page="products-page" class="menu-card group flex flex-col items-center justify-center p-4 rounded-lg transition-transform transform hover:scale-105" style="background-color: var(--secondary-background); box-shadow: var(--shadow-sm);">
-                        <div class="p-3 rounded-full mb-3" style="background-color: var(--card-background); box-shadow: var(--shadow);">
-                            <i data-lucide="book-open" class="w-8 h-8" style="color: var(--primary);"></i>
-                        </div>
-                        <span class="font-semibold text-center" style="color: var(--card-foreground);">Наша Продукція</span>
-                    </button>
-                    <button data-page="contacts-page" class="menu-card group flex flex-col items-center justify-center p-4 rounded-lg transition-transform transform hover:scale-105" style="background-color: var(--secondary-background); box-shadow: var(--shadow-sm);">
-                         <div class="p-3 rounded-full mb-3" style="background-color: var(--card-background); box-shadow: var(--shadow);">
-                            <i data-lucide="users" class="w-8 h-8" style="color: var(--primary);"></i>
-                        </div>
-                        <span class="font-semibold text-center" style="color: var(--card-foreground);">Корисні Контакти</span>
-                    </button>
-                </div>
-            </div>
+                    <div id="quickReplies" class="quick-replies" hidden></div>
 
-            <!-- Products Page -->
-            <div id="products-page" class="sub-page">
-                <h3 class="text-xl font-bold mb-4" style="color: var(--card-foreground);">Каталог продукції</h3>
-                <p class="text-sm mb-4" style="color: var(--muted-foreground);">Ознайомтеся з асортиментом бренду «Галя Балувана».</p>
-                <div id="products-loading" class="hidden text-sm text-center mb-4" style="color: var(--muted-foreground);">Каталог завантажується...</div>
-                <div id="products-error" class="hidden text-sm text-center mb-4 font-medium" style="color: #dc2626;"></div>
-                <div id="products-container" class="grid grid-cols-1 gap-4 sm:grid-cols-2"></div>
-            </div>
-            
-            <!-- Standards Page (Knowledge Base) -->
-            <div id="standards-page" class="sub-page">
-                <h3 class="text-xl font-bold mb-4">База Знань</h3>
-                <div class="space-y-2">
-                    <div class="border rounded-lg" style="border-color: var(--border);">
-                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold">
-                            <span>Вхід до каси Poster</span>
-                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
-                        </button>
-                        <div class="accordion-content">
-                             <div class="p-4 pt-0" style="color: var(--muted-foreground);">
-                                <ul class="list-disc pl-5 space-y-2">
-                                    <li>Кожен продавець має унікальний логін та пароль.</li>
-                                    <li>Вхід здійснюється за посиланням <strong>[заклад].joinposter.com</strong>.</li>
-                                    <li>Після вводу логіну/паролю необхідно ввести персональний ПІН-код.</li>
-                                    <li>Детальніше — в <a href="https://knowledge-base.joinposter.com/uk-ua/log-in-to-pos-register" target="_blank" class="hover:underline" style="color: var(--primary);">інструкції Poster</a>.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="border rounded-lg" style="border-color: var(--border);">
-                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold">
-                            <span>Основні операції на касі Poster</span>
-                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
-                        </button>
-                        <div class="accordion-content">
-                            <div class="p-4 pt-0" style="color: var(--muted-foreground);">
-                                <ul class="list-disc pl-5 space-y-2">
-                                    <li><b>Додавання товару:</b> пошук за назвою, вибір з категорії, сканування штрих-коду.</li>
-                                    <li><b>Сортування товарів:</b> налаштуйте вигляд меню за популярністю чи алфавітом для швидкої роботи.</li>
-                                    <li><b>Редагування чека:</b> зміна кількості, додавання коментарів до страв.</li>
-                                    <li><b>Прийом оплати:</b> готівка, картка, змішана оплата (split-payment).</li>
-                                    <li><b>Робота з чеком:</b> друк, відправка на email, перегляд історії.</li>
-                                    <li>Детальніше — в <a href="https://knowledge-base.joinposter.com/uk-ua/how-to-work-with-pos" target="_blank" class="hover:underline" style="color: var(--primary);">Базі знань Poster</a> та <a href="https://knowledge-base.joinposter.com/uk-ua/how-to-sort-products-on-the-register" target="_blank" class="hover:underline" style="color: var(--primary);">інструкції з сортування</a>.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                     <div class="border rounded-lg" style="border-color: var(--border);">
-                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold">
-                            <span>Звіти на касі (X та Z-звіти)</span>
-                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
-                        </button>
-                        <div class="accordion-content">
-                             <div class="p-4 pt-0" style="color: var(--muted-foreground);">
-                                <ul class="list-disc pl-5 space-y-2">
-                                    <li><b>X-звіт:</b> показує поточну суму готівки в касі. Використовується для проміжної звірки протягом дня.</li>
-                                    <li><b>Z-звіт:</b> фіскальний звіт, який закриває зміну та надсилає дані до податкової. Формується один раз в кінці зміни.</li>
-                                    <li>Детальніше — в <a href="https://knowledge-base.joinposter.com/uk-ua/how-to-generate-x-and-z-reports" target="_blank" class="hover:underline" style="color: var(--primary);">інструкції Poster</a>.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="border rounded-lg" style="border-color: var(--border);">
-                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold">
-                            <span>Службові транзакції (внесення/видача)</span>
-                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
-                        </button>
-                        <div class="accordion-content">
-                            <div class="p-4 pt-0" style="color: var(--muted-foreground);">
-                                <ul class="list-disc pl-5 space-y-2">
-                                    <li><b>Службове внесення:</b> використовується для додавання грошей в касу, не пов'язаних з продажем (напр., розмін).</li>
-                                    <li><b>Службова видача:</b> для видачі грошей з каси на операційні витрати (напр., оплата кур'єру).</li>
-                                    <li>Всі транзакції фіксуються для точного обліку готівки.</li>
-                                    <li>Детальніше — в <a href="https://knowledge-base.joinposter.com/uk-ua/how-to-add-a-transaction-on-the-register" target="_blank" class="hover:underline" style="color: var(--primary);">інструкції Poster</a>.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="border rounded-lg" style="border-color: var(--border);">
-                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold">
-                            <span>Робота з ПРРО 2.0 (Фіскалізація)</span>
-                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
-                        </button>
-                        <div class="accordion-content">
-                            <div class="p-4 pt-0" style="color: var(--muted-foreground);">
-                                <ul class="list-disc pl-5 space-y-2">
-                                    <li><b>ПРРО</b> — це програмний реєстратор, він замінює класичний касовий апарат.</li>
-                                    <li>Кожен чек автоматично відправляється до податкової (ДПС).</li>
-                                    <li><b>Електронний чек:</b> замість друку можна показати клієнту QR-код для сканування або відправити чек на email.</li>
-                                    <li><b>Z-звіт</b> є обов'язковим для закриття зміни та передачі фіскальних даних.</li>
-                                    <li>ПРРО може працювати в <b>офлайн-режимі</b> (без інтернету) до 36 годин поспіль.</li>
-                                    <li>Детальніше — в <a href="https://knowledge-base.joinposter.com/uk-ua/how-to-work-with-pro-2.0-at-the-cashier" target="_blank" class="hover:underline" style="color: var(--primary);">інструкції по ПРРО</a> та <a href="https://knowledge-base.joinposter.com/uk-ua/how-to-fiscalize-receipts-without-printing" target="_blank" class="hover:underline" style="color: var(--primary);">про електронні чеки</a>.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                     <div class="border rounded-lg" style="border-color: var(--border);">
-                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold">
-                            <span>Робота з поверненнями та конфліктами</span>
-                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
-                        </button>
-                        <div class="accordion-content">
-                            <div class="p-4 pt-0" style="color: var(--muted-foreground);">
-                                <ul class="list-disc pl-5 space-y-2">
-                                     <li><b>Продукти харчування:</b> якщо якість належна, поверненню/обміну не підлягають (Постанова КМУ). Якщо є дефект — оформлюємо повернення.</li>
-                                     <li><b>Непродовольчі товари:</b> 14 днів на повернення, якщо товар не був у використанні та збережено його вигляд.</li>
-                                     <li><b>Немає паперового чека:</b> не є причиною для відмови. Доказом є ел. чек, QR, виписка з банку, камери.</li>
-                                     <li><b>Алгоритм LEARN:</b> Listen (Вислухай) → Empathize (Поспівчувай) → Ask (Уточни) → Resolve (Виріши) → Next step (Наступний крок).</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="border rounded-lg" style="border-color: var(--border);">
-                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold">
-                            <span>Сервіс-скрипти</span>
-                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
-                        </button>
-                        <div class="accordion-content">
-                            <div class="p-4 pt-0" style="color: var(--muted-foreground);">
-                                <ul class="list-disc pl-5 space-y-2">
-                                    <li><b>Привітання:</b> "Доброго дня! Вітаємо в 'Галя Балувана'!"</li>
-                                    <li><b>Уточнення потреби:</b> "Що сьогодні смачненького шукаєте?"</li>
-                                    <li><b>Ап-сел/Крос-сел:</b> "До пельменів чудово пасує наш фірмовий соус. Спробуєте?"</li>
-                                    <li><b>Робота зі скаргою:</b> "Дуже шкода, що так сталося. Давайте разом вирішимо цю ситуацію."</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                    <div id="chatWindow" class="chat-window" role="log" aria-live="polite"></div>
 
-            <!-- Adaptation Plan Page -->
-            <div id="plan-page" class="sub-page">
-                <h3 class="text-xl font-bold mb-4">План Навчання Продавця (6 Днів)</h3>
-                <div id="plan-container" class="space-y-2">
-                    <!-- Days will be generated here by JS -->
-                </div>
-            </div>
-            
-            <!-- Checklists Page -->
-            <div id="checklists-page" class="sub-page">
-                <h3 class="text-xl font-bold mb-4">Щоденні Чек-листи</h3>
-                <div class="space-y-2">
-                    <div class="border rounded-lg" style="border-color: var(--border);">
-                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold">
-                            <span>A. Відкриття зміни в Poster</span>
-                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
-                        </button>
-                        <div class="accordion-content">
-                            <div class="p-4 pt-0" style="color: var(--muted-foreground);">
-                                <ul class="list-decimal pl-5 space-y-2">
-                                    <li>Відкрити касу за посиланням <code>[заклад].joinposter.com</code>.</li>
-                                    <li>Ввести <strong>логін</strong> та <strong>пароль</strong>.</li>
-                                    <li>Ввести <strong>ПІН-код</strong>.</li>
-                                    <li>Вказати суму готівки в касі (розмін).</li>
-                                    <li>Натиснути «Відкрити зміну».</li>
-                                    <li>Перевірити стан принтера та чекової стрічки.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="border rounded-lg" style="border-color: var(--border);">
-                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold">
-                            <span>B. Закриття зміни + Z-звіт</span>
-                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
-                        </button>
-                        <div class="accordion-content">
-                            <div class="p-4 pt-0" style="color: var(--muted-foreground);">
-                                <ul class="list-decimal pl-5 space-y-2">
-                                    <li>У кінці робочого дня в меню каси обрати «Касові зміни».</li>
-                                    <li>Перевірити суму готівки в касі, порівнявши її з X-звітом.</li>
-                                    <li>Натиснути «Закрити зміну» та сформувати Z-звіт (фіскальний звіт) через ПРРО.</li>
-                                    <li>Передати готівку та зміну наступному продавцю.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="border rounded-lg" style="border-color: var(--border);">
-                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold">
-                            <span>C. FIFO на полиці/вітрині</span>
-                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
-                        </button>
-                        <div class="accordion-content">
-                            <div class="p-4 pt-0" style="color: var(--muted-foreground);">
-                                <ul class="list-disc pl-5 space-y-2">
-                                    <li>Нове «в глиб», старіше — «на фасад».</li>
-                                    <li>Перевірка дат «краще вжити до» щозміни.</li>
-                                    <li>Ротація при кожній поставці.</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                     <div class="border rounded-lg" style="border-color: var(--border);">
-                        <button class="accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold">
-                            <span>D. HACCP мінімум для продавця</span>
-                            <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
-                        </button>
-                        <div class="accordion-content">
-                             <div class="p-4 pt-0" style="color: var(--muted-foreground);">
-                                <ul class="list-disc pl-5 space-y-2">
-                                    <li>Особиста гігієна, чисті руки, рукавички за потреби.</li>
-                                    <li>Контроль температур (холод ≤ 5°C, гаряче ≥ 63°C).</li>
-                                    <li>Уникати перехресного забруднення (сире/готове).</li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quiz Page -->
-            <div id="quiz-page" class="sub-page">
-                <h3 class="text-xl font-bold mb-4">Перевірка Знань</h3>
-                <div id="quiz-container">
-                    <div id="quiz-start" class="text-center">
-                        <div id="quiz-menu" class="space-y-3">
-                           <!-- Quiz buttons will be generated here -->
-                        </div>
-                    </div>
-                    
-                    <div id="quiz-main" class="hidden">
-                         <div class="mb-6 text-center">
-                             <i data-lucide="graduation-cap" class="w-16 h-16 mx-auto mb-4" style="color: var(--primary);"></i>
-                             <h4 id="quiz-title" class="text-lg font-semibold mb-2"></h4>
-                             <p id="quiz-description" style="color: var(--muted-foreground);"></p>
-                         </div>
-                        <div id="quiz-questions" class="hidden">
-                            <div class="mb-4">
-                                <div class="flex justify-between items-center mb-2">
-                                    <span class="text-sm" style="color: var(--muted-foreground);">Питання <span id="current-question">1</span> з <span id="total-questions">7</span></span>
-                                    <span class="text-sm" style="color: var(--muted-foreground);">Бали: <span id="current-score">0</span></span>
-                                </div>
-                                <div class="w-full rounded-full h-2" style="background-color: var(--secondary-background);">
-                                    <div id="progress-bar" class="h-2 rounded-full transition-all duration-300" style="background-color: var(--primary); width: 0%"></div>
-                                </div>
-                            </div>
-                            
-                            <div id="question-container" class="mb-6">
-                                <h4 id="question-text" class="text-lg font-semibold mb-4"></h4>
-                                <div id="answers-container" class="space-y-3"></div>
-                            </div>
-                            
-                            <div class="flex justify-between">
-                                 <button id="prev-question" class="px-4 py-2 rounded-lg transition-colors hidden" style="background-color: var(--secondary-background); color: var(--foreground);">
-                                    Попереднє
-                                </button>
-                                <button id="next-question" class="px-6 py-2 rounded-lg transition-colors" style="background-color: var(--primary); color: var(--primary-foreground);">
-                                    Наступне
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <div id="quiz-results" class="hidden text-center">
-                            <div class="mb-6">
-                                <i data-lucide="trophy" class="w-16 h-16 mx-auto mb-4" style="color: var(--primary);"></i>
-                                <h4 class="text-lg font-semibold mb-2">Тест завершено!</h4>
-                                <p style="color: var(--muted-foreground);">Ваш результат: <span id="final-score" class="font-bold" style="color: var(--primary);">0</span> з <span id="max-score">7</span></p>
-                                <p id="result-message" class="text-sm mt-2" style="color: var(--muted-foreground);"></p>
-                            </div>
-                            <button id="restart-quiz" class="w-full px-6 py-3 rounded-lg font-semibold transition-colors" style="background-color: var(--primary); color: var(--primary-foreground);">
-                                Пройти знову
+                    <div>
+                        <div id="recordStatus" class="record-status"></div>
+                        <div class="composer">
+                            <button id="recordButton" class="record-button" type="button">
+                                <span aria-hidden="true">●</span>
+                                <span>Голос</span>
                             </button>
-                             <button id="back-to-tests" class="w-full mt-2 px-6 py-3 rounded-lg font-semibold transition-colors" style="background-color: var(--secondary-background); color: var(--foreground);">
-                                Повернутись до тестів
-                            </button>
+                            <textarea id="messageInput" placeholder="Напишіть повідомлення..." rows="2"></textarea>
+                            <button id="sendButton" class="send-button" type="button">Надіслати</button>
                         </div>
                     </div>
                 </div>
-            </div>
-            <!-- Contacts Page -->
-            <div id="contacts-page" class="sub-page">
-                <h3 class="text-xl font-bold mb-4">Корисні Контакти</h3>
-                <div class="space-y-4">
-                    <div class="p-4 rounded-lg border" style="background-color: var(--secondary-background); border-color: var(--border);">
-                        <div class="flex items-center mb-3">
-                            <i data-lucide="user-check" class="w-6 h-6 mr-3" style="color: var(--primary);"></i>
-                            <h4 class="font-semibold" style="color: var(--card-foreground);">Ваш наставник</h4>
-                        </div>
-                        <div class="space-y-2 text-sm" style="color: var(--muted-foreground);">
-                            <p><strong>Ім'я:</strong> Марія Іванівна</p>
-                            <p><strong>Посада:</strong> Старший кухар</p>
-                            <p><strong>Телефон:</strong> <a href="tel:+380501234567" class="hover:underline" style="color: var(--primary);">+38 (050) 123-45-67</a></p>
-                        </div>
-                    </div>
-                    <div class="p-4 rounded-lg border" style="background-color: var(--secondary-background); border-color: var(--border);">
-                        <div class="flex items-center mb-3">
-                            <i data-lucide="users" class="w-6 h-6 mr-3" style="color: var(--primary);"></i>
-                            <h4 class="font-semibold" style="color: var(--card-foreground);">HR відділ</h4>
-                        </div>
-                        <div class="space-y-2 text-sm" style="color: var(--muted-foreground);">
-                            <p><strong>Менеджер:</strong> Олена Петрівна</p>
-                            <p><strong>Телефон:</strong> <a href="tel:+380501234568" class="hover:underline" style="color: var(--primary);">+38 (050) 123-45-68</a></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            </section>
 
+            <section id="knowledge" class="page">
+                <h2 class="section-title">База знань «Галя Балувана»</h2>
+                <p style="color: var(--muted); margin-bottom: 1rem;">Скористайтесь інструкціями, щоб впевнено почуватися на зміні.</p>
+                <div id="knowledgeList"></div>
+            </section>
+
+            <section id="checklists" class="page">
+                <h2 class="section-title">Чек-листи зміни</h2>
+                <div class="card">
+                    <h3 style="margin-bottom: 0.5rem;">Ранковий старт</h3>
+                    <ol class="checklist" style="color: var(--muted);">
+                        <li>Перевірте графік доставки й наявність ключових товарів.</li>
+                        <li>Увімкніть обладнання: касу Poster, термінал, холодильники.</li>
+                        <li>Проведіть санітарний чек: руки, форма, чистота вітрини.</li>
+                        <li>Оновіть викладку за принципом <strong>FIFO</strong> та фейсингом.</li>
+                        <li>Привітайте перших гостей та уточніть їх потреби.</li>
+                    </ol>
+                </div>
+                <div class="card">
+                    <h3 style="margin-bottom: 0.5rem;">Під час зміни</h3>
+                    <ol class="checklist" style="color: var(--muted);">
+                        <li>Ведіть продажі в Poster, додавайте коментарі до складних чеків.</li>
+                        <li>Контролюйте температуру холодильних зон (≤5°C) та гарячих страв (≥63°C).</li>
+                        <li>Фіксуйте службові внесення/видачі з коротким описом.</li>
+                        <li>Пропонуйте додаткові продукти згідно сервіс-скриптів.</li>
+                        <li>Ведіть журнал скарг/побажань для менеджера.</li>
+                    </ol>
+                </div>
+                <div class="card">
+                    <h3 style="margin-bottom: 0.5rem;">Завершення зміни</h3>
+                    <ol class="checklist" style="color: var(--muted);">
+                        <li>Проведіть звірку готівки та сформуйте <strong>Z-звіт</strong> у ПРРО.</li>
+                        <li>Перевірте чистоту та закрийте вітрини, вимкніть обладнання.</li>
+                        <li>Поповніть розмін за потреби, підготуйте звіт для менеджера.</li>
+                        <li>Оформіть передачу зміни та зафіксуйте показники продажів.</li>
+                    </ol>
+                </div>
+            </section>
+
+            <section id="products" class="page">
+                <h2 class="section-title">Наша продукція</h2>
+                <p class="products-info">Каталог оновлюється автоматично. Оберіть картку, щоб переглянути зображення у повному розмірі.</p>
+                <div id="productsState" class="products-info"></div>
+                <div id="productGrid" class="product-grid" aria-live="polite"></div>
+            </section>
+
+            <section id="quiz" class="page">
+                <h2 class="section-title">Перевірка знань</h2>
+                <div class="quiz-placeholder">
+                    <p>Ітерація 1: ми збираємо дані про ваш прогрес у чаті та чек-листах. У наступному оновленні з'являться персональні тести з автоматичним нарахуванням балів.</p>
+                    <p style="color: var(--muted);">Поки що радимо пройти коротке самотестування з наставником.</p>
+                </div>
+            </section>
+
+            <section id="contacts" class="page">
+                <h2 class="section-title">Корисні контакти</h2>
+                <div class="contact-list">
+                    <article class="contact-card">
+                        <strong>Менеджер магазину</strong>
+                        <div style="color: var(--muted);">Марія Коваль • +38 (067) 000-00-01</div>
+                        <div style="color: var(--muted);">Питання змін, графік, побажання клієнтів.</div>
+                    </article>
+                    <article class="contact-card">
+                        <strong>HR-наставник</strong>
+                        <div style="color: var(--muted);">Ігор Савчук • +38 (050) 000-00-02</div>
+                        <div style="color: var(--muted);">Онбординг, навчання, документи.</div>
+                    </article>
+                    <article class="contact-card">
+                        <strong>Лінія підтримки Poster</strong>
+                        <div style="color: var(--muted);">support@joinposter.com</div>
+                        <a class="subtle-link" href="https://knowledge-base.joinposter.com/uk-ua" target="_blank" rel="noopener">База знань Poster →</a>
+                    </article>
+                </div>
+            </section>
         </main>
     </div>
 
-    <div id="image-modal" class="image-modal hidden" role="dialog" aria-modal="true">
-        <div class="image-modal-content">
-            <button id="image-modal-close" type="button" class="image-modal-close" aria-label="Закрити зображення">&times;</button>
-            <img id="image-modal-image" src="" alt="">
+    <div id="imageModal" class="modal" role="dialog" aria-modal="true" aria-label="Перегляд зображення">
+        <div class="modal-content">
+            <button id="modalClose" class="modal-close" aria-label="Закрити">×</button>
+            <img id="modalImage" src="" alt="Зображення продукту">
         </div>
     </div>
 
-    <script src="assets/lucide.min.js"></script>
     <script>
-        let imageModal = null;
-        let imageModalImage = null;
-
-        function openImageModal(imageSrc, altText = '') {
-            if (!imageModal || !imageModalImage || !imageSrc) return;
-
-            imageModalImage.src = imageSrc;
-            imageModalImage.alt = altText || 'Зображення продукту';
-            imageModal.classList.remove('hidden');
-        }
-
-        function closeImageModal() {
-            if (!imageModal || !imageModalImage) return;
-
-            imageModal.classList.add('hidden');
-            imageModalImage.src = '';
-            imageModalImage.alt = '';
-        }
-
-        // --- UTILITY FUNCTIONS ---
-        function createElement(tag, content, attributes = {}) {
-            const element = document.createElement(tag);
-            if (content) {
-                if (typeof content === 'string') element.textContent = content;
-                else element.appendChild(content);
-            }
-            Object.entries(attributes).forEach(([key, value]) => element.setAttribute(key, value));
-            return element;
-        }
-
-        // --- APP INITIALIZATION ---
-        document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
-
-            imageModal = document.getElementById('image-modal');
-            imageModalImage = document.getElementById('image-modal-image');
-            const imageModalCloseButton = document.getElementById('image-modal-close');
-
-            if (imageModalCloseButton) {
-                imageModalCloseButton.addEventListener('click', closeImageModal);
-            }
-
-            if (imageModal) {
-                imageModal.addEventListener('click', (event) => {
-                    if (event.target === imageModal) {
-                        closeImageModal();
-                    }
-                });
-            }
-
-            document.addEventListener('keydown', (event) => {
-                if (event.key === 'Escape' && imageModal && !imageModal.classList.contains('hidden')) {
-                    closeImageModal();
-                }
-            });
-
-            // --- STATE MANAGEMENT ---
-            let progressState = {
-                theme: 'light',
-                completedDays: [] // Stores numbers of completed days, e.g., [1, 2]
-            };
-
-            const PASS_THRESHOLD = 0.8; // 80% to pass the test
-
-            const productsContainer = document.getElementById('products-container');
-            const productsLoading = document.getElementById('products-loading');
-            const productsError = document.getElementById('products-error');
-
-            const DEFAULT_IMAGE_WIDTH = 640;
-            const DEFAULT_IMAGE_HEIGHT = 480;
-
-            function createOptimizedImageUrl(src) {
-                if (!src) return '';
+        (function () {
+            const WEBHOOK_URL = "https://example.com/gb-assistant";
+            const tg = window.Telegram ? window.Telegram.WebApp : undefined;
+            if (tg) {
                 try {
-                    return `https://wsrv.nl/?url=${encodeURIComponent(src)}&w=${DEFAULT_IMAGE_WIDTH}&h=${DEFAULT_IMAGE_HEIGHT}&fit=cover&output=webp`;
+                    tg.ready();
+                    tg.expand();
                 } catch (error) {
-                    console.warn('Не вдалося оптимізувати URL зображення', error);
-                    return src;
+                    console.warn("Telegram WebApp init failed", error);
                 }
             }
 
-            function getProductImageSources(product) {
-                if (!product) {
-                    return { displaySrc: '', fullSrc: '' };
-                }
+            const initData = tg?.initData || "";
+            const userData = tg?.initDataUnsafe?.user || {};
 
-                const original = product.image || '';
-                const display = product.thumbnail || createOptimizedImageUrl(original);
+            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const themeToggle = document.getElementById('themeToggle');
 
-                return {
-                    displaySrc: display,
-                    fullSrc: original || display
-                };
-            }
-
-            function createProductCard(product) {
-                const card = createElement('article', null, {
-                    'class': 'border rounded-lg overflow-hidden flex flex-col shadow-sm',
-                    'style': 'border-color: var(--border); background-color: var(--card-background);'
-                });
-
-                const { displaySrc, fullSrc } = getProductImageSources(product);
-
-                if (displaySrc) {
-                    const imageWrapper = createElement('div', null, {
-                        'class': 'relative w-full overflow-hidden h-40',
-                        'style': 'background-color: var(--secondary-background);'
-                    });
-
-                    const image = createElement('img', null, {
-                        src: displaySrc,
-                        alt: product.name || 'Продукт',
-                        loading: 'lazy',
-                        decoding: 'async',
-                        width: String(DEFAULT_IMAGE_WIDTH),
-                        height: String(DEFAULT_IMAGE_HEIGHT),
-                        'class': 'w-full h-full object-cover block',
-                        'style': 'opacity: 0; transition: opacity 0.3s ease;'
-                    });
-
-                    image.addEventListener('load', () => {
-                        image.style.opacity = '1';
-                    });
-
-                    image.addEventListener('error', () => {
-                        image.style.opacity = '1';
-                    });
-
-                    imageWrapper.appendChild(image);
-                    card.appendChild(imageWrapper);
-
-                    if (fullSrc) {
-                        card.addEventListener('click', () => openImageModal(fullSrc, product.name || 'Продукт'));
-                        card.style.cursor = 'pointer';
-                    }
-                }
-
-                const content = createElement('div', null, { 'class': 'p-4 flex flex-col flex-1' });
-                content.appendChild(createElement('h4', product.name || 'Без назви', {
-                    'class': 'font-semibold text-base mb-3',
-                    'style': 'color: var(--card-foreground);'
-                }));
-
-                card.appendChild(content);
-                return card;
-            }
-
-            function loadProducts() {
-                if (!productsContainer || !productsLoading || !productsError) return;
-
-                productsLoading.classList.remove('hidden');
-                productsError.classList.add('hidden');
-                productsError.textContent = '';
-                productsContainer.innerHTML = '';
-
-                fetch('catalog.json')
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (!Array.isArray(data)) {
-                            throw new Error('Invalid catalog format');
-                        }
-
-                        if (data.length === 0) {
-                            productsContainer.appendChild(createElement('p', 'Каталог наразі порожній.', {
-                                'class': 'text-sm text-center',
-                                'style': 'color: var(--muted-foreground);'
-                            }));
-                            return;
-                        }
-
-                        const fragment = document.createDocumentFragment();
-                        let hasCards = false;
-
-                        data.forEach(product => {
-                            if (!product || (!product.name && !product.image && !product.url)) return;
-                            fragment.appendChild(createProductCard(product));
-                            hasCards = true;
-                        });
-
-                        if (!hasCards) {
-                            productsContainer.appendChild(createElement('p', 'Каталог наразі недоступний.', {
-                                'class': 'text-sm text-center',
-                                'style': 'color: var(--muted-foreground);'
-                            }));
-                            return;
-                        }
-
-                        productsContainer.appendChild(fragment);
-                    })
-                    .catch(error => {
-                        console.error('Не вдалося завантажити каталог:', error);
-                        productsError.textContent = 'Каталог тимчасово недоступний. Спробуйте оновити сторінку пізніше.';
-                        productsError.classList.remove('hidden');
-                    })
-                    .finally(() => {
-                        productsLoading.classList.add('hidden');
-                    });
-            }
-
-            function saveProgress() {
-                localStorage.setItem('traineeProgress', JSON.stringify(progressState));
-            }
-
-            function loadProgress() {
-                const saved = localStorage.getItem('traineeProgress');
-                if (saved) {
-                    progressState = JSON.parse(saved);
-                }
-                applyTheme();
-                renderPlan();
-                renderQuizMenu();
-                updateMainProgressBar();
-            }
-            
-            // --- THEME LOGIC ---
-            const themeToggle = document.getElementById('theme-toggle');
-            const themeIcon = document.getElementById('theme-icon');
-            
-            function applyTheme() {
-                if (progressState.theme === 'dark') {
+            function applyTheme(theme) {
+                if (theme === 'dark') {
                     document.documentElement.classList.add('dark');
-                    themeIcon.setAttribute('data-lucide', 'sun');
+                    themeToggle.textContent = '🌙';
                 } else {
                     document.documentElement.classList.remove('dark');
-                    themeIcon.setAttribute('data-lucide', 'moon');
+                    themeToggle.textContent = '☀️';
                 }
-                lucide.createIcons();
+                localStorage.setItem('ideal-seller-theme', theme);
+            }
+
+            const savedTheme = localStorage.getItem('ideal-seller-theme');
+            if (tg?.colorScheme === 'dark' || savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+                applyTheme('dark');
+            } else {
+                applyTheme('light');
             }
 
             themeToggle.addEventListener('click', () => {
-                progressState.theme = progressState.theme === 'light' ? 'dark' : 'light';
-                saveProgress();
-                applyTheme();
+                const isDark = document.documentElement.classList.toggle('dark');
+                applyTheme(isDark ? 'dark' : 'light');
             });
 
-            // --- PAGE NAVIGATION ---
-            const mainPage = document.getElementById('main-page');
-            const subPages = document.querySelectorAll('.sub-page');
-            const menuCards = document.querySelectorAll('.menu-card');
-            const backButton = document.getElementById('backButton');
+            const firstName = userData?.first_name ? userData.first_name : 'колего';
+            const welcomeHeadline = document.getElementById('welcomeHeadline');
+            welcomeHeadline.textContent = `Вітаємо, ${firstName}!`;
+
             const headerTitle = document.getElementById('headerTitle');
-            
-            const pageTitles = {
-                'products-page': 'Наша Продукція', 'standards-page': 'База Знань',
-                'plan-page': 'План Навчання', 'quiz-page': 'Перевірка Знань',
-                'contacts-page': 'Корисні Контакти', 'checklists-page': 'Щоденні Чек-листи'
-            };
-            let productsLoaded = false;
+            const headerSubtitle = document.getElementById('headerSubtitle');
+            const backButton = document.getElementById('backButton');
+            const refreshButton = document.getElementById('refreshButton');
+            const pages = document.querySelectorAll('.page');
+            const menuCards = document.querySelectorAll('.menu-card');
+            const appMain = document.getElementById('appMain');
+            let currentPage = 'home';
 
-            const showPage = (pageId) => {
-                mainPage.style.display = 'none';
-                subPages.forEach(page => page.style.display = 'none');
-                const activePage = document.getElementById(pageId);
-                if (activePage) {
-                    activePage.style.display = 'block';
-                    headerTitle.textContent = pageTitles[pageId] || 'Деталі';
-                    backButton.classList.remove('invisible');
-                    if (pageId === 'products-page' && !productsLoaded) {
-                        loadProducts();
-                        productsLoaded = true;
-                    }
+            function setPage(pageId) {
+                pages.forEach((page) => {
+                    page.classList.toggle('active', page.id === pageId);
+                });
+                currentPage = pageId;
+                const isHome = pageId === 'home';
+                backButton.disabled = isHome;
+                headerTitle.textContent = isHome ? 'Ідеальний Продавець 2.0' : document.getElementById(pageId).querySelector('h2, h3')?.textContent || 'Ідеальний Продавець 2.0';
+                headerSubtitle.textContent = isHome ? 'Все для успішної зміни' : 'Поверніться, щоб обрати інший розділ';
+            }
+
+            backButton.addEventListener('click', () => {
+                if (currentPage !== 'home') {
+                    setPage('home');
                 }
-            };
+            });
 
-            const showMainPage = () => {
-                subPages.forEach(page => page.style.display = 'none');
-                mainPage.style.display = 'block';
-                headerTitle.textContent = 'Навігатор Стажера';
-                backButton.classList.add('invisible');
-            };
+            menuCards.forEach((card) => {
+                card.addEventListener('click', () => {
+                    const target = card.getAttribute('data-target');
+                    if (!target) return;
+                    setPage(target);
+                    if (target === 'products') {
+                        fetchProducts();
+                    }
+                });
+            });
 
-            menuCards.forEach(card => card.addEventListener('click', () => showPage(card.dataset.page)));
-            backButton.addEventListener('click', showMainPage);
-            
-            // --- DYNAMIC CONTENT & PROGRESSION ---
-            const planContainer = document.getElementById('plan-container');
-            const planData = [
-                 { day: 1, title: "Знайомство, безпечний старт, тіньове спостереження", content: `<p class="font-semibold mb-2">Цілі дня: відчуття «мене тут чекають», розуміння бренду, як влаштована зміна, базові правила безпеки та сервісу.</p><ul class="list-disc pl-5 space-y-3 mt-2"><li><b>Теплий прийом (30 хв):</b> Вітання команди, історія бренду, план на 5 днів, знайомство з наставником.</li><li><b>Організаційні речі (30 хв):</b> Доступи, форма, графік, тур по магазину (кухні, склад, зони персоналу).</li><li><b>Мікро-безпека (20 хв):</b> Гігієна рук, "небезпечна зона температур" (холод/тепло), розділення сирого/готового.</li><li><b>Poster POS — тільки знайомство (30 хв):</b> Наставник показує інтерфейс, як виглядає чек, де звіти. Без самостійних дій.</li><li><b>Shadowing (Тіньове спостереження, 1-2 год):</b> Спостереження за роботою наставника в залі: діалоги з гостями, робота з вітриною (FIFO), пропозиції допродажу.</li><li><b>Підсумок дня (15 хв):</b> Обговорення з наставником: «Що дізнався? Що здивувало? Що хочеш спробувати завтра?».</li></ul>` },
-                { day: 2, title: "«Перші мікродії» (разом із наставником)", content: `<p class="font-semibold mb-2">Цілі: впевнено орієнтуватися в Poster, відкрити зміну, додати позиції, зробити X-звіт, фіксувати транзакції.</p><ul class="list-disc pl-5 space-y-3 mt-2"><li><b>Вхід у POS (20 хв):</b> Логін → PIN → «Залишок у касі» → Відкрити зміну (натискає наставник, стажер коментує).</li><li><b>Продаж (тренувально, 30 хв):</b> Додавання товарів (шт/вага), знижка, оплата, друк чека.</li><li><b>Готівкові транзакції (20 хв):</b> Демонстрація внесення, витрати та інкасації в меню POS.</li><li><b>X-звіт (15 хв):</b> Що показує і чим відрізняється від Z-звіту.</li><li><b>Shadowing та FIFO (1 год):</b> Спостереження за діалогами, практика FIFO на одній полиці.</li></ul>` },
-                { day: 3, title: "«Фіскалізація на тренажері» (ПРРО) + Z-звіт", content: `<p class="font-semibold mb-2">Цілі: розуміти фіскалізацію, індикатори чеків, повернення; вміти зняти Z-звіт разом з наставником.</p><ul class="list-disc pl-5 space-y-3 mt-2"><li><b>Теорія X vs Z (20 хв):</b> X — проміжний, для себе; Z — фінальний, для податкової.</li><li><b>ПРРО на касі (демо, 30 хв):</b> Де вмикається фіскалізація, індикатори успіху/помилки.</li><li><b>Сценарії (40 хв):</b> Продаж (готівка/картка) з фіскальним чеком; повернення фіскального чека.</li><li><b>Інкасація (20 хв):</b> Як оформити переведення виручки в сейф.</li><li><b>Z-звіт «разом» (30 хв):</b> X-звіт → звірка готівки → інкасація → «Закрити зміну» з Z-звітом.</li></ul>` },
-                { day: 4, title: "Клієнт, конфлікти, повернення/обміни", content: `<p class="font-semibold mb-2">Цілі: дати продавцю чітку рамку поведінки у складних діалогах; розібрати повернення/обмін згідно закону.</p><ul class="list-disc pl-5 space-y-3 mt-2"><li><b>Юридичні рамки (30 хв):</b> Коли можна і не можна повертати харчові товари. Що робити, якщо немає паперового чека.</li><li><b>Алгоритм деескалації LEARN (30 хв):</b> Listen (Вислухай) → Empathize (Поспівчувай) → Ask (Уточни) → Resolve (Виріши) → Next step (Наступний крок).</li><li><b>Рольові ігри-сценарії (45 хв)</b></li></ul>` },
-                { day: 5, title: "Знання товару, асортимент, алергени", content: `<p class="font-semibold mb-2">Цілі: розуміти категорії; вміти читати упаковку (термін, алергени), давати рекомендації, знижувати списання.</p><ul class="list-disc pl-5 space-y-3 mt-2"><li><b>Карта асортименту:</b> Чим відрізняються продукти всередині категорії (смаки, формати). Які позиції є "хітами".</li><li><b>Читання етикетки (Закон України):</b> Де шукати склад, термін придатності, умови зберігання та виділені <b>алергени</b>.</li><li><b>Практика - "Полка-кейс" (15 хв):</b> Привести одну полицю до ідеального FIFO.</li></ul>` },
-                { day: 6, title: "«Залік-лайт» та готовність до зміни", content: `<p class="font-semibold mb-2">Цілі: довести стабільність роботи (каса, сервіс, FIFO/HACCP); отримати допуск до самостійної зміни.</p><ul class="list-disc pl-5 space-y-3 mt-2"><li><b>Практичний залік (1 год, без підказок)</b></li><li><b>ПРРО-кейс (25 хв, тренувально)</b></li><li><b>Сервіс-залік (20 хв)</b></li></ul>` }
+            refreshButton.addEventListener('click', () => {
+                if (currentPage === 'products') {
+                    fetchProducts(true);
+                } else if (currentPage === 'assistant' && selectedPersona) {
+                    sendSystemMessage('Очистили чат. Оберіть нову тему або напишіть повідомлення.');
+                    chatWindow.innerHTML = '';
+                }
+            });
+
+            const knowledgeContent = [
+                {
+                    title: 'Робота зі зміною в Poster',
+                    items: [
+                        'Кожен продавець має персональний логін, пароль і ПІН. Не передавайте їх колегам.',
+                        'Вхід: [заклад].joinposter.com → логін/пароль → ПІН. Переконайтесь, що касовий день відкритий.',
+                        'Додавання товару: пошук, категорії або сканер штрихкоду. Контролюйте правильність ціни і знижок.',
+                        'Оплата: приймайте готівку, картки, сертифікати. Для змішаної оплати використовуйте split-payment.',
+                        'X-звіт дозволяє перевірити готівку протягом дня, Z-звіт закриває зміну і відправляє дані до ДПС.'
+                    ]
+                },
+                {
+                    title: 'ПРРО 2.0: фіскалізація без паніки',
+                    items: [
+                        'ПРРО автоматично передає чеки в податкову. Якщо немає зв'язку, система працює офлайн до 36 годин.',
+                        'Електронний чек можна показати клієнту у вигляді QR-коду або відправити на email/SMS.',
+                        'Для повернення оформіть коригуючий чек. Обовʼязково поясніть причину та зафіксуйте контакт клієнта.',
+                        'Після закриття зміни сформуйте Z-звіт у ПРРО та переконайтесь, що він успішно відправлений.'
+                    ]
+                },
+                {
+                    title: 'Стандарти сервісу',
+                    items: [
+                        'Привітання: «Доброго дня! Вітаємо у “Галя Балувана”. Чим можу допомогти?»',
+                        'Уточнення потреби: ставте відкриті запитання і пропонуйте рішення, а не лише товар.',
+                        'Ап- та крос-сел: «До вареників радимо наш сметанковий соус. Спробуєте?»',
+                        'Робота зі скаргою: слухайте, емпатично реагуйте, запропонуйте рішення і зафіксуйте кейс.'
+                    ]
+                },
+                {
+                    title: 'Алгоритми для складних ситуацій',
+                    items: [
+                        'Повернення без чеку: приймаємо, якщо є електронний чек/банківська виписка/відео. Фіксуємо акт повернення.',
+                        'Агресивний клієнт: техніка LEARN — Listen, Empathize, Ask, Resolve, Next Step. Залучіть менеджера, якщо потрібно.',
+                        'Конфлікт між колегами: зафіксуйте ситуацію, забезпечте спокій для гостей, повідомте менеджера.',
+                        'Підозра на крадіжку: дотримуйтесь процедур безпеки, не звинувачуйте напряму, викличте охорону або менеджера.'
+                    ]
+                },
+                {
+                    title: 'Мерчандайзинг та FIFO',
+                    items: [
+                        'Ротація товару: нові партії ставимо вглиб полиці, старіші — на фасад.',
+                        'Контроль термінів придатності щозміни. Позначайте товари, що потребують розпродажу.',
+                        'Фейсинг: вирівнюйте упаковки, додавайте POS-матеріали, перевіряйте цінники.',
+                        'Чистота: вітрини, холодильники і касова зона протираються щонайменше 3 рази на день.'
+                    ]
+                }
             ];
 
-            function renderPlan() {
-                planContainer.innerHTML = '';
-                planData.forEach((dayData, index) => {
-                    const day = index + 1;
-                    const isLocked = day > progressState.completedDays.length + 1;
-                    const isCompleted = progressState.completedDays.includes(day);
+            const knowledgeList = document.getElementById('knowledgeList');
+            knowledgeContent.forEach((section) => {
+                const details = document.createElement('details');
+                const summary = document.createElement('summary');
+                summary.textContent = section.title;
+                details.appendChild(summary);
 
-                    const container = createElement('div', null, {'class': 'border rounded-lg', 'style': 'border-color: var(--border);'});
-                    const button = createElement('button', null, {
-                        'class': 'accordion-toggle w-full flex justify-between items-center p-4 text-left font-semibold'
-                    });
-                    if(isLocked) {
-                        button.disabled = true;
-                        button.classList.add('opacity-50', 'cursor-not-allowed');
-                    }
-
-                    const titleSpan = createElement('span', `День ${day}: ${dayData.title}`);
-                    const iconContainer = createElement('span', null, {
-                        'class': 'flex items-center ml-2',
-                        'style': 'gap: 0.5rem;'
-                    });
-
-                    if (isCompleted || isLocked) {
-                        const statusIconName = isLocked ? 'lock' : 'check-circle-2';
-                        const statusIcon = createElement('i', null, {
-                            'data-lucide': statusIconName,
-                            'class': 'w-5 h-5 flex-shrink-0'
-                        });
-                        if (isCompleted) statusIcon.style.color = 'var(--success)';
-                        if (isLocked) statusIcon.style.color = 'var(--muted-foreground)';
-                        iconContainer.appendChild(statusIcon);
-                    }
-
-                    const chevronIcon = createElement('i', null, {
-                        'data-lucide': 'chevron-down',
-                        'class': 'w-5 h-5 transition-transform duration-300 flex-shrink-0'
-                    });
-                    iconContainer.appendChild(chevronIcon);
-
-                    button.append(titleSpan, iconContainer);
-
-                    const contentWrapper = createElement('div', null, {'class': 'accordion-content'});
-                    const contentDiv = createElement('div', null, {'class': 'p-4 pt-0', 'style': 'color: var(--muted-foreground);'});
-                    contentDiv.innerHTML = dayData.content;
-                    contentWrapper.appendChild(contentDiv);
-                    
-                    container.append(button, contentWrapper);
-                    planContainer.appendChild(container);
+                const list = document.createElement('ul');
+                list.classList.add('knowledge-list');
+                section.items.forEach((item) => {
+                    const li = document.createElement('li');
+                    li.textContent = item;
+                    list.appendChild(li);
                 });
-                lucide.createIcons();
-            }
-            
-            function updateUnlockedContent() {
-                renderPlan();
-                renderQuizMenu();
-            }
+                details.appendChild(list);
+                knowledgeList.appendChild(details);
+            });
 
-            function updateMainProgressBar() {
-                const totalDays = planData.length;
-                const baseProgress = 5;
-                const progressPerDay = (100 - baseProgress) / totalDays;
-                const calculatedProgress = baseProgress + (progressState.completedDays.length * progressPerDay);
-                const newProgress = Math.min(100, calculatedProgress);
+            const personaSelection = document.getElementById('personaSelection');
+            const chatArea = document.getElementById('chatArea');
+            const personaCards = personaSelection.querySelectorAll('.persona-card');
+            const personaTitle = document.getElementById('personaTitle');
+            const personaSubtitle = document.getElementById('personaSubtitle');
+            const chatWindow = document.getElementById('chatWindow');
+            const quickReplies = document.getElementById('quickReplies');
+            const messageInput = document.getElementById('messageInput');
+            const sendButton = document.getElementById('sendButton');
+            const recordButton = document.getElementById('recordButton');
+            const changePersona = document.getElementById('changePersona');
+            const recordStatus = document.getElementById('recordStatus');
 
-                const progressBar = document.getElementById('mainProgressBar');
-                const progressText = document.getElementById('mainProgressText');
-                
-                progressBar.style.width = `${newProgress}%`;
-                progressText.textContent = `${Math.round(newProgress)}%`;
-            }
-
-            // --- ACCORDION LOGIC ---
-            function handleAccordionToggle(toggle) {
-                if(!toggle || toggle.disabled) return;
-                const content = toggle.nextElementSibling;
-                const icon = toggle.querySelector('[data-lucide="chevron-down"]');
-                if (!icon) return; // Don't toggle for lock/check icons
-                
-                const isCurrentlyOpen = content.style.maxHeight && content.style.maxHeight !== "0px";
-                const parent = toggle.closest('.space-y-2');
-                if (parent) {
-                    parent.querySelectorAll('.accordion-content').forEach(el => {
-                        if(el !== content) {
-                           el.style.maxHeight = null;
-                           const otherIcon = el.previousElementSibling.querySelector('[data-lucide="chevron-down"]');
-                           if (otherIcon) otherIcon.classList.remove('rotate-180');
-                        }
-                    });
+            const personas = {
+                seller: {
+                    id: 'seller',
+                    title: 'ШІ-продавець',
+                    subtitle: 'Ваш експерт з роботи в магазині',
+                    greeting: 'Вітаю! Я допоможу з касою, сервісом і складними клієнтами. Що підказати?',
+                    quickReplies: [
+                        'Повернення без чеку',
+                        'Агресивний клієнт',
+                        'Як оформити Z-звіт?',
+                        'Що робити з простроченим товаром?'
+                    ]
+                },
+                cosmetologist: {
+                    id: 'cosmetologist',
+                    title: 'ШІ-косметолог',
+                    subtitle: 'Рекомендації з догляду та краси',
+                    greeting: 'Привіт! Порадити крем чи підібрати рутину догляду? Пишіть, допоможу.',
+                    quickReplies: []
+                },
+                study: {
+                    id: 'study',
+                    title: 'Помічник з уроками',
+                    subtitle: 'Пояснює навчальні матеріали',
+                    greeting: 'Ходімо розберемося з навчальними модулями. Про що поговоримо спочатку?',
+                    quickReplies: []
+                },
+                chitchat: {
+                    id: 'chitchat',
+                    title: 'Співрозмовник',
+                    subtitle: 'Легка розмова для перепочинку',
+                    greeting: 'Як проходить зміна? Можу підтримати бесіду або підняти настрій!',
+                    quickReplies: []
                 }
-                
-                if (!isCurrentlyOpen) {
-                    content.style.maxHeight = content.scrollHeight + "px";
-                    icon.classList.add('rotate-180');
-                } else {
-                    content.style.maxHeight = null;
-                    icon.classList.remove('rotate-180');
-                }
-            }
-            
-            planContainer.addEventListener('click', (e) => handleAccordionToggle(e.target.closest('.accordion-toggle')));
-            document.querySelector('#standards-page').addEventListener('click', (e) => handleAccordionToggle(e.target.closest('.accordion-toggle')));
-            document.querySelector('#checklists-page').addEventListener('click', (e) => handleAccordionToggle(e.target.closest('.accordion-toggle')));
-
-
-            // --- QUIZ DATA & LOGIC ---
-            const allQuizzes = {
-                day1: { title: "Тест: День 1", description: "Знайомство та орієнтація", questions: [
-                    { question: "Що робить buddy/наставник у перший тиждень?", answers: ["Контролює касу замість вас", "Супроводжує, відповідає на питання, дає мікрозавдання", "Оцінює лише штрафи"], correct: 1 },
-                    { question: "Де в Poster на касі дивитись X/Z-звіт?", answers: ["В головному меню POS/касові зміни", "Лише в адмін-панелі", "Ніде"], correct: 0 },
-                    { question: "«Небезпечна температурна зона» для їжі — це приблизно:", answers: ["5–60 °C", "0–20 °C", "60–90 °C"], correct: 0 },
-                ]},
-                day2: { title: "Тест: День 2", description: "Перші дії в POS", questions: [
-                    { question: "Порядок старту зміни: логін → PIN → ... → «Відкрити». Який крок пропущено?", answers: ["Ввести «Залишок у касі»", "Зробити X-звіт", "Перевірити пошту"], correct: 0 },
-                    { question: "X-звіт — це:", answers: ["Перевірка стану продажів у середині зміни (не відправляється в ДПС)", "Фінальний звіт для податкової", "Звіт по залишках на складі"], correct: 0 }
-                ]},
-                day3: { title: "Тест: День 3", description: "ПРРО та Фіскалізація", questions: [
-                    { question: "Z-звіт — це...", answers: ["Добовий підсумок зміни, який відправляється в ДПС", "Звіт, який можна робити багато разів на день", "Звіт про популярні товари"], correct: 0 },
-                    { question: "Чим X-звіт відрізняється від Z-звіту?", answers: ["Не відправляється на фіскальний сервер і служить для внутрішнього контролю", "Нічим, це одне й те саме", "X-звіт містить більше даних"], correct: 0 },
-                ]},
-                day4: { title: "Тест: День 4", description: "Клієнтський сервіс", questions: [
-                    { question: "Чи можна відмовити у поверненні товару, якщо у клієнта немає паперового чека?", answers: ["Так, без паперового чека повернення неможливе", "Ні, якщо є інші докази покупки", "Тільки за дозволом директора"], correct: 1 },
-                    { question: "Що є першим кроком в алгоритмі деескалації конфлікту LEARN?", answers: ["L - Listen (Вислухати клієнта)", "E - Empathize (Поспівчувай)", "A - Ask (Поставити питання)"], correct: 0 }
-                ]},
-                day5: { title: "Тест: День 5", description: "Знання Товару", questions: [
-                    { question: "Що обов'язково має бути на харчовій етикетці?", answers: ["Тільки назва", "Назва + ціна", "Назва, склад, виділені алергени, умови зберігання"], correct: 2 },
-                    { question: "«Небезпечна зона температур» для продуктів:", answers: ["0–20 °C", "≈5–60 °C", "70–100 °C"], correct: 1 }
-                ]},
-                day6: { title: "Тест: День 6", description: "Залік та готовність до зміни", questions: [
-                    { question: "Яка головна мета практичного \"Заліку-лайт\" шостого дня?", answers: ["Перевірити лише теоретичні знання", "Підтвердити стабільну роботу з касою, сервісом та HACCP", "Вивчити нові товари"], correct: 1 },
-                    { question: "Що демонструє стажер перед допуском до самостійної зміни?", answers: ["Стійке володіння касою, сервісними сценаріями та дотримання FIFO/HACCP", "Лише швидкість пробиття чеків", "Тільки знання законодавства"], correct: 0 },
-                    { question: "Що робити після успішного проходження шостого дня?", answers: ["Одразу закрити зміну без фіскалізації", "Залишити прогрес без змін", "Перейти до самостійної роботи, маючи підтвердження наставника"], correct: 2 }
-                ]}
             };
 
-            let currentQuizKey = '';
-            let currentQuizData = []; let currentQuestion = 0; let score = 0; let userAnswers = [];
-            const quizMenu = document.getElementById('quiz-menu'); const quizStartScreen = document.getElementById('quiz-start');
-            const quizMainScreen = document.getElementById('quiz-main');
+            let selectedPersona = null;
+            let isSending = false;
+            let mediaRecorder = null;
+            let recordChunks = [];
+            let isRecording = false;
 
-            function renderQuizMenu() {
-                quizMenu.innerHTML = '';
-                Object.keys(allQuizzes).forEach(quizId => {
-                    const day = parseInt(quizId.replace('day', ''));
-                    const isLocked = day > progressState.completedDays.length + 1;
-                    const isCompleted = progressState.completedDays.includes(day);
-
-                    const quizInfo = allQuizzes[quizId];
-                    const button = createElement('button', null, {
-                        'data-quiz-id': quizId,
-                        'class': 'w-full text-left p-4 rounded-lg font-semibold transition-colors flex justify-between items-center'
-                    });
-
-                    button.disabled = isLocked;
-                    
-                    const textDiv = createElement('div');
-                    const title = createElement('span', quizInfo.title, {'class': 'block text-lg'});
-                    const description = createElement('span', quizInfo.description, {'class': 'block text-sm opacity-80 mt-1'});
-                    textDiv.append(title, description);
-
-                    const icon = createElement('i', null, {'class': 'w-6 h-6 flex-shrink-0 ml-4'});
-
-                    if(isLocked) {
-                        button.classList.add('opacity-50', 'cursor-not-allowed');
-                        button.style.backgroundColor = 'var(--secondary-background)';
-                        icon.setAttribute('data-lucide', 'lock');
-                    } else if (isCompleted) {
-                        button.style.backgroundColor = 'var(--secondary-background)';
-                        icon.setAttribute('data-lucide', 'check-circle-2');
-                        icon.style.color = 'var(--success)';
-                    } else {
-                        button.style.backgroundColor = 'var(--primary)';
-                        button.style.color = 'var(--primary-foreground)';
-                        icon.setAttribute('data-lucide', 'play-circle');
-                    }
-                    
-                    button.append(textDiv, icon);
-                    quizMenu.appendChild(button);
-                });
-                lucide.createIcons();
-            }
-
-            function startQuiz(quizId) {
-                currentQuizKey = quizId;
-                currentQuizData = allQuizzes[quizId].questions;
-                document.getElementById('quiz-title').textContent = allQuizzes[quizId].title;
-                document.getElementById('quiz-description').textContent = allQuizzes[quizId].description;
-                
-                quizStartScreen.classList.add('hidden');
-                quizMainScreen.classList.remove('hidden');
-                document.getElementById('quiz-questions').classList.remove('hidden');
-                document.getElementById('quiz-results').classList.add('hidden');
-                restartQuizState();
-                showQuestion();
-            }
-
-            quizMenu.addEventListener('click', (e) => {
-                const button = e.target.closest('button');
-                if (button && button.dataset.quizId && !button.disabled) startQuiz(button.dataset.quizId);
-            });
-            
-            function showQuestion() {
-                const question = currentQuizData[currentQuestion];
-                document.getElementById('question-text').textContent = question.question;
-                document.getElementById('current-question').textContent = currentQuestion + 1;
-                document.getElementById('total-questions').textContent = currentQuizData.length;
-                document.getElementById('progress-bar').style.width = ((currentQuestion + 1) / currentQuizData.length) * 100 + '%';
-                
-                const answersContainer = document.getElementById('answers-container');
-                answersContainer.innerHTML = '';
-                question.answers.forEach((answer, index) => {
-                    const answerDiv = createElement('div', null, { 'class': 'answer-option flex items-center p-3 rounded-lg cursor-pointer', 'style': 'border-color: var(--border);', 'data-answer': index });
-                    const radio = createElement('input', null, { type: 'radio', name: 'answer', value: index, class: 'mr-3 h-4 w-4' });
-                    const label = createElement('span', answer, { class: 'flex-1' });
-                    answerDiv.append(radio, label);
-                    answersContainer.appendChild(answerDiv);
-                    answerDiv.addEventListener('click', () => {
-                        radio.checked = true;
-                        userAnswers[currentQuestion] = index;
-                        document.querySelectorAll('.answer-option').forEach(el => { el.style.borderColor = 'var(--border)'; el.style.backgroundColor = 'transparent' });
-                        answerDiv.style.borderColor = 'var(--primary)';
-                        answerDiv.style.backgroundColor = 'var(--secondary-background)';
-                        updateCurrentScore();
-                    });
-                });
-
-                const prevAnswer = userAnswers[currentQuestion];
-                if (prevAnswer !== undefined && prevAnswer !== null) {
-                    const answerElement = answersContainer.children[prevAnswer];
-                    if (answerElement) {
-                        answerElement.querySelector('input').checked = true;
-                        answerElement.style.borderColor = 'var(--primary)';
-                        answerElement.style.backgroundColor = 'var(--secondary-background)';
-                    }
-                }
-                updateCurrentScore(); updateNavigationButtons();
-            }
-            
-            function updateCurrentScore() {
-                 score = 0;
-                 userAnswers.forEach((answer, index) => { if (answer === currentQuizData[index].correct) score++; });
-                document.getElementById('current-score').textContent = score;
-            }
-
-            function nextQuestion() {
-                const selectedAnswer = document.querySelector('input[name="answer"]:checked');
-                if (selectedAnswer) userAnswers[currentQuestion] = parseInt(selectedAnswer.value);
-                else userAnswers[currentQuestion] = undefined;
-                updateCurrentScore();
-                if (currentQuestion < currentQuizData.length - 1) { currentQuestion++; showQuestion(); }
-                else { showResults(); updateNavigationButtons(); }
-            }
-
-            function prevQuestion() {
-                const selectedAnswer = document.querySelector('input[name="answer"]:checked');
-                if (selectedAnswer) userAnswers[currentQuestion] = parseInt(selectedAnswer.value);
-                updateCurrentScore();
-                if(currentQuestion > 0) { currentQuestion--; showQuestion(); }
-                else updateNavigationButtons();
-            }
-
-            function updateNavigationButtons() {
-                document.getElementById('prev-question').classList.toggle('hidden', currentQuestion === 0);
-                document.getElementById('next-question').textContent = (currentQuestion === currentQuizData.length - 1) ? 'Завершити тест' : 'Наступне';
-            }
-
-            function showResults() {
-                updateCurrentScore();
-                document.getElementById('quiz-questions').classList.add('hidden');
-                document.getElementById('quiz-results').classList.remove('hidden');
-                document.getElementById('progress-bar').style.width = '100%';
-                document.getElementById('final-score').textContent = score;
-                document.getElementById('max-score').textContent = currentQuizData.length;
-                const resultMessage = document.getElementById('result-message');
-                const percentage = (score / currentQuizData.length);
-                
-                if (percentage >= PASS_THRESHOLD) {
-                    resultMessage.textContent = 'Відмінно! Ви добре знаєте матеріал. Наступний день розблоковано.';
-                    const dayNumber = parseInt(currentQuizKey.replace('day', ''));
-                    if (!progressState.completedDays.includes(dayNumber)) {
-                        progressState.completedDays.push(dayNumber);
-                        saveProgress();
-                        updateUnlockedContent();
-                        updateMainProgressBar();
-                    }
+            function appendMessage(role, content, options = {}) {
+                const bubble = document.createElement('div');
+                bubble.classList.add('message', role);
+                if (options.typing) {
+                    bubble.innerHTML = '<div class="typing" aria-hidden="true"><span></span><span></span><span></span></div>';
                 } else {
-                    resultMessage.textContent = 'Потрібно більше вивчити матеріал. Рекомендуємо пройти тест знову.';
+                    bubble.innerHTML = content.replace(/\n/g, '<br>');
+                }
+                chatWindow.appendChild(bubble);
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+                return bubble;
+            }
+
+            function sendSystemMessage(text) {
+                appendMessage('system', text);
+            }
+
+            function startChat(persona) {
+                selectedPersona = persona;
+                personaSelection.hidden = true;
+                chatArea.hidden = false;
+                chatWindow.innerHTML = '';
+                personaTitle.textContent = persona.title;
+                personaSubtitle.textContent = persona.subtitle;
+                if (persona.quickReplies.length) {
+                    quickReplies.innerHTML = '';
+                    persona.quickReplies.forEach((item) => {
+                        const button = document.createElement('button');
+                        button.type = 'button';
+                        button.textContent = item;
+                        button.addEventListener('click', () => {
+                            messageInput.value = item;
+                            messageInput.focus();
+                        });
+                        quickReplies.appendChild(button);
+                    });
+                    quickReplies.hidden = false;
+                } else {
+                    quickReplies.hidden = true;
+                    quickReplies.innerHTML = '';
+                }
+                appendMessage('assistant', persona.greeting);
+            }
+
+            personaCards.forEach((card) => {
+                card.addEventListener('click', () => {
+                    const personaKey = card.getAttribute('data-persona');
+                    if (!personaKey) return;
+                    const persona = personas[personaKey];
+                    if (!persona) return;
+                    startChat(persona);
+                });
+            });
+
+            changePersona.addEventListener('click', () => {
+                selectedPersona = null;
+                chatArea.hidden = true;
+                personaSelection.hidden = false;
+                chatWindow.innerHTML = '';
+            });
+
+            async function blobToBase64(blob) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onloadend = () => {
+                        const base64data = reader.result?.split(',')[1];
+                        if (!base64data) {
+                            reject(new Error('Не вдалося кодувати аудіо'));
+                        } else {
+                            resolve(base64data);
+                        }
+                    };
+                    reader.onerror = reject;
+                    reader.readAsDataURL(blob);
+                });
+            }
+
+            async function sendMessageToServer(payload) {
+                try {
+                    const response = await fetch(WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                    const data = await response.json();
+                    if (Array.isArray(data) && data[0]?.output) {
+                        return data[0].output;
+                    }
+                    if (data?.output) {
+                        return data.output;
+                    }
+                    return 'Отримано відповідь, але її не вдалося розпізнати.';
+                } catch (error) {
+                    console.error('Помилка запиту', error);
+                    return 'Не вдалося отримати відповідь. Перевірте зʼєднання або спробуйте ще раз.';
                 }
             }
 
-            function restartQuizState() { currentQuestion = 0; score = 0; userAnswers = []; }
-            function showTestMenu() { quizStartScreen.classList.remove('hidden'); quizMainScreen.classList.add('hidden'); }
+            async function handleSend({ text, audioBase64 }) {
+                if (!selectedPersona || isSending) {
+                    return;
+                }
 
-            const nextQuestionButton = document.getElementById('next-question');
-            if (nextQuestionButton) nextQuestionButton.addEventListener('click', nextQuestion);
+                const payload = {
+                    persona: selectedPersona.id,
+                    initData,
+                    timestamp: new Date().toISOString()
+                };
 
-            const prevQuestionButton = document.getElementById('prev-question');
-            if (prevQuestionButton) prevQuestionButton.addEventListener('click', prevQuestion);
+                if (text) {
+                    payload.text = text;
+                }
+                if (audioBase64) {
+                    payload.audio = audioBase64;
+                }
 
-            document.getElementById('back-to-tests').addEventListener('click', showTestMenu);
-            document.getElementById('restart-quiz').addEventListener('click', () => {
-                 document.getElementById('quiz-questions').classList.remove('hidden');
-                 document.getElementById('quiz-results').classList.add('hidden');
-                 restartQuizState();
-                 showQuestion();
+                isSending = true;
+                sendButton.disabled = true;
+                recordButton.disabled = true;
+
+                const typingBubble = appendMessage('assistant', '', { typing: true });
+                const reply = await sendMessageToServer(payload);
+                typingBubble.remove();
+                appendMessage('assistant', reply || 'Вибачте, я не зрозумів запит. Спробуйте переформулювати.');
+
+                isSending = false;
+                sendButton.disabled = false;
+                recordButton.disabled = false;
+            }
+
+            sendButton.addEventListener('click', async () => {
+                const text = messageInput.value.trim();
+                if (!text || !selectedPersona) {
+                    return;
+                }
+                appendMessage('user', text);
+                messageInput.value = '';
+                await handleSend({ text });
             });
 
-            // Initial Load
-            loadProgress();
-        });
+            messageInput.addEventListener('keydown', async (event) => {
+                if (event.key === 'Enter' && !event.shiftKey) {
+                    event.preventDefault();
+                    sendButton.click();
+                }
+            });
+
+            async function stopRecording() {
+                if (!mediaRecorder) return;
+                mediaRecorder.stop();
+            }
+
+            recordButton.addEventListener('click', async () => {
+                if (!selectedPersona) {
+                    sendSystemMessage('Спершу оберіть персону, щоб розпочати спілкування.');
+                    return;
+                }
+                if (isRecording) {
+                    stopRecording();
+                    return;
+                }
+
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    recordChunks = [];
+                    mediaRecorder.addEventListener('dataavailable', (event) => {
+                        if (event.data.size > 0) {
+                            recordChunks.push(event.data);
+                        }
+                    });
+                    mediaRecorder.addEventListener('stop', async () => {
+                        stream.getTracks().forEach((track) => track.stop());
+                        isRecording = false;
+                        recordButton.classList.remove('is-recording');
+                        recordStatus.textContent = '';
+                        recordButton.disabled = false;
+                        if (!recordChunks.length) {
+                            return;
+                        }
+                        const blob = new Blob(recordChunks, { type: 'audio/webm' });
+                        try {
+                            const base64 = await blobToBase64(blob);
+                            appendMessage('user', '🎙️ Голосове повідомлення');
+                            await handleSend({ audioBase64: base64 });
+                        } catch (error) {
+                            console.error('Помилка обробки аудіо', error);
+                            sendSystemMessage('Не вдалося обробити голосове повідомлення. Спробуйте ще раз.');
+                        }
+                    });
+                    mediaRecorder.start();
+                    isRecording = true;
+                    recordButton.classList.add('is-recording');
+                    recordButton.disabled = false;
+                    recordStatus.textContent = 'Записуємо... Натисніть ще раз, щоб завершити.';
+                } catch (error) {
+                    console.error('Помилка доступу до мікрофона', error);
+                    recordStatus.textContent = 'Немає доступу до мікрофона. Дозвольте запис у налаштуваннях.';
+                }
+            });
+
+            // PRODUCTS
+            const productGrid = document.getElementById('productGrid');
+            const productsState = document.getElementById('productsState');
+            let productsLoaded = false;
+
+            async function fetchProducts(force) {
+                if (productsLoaded && !force) {
+                    return;
+                }
+                productsState.textContent = 'Завантажуємо каталог...';
+                productGrid.innerHTML = '';
+                try {
+                    const response = await fetch('catalog.json', { cache: force ? 'reload' : 'default' });
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+                    const products = await response.json();
+                    if (!Array.isArray(products) || !products.length) {
+                        productsState.textContent = 'Каталог поки порожній. Спробуйте пізніше.';
+                        return;
+                    }
+                    productsState.textContent = `Доступно позицій: ${products.length}`;
+                    productGrid.innerHTML = '';
+                    products.forEach((product) => {
+                        const card = document.createElement('article');
+                        card.classList.add('product-card');
+                        const img = document.createElement('img');
+                        img.alt = product.name || 'Продукт';
+                        if (product.thumbnail) {
+                            img.src = product.thumbnail;
+                        } else if (product.image) {
+                            img.src = product.image;
+                        }
+                        card.appendChild(img);
+                        const title = document.createElement('span');
+                        title.textContent = product.name || 'Без назви';
+                        card.appendChild(title);
+                        card.addEventListener('click', () => {
+                            openModal(product.image || product.thumbnail, product.name);
+                        });
+                        productGrid.appendChild(card);
+                    });
+                    productsLoaded = true;
+                } catch (error) {
+                    console.error('Помилка каталогу', error);
+                    productsState.textContent = 'Не вдалося завантажити каталог. Перевірте зʼєднання або натисніть ⟳.';
+                }
+            }
+
+            const imageModal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            const modalClose = document.getElementById('modalClose');
+
+            function openModal(src, alt) {
+                if (!src) return;
+                modalImage.src = src;
+                modalImage.alt = alt || 'Зображення продукту';
+                imageModal.classList.add('active');
+            }
+
+            function closeModal() {
+                imageModal.classList.remove('active');
+                modalImage.src = '';
+            }
+
+            modalClose.addEventListener('click', closeModal);
+            imageModal.addEventListener('click', (event) => {
+                if (event.target === imageModal) {
+                    closeModal();
+                }
+            });
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    closeModal();
+                }
+            });
+
+            // accessibility focus trap for new page
+            appMain.addEventListener('transitionend', () => {
+                const activePage = document.querySelector('.page.active');
+                const focusable = activePage?.querySelector('button, a, textarea, input');
+                focusable?.focus({ preventScroll: true });
+            });
+
+            // initial knowledge open first
+            const firstDetails = knowledgeList.querySelector('details');
+            if (firstDetails) {
+                firstDetails.setAttribute('open', '');
+            }
+        })();
     </script>
 </body>
 </html>
-
