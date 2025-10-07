@@ -45,6 +45,32 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
+        @supports (padding: max(0px)) {
+            body {
+                padding-top: max(env(safe-area-inset-top), 0px);
+                padding-bottom: max(env(safe-area-inset-bottom), 0px);
+            }
+        }
+
+        html[data-platform="ios"] body {
+            font-family: "SF Pro Text", "SF Pro Display", "Inter", system-ui, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html[data-platform="android"] body {
+            font-family: "Roboto", "Inter", "Segoe UI", system-ui, sans-serif;
+        }
+
+        html[data-platform="windows"] body {
+            font-family: "Segoe UI", "Inter", system-ui, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html[data-platform="mac"] body {
+            font-family: "SF Pro Display", "Inter", system-ui, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
         .app-shell {
             max-width: 720px;
             margin: 0 auto;
@@ -814,6 +840,18 @@
         (function () {
             const WEBHOOK_URL = "https://example.com/gb-assistant";
             const tg = window.Telegram ? window.Telegram.WebApp : undefined;
+
+            function detectPlatform() {
+                const ua = navigator.userAgent || '';
+                const platform = navigator.userAgentData?.platform || navigator.platform || '';
+                if (/iPad|iPhone|iPod/.test(ua)) return 'ios';
+                if (/Android/.test(ua)) return 'android';
+                if (/Mac/.test(platform)) return 'mac';
+                if (/Win/.test(platform)) return 'windows';
+                return 'other';
+            }
+
+            document.documentElement.dataset.platform = detectPlatform();
             if (tg) {
                 try {
                     tg.ready();
@@ -894,7 +932,9 @@
                 currentPage = pageId;
                 const isHome = pageId === 'home';
                 backButton.disabled = isHome;
-                headerTitle.textContent = isHome ? 'Ідеальний Продавець 2.0' : document.getElementById(pageId).querySelector('h2, h3')?.textContent || 'Ідеальний Продавець 2.0';
+                const activePage = document.getElementById(pageId);
+                const pageHeading = activePage?.querySelector('h2, h3');
+                headerTitle.textContent = isHome ? 'Ідеальний Продавець 2.0' : pageHeading?.textContent || 'Ідеальний Продавець 2.0';
                 headerSubtitle.textContent = isHome ? 'Все для успішної зміни' : 'Поверніться, щоб обрати інший розділ';
                 focusFirstInteractive(pageId);
             }
