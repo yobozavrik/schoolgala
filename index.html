@@ -4,32 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ідеальний Продавець 2.0</title>
+    <meta id="themeColorMeta" name="theme-color" content="#f3f4f6">
     <meta name="theme-color" content="#111827" media="(prefers-color-scheme: dark)">
     <meta name="theme-color" content="#f3f4f6" media="(prefers-color-scheme: light)">
     <style>
         :root {
+            color-scheme: light;
             --background: #f3f4f6;
-            --foreground: #111827;
+            --foreground: #0f172a;
             --card: #ffffff;
-            --muted: #6b7280;
-            --border: #e5e7eb;
+            --muted: #4b5563;
+            --border: #e2e8f0;
             --primary: #f97316;
-            --primary-foreground: #0f172a;
+            --primary-foreground: #0b1120;
             --accent: #111827;
-            --shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04);
+            --shadow: 0 22px 40px -20px rgb(15 23 42 / 0.25);
             --radius-lg: 1.25rem;
         }
 
         html.dark {
-            --background: #111827;
-            --foreground: #f9fafb;
-            --card: #1f2937;
-            --muted: #9ca3af;
-            --border: #374151;
+            color-scheme: dark;
+            --background: #0f172a;
+            --foreground: #f8fafc;
+            --card: #1e293b;
+            --muted: #cbd5f5;
+            --border: #27364a;
             --primary: #f59e0b;
-            --primary-foreground: #111827;
-            --accent: #f9fafb;
-            --shadow: 0 15px 30px -10px rgb(249 250 251 / 0.15);
+            --primary-foreground: #0f172a;
+            --accent: #f8fafc;
+            --shadow: 0 24px 48px -24px rgb(15 23 42 / 0.8);
         }
 
         * {
@@ -43,6 +46,33 @@
             background-color: var(--background);
             color: var(--foreground);
             transition: background-color 0.3s ease, color 0.3s ease;
+            line-height: 1.6;
+        }
+
+        @supports (padding: max(0px)) {
+            body {
+                padding-top: max(env(safe-area-inset-top), 0px);
+                padding-bottom: max(env(safe-area-inset-bottom), 0px);
+            }
+        }
+
+        html[data-platform="ios"] body {
+            font-family: "SF Pro Text", "SF Pro Display", "Inter", system-ui, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html[data-platform="android"] body {
+            font-family: "Roboto", "Inter", "Segoe UI", system-ui, sans-serif;
+        }
+
+        html[data-platform="windows"] body {
+            font-family: "Segoe UI", "Inter", system-ui, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html[data-platform="mac"] body {
+            font-family: "SF Pro Display", "Inter", system-ui, sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
         @supports (padding: max(0px)) {
@@ -112,12 +142,12 @@
             border-radius: 999px;
             border: 1px solid transparent;
             background: color-mix(in srgb, var(--primary) 12%, transparent);
-            color: var(--foreground);
+            color: var(--accent);
             transition: background-color 0.2s ease, transform 0.2s ease;
         }
 
         .icon-button:hover {
-            background: color-mix(in srgb, var(--primary) 18%, transparent);
+            background: color-mix(in srgb, var(--primary) 20%, transparent);
             transform: translateY(-1px);
         }
 
@@ -643,7 +673,7 @@
                 </div>
                 <div class="header-group">
                     <button id="refreshButton" class="icon-button" aria-label="Оновити" title="Оновити дані">⟳</button>
-                    <button id="themeToggle" class="icon-button" aria-label="Змінити тему">☀️</button>
+                    <button id="themeToggle" class="icon-button" aria-pressed="false" aria-label="Увімкнути темну тему" title="Змінити тему">☀️</button>
                 </div>
             </div>
         </header>
@@ -864,44 +894,44 @@
             const initData = tg?.initData || "";
             const userData = tg?.initDataUnsafe?.user || {};
 
-            const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const prefersDarkQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
             const themeToggle = document.getElementById('themeToggle');
+            const themeColorMeta = document.getElementById('themeColorMeta');
 
             function persistTheme(theme) {
                 try {
                     localStorage.setItem('ideal-seller-theme', theme);
                 } catch (error) {
                     console.warn('Cannot persist theme preference', error);
-                }
-            }
-
-            function applyTheme(theme) {
-                if (theme === 'dark') {
-                    document.documentElement.classList.add('dark');
-                    themeToggle?.textContent = '🌙';
-                } else {
-                    document.documentElement.classList.remove('dark');
-                    themeToggle?.textContent = '☀️';
-                }
-                persistTheme(theme);
-            }
-
-            let savedTheme = null;
-            try {
-                savedTheme = localStorage.getItem('ideal-seller-theme');
-            } catch (error) {
-                console.warn('Cannot read saved theme', error);
-            }
-            if (tg?.colorScheme === 'dark' || savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-                applyTheme('dark');
+main
             } else {
-                applyTheme('light');
+                applyTheme('light', { remember: false });
             }
 
             themeToggle?.addEventListener('click', () => {
-                const isDark = document.documentElement.classList.toggle('dark');
-                applyTheme(isDark ? 'dark' : 'light');
+main
             });
+
+            if (prefersDarkQuery) {
+                const handleSchemeChange = (event) => {
+                    if (!userSelectedTheme) {
+                        applyTheme(event.matches ? 'dark' : 'light', { remember: false });
+                    }
+                };
+                if (typeof prefersDarkQuery.addEventListener === 'function') {
+                    prefersDarkQuery.addEventListener('change', handleSchemeChange);
+                } else if (typeof prefersDarkQuery.addListener === 'function') {
+                    prefersDarkQuery.addListener(handleSchemeChange);
+                }
+            }
+
+            if (tg?.onEvent) {
+                tg.onEvent('themeChanged', (event) => {
+                    if (userSelectedTheme) return;
+                    const scheme = event?.colorScheme || tg.colorScheme;
+                    applyTheme(scheme === 'dark' ? 'dark' : 'light', { remember: false });
+                });
+            }
 
             const firstName = userData?.first_name ? userData.first_name : 'колего';
             const welcomeHeadline = document.getElementById('welcomeHeadline');
