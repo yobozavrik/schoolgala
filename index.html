@@ -75,6 +75,32 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        @supports (padding: max(0px)) {
+            body {
+                padding-top: max(env(safe-area-inset-top), 0px);
+                padding-bottom: max(env(safe-area-inset-bottom), 0px);
+            }
+        }
+
+        html[data-platform="ios"] body {
+            font-family: "SF Pro Text", "SF Pro Display", "Inter", system-ui, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html[data-platform="android"] body {
+            font-family: "Roboto", "Inter", "Segoe UI", system-ui, sans-serif;
+        }
+
+        html[data-platform="windows"] body {
+            font-family: "Segoe UI", "Inter", system-ui, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        html[data-platform="mac"] body {
+            font-family: "SF Pro Display", "Inter", system-ui, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
         .app-shell {
             max-width: 720px;
             margin: 0 auto;
@@ -877,54 +903,13 @@
                     localStorage.setItem('ideal-seller-theme', theme);
                 } catch (error) {
                     console.warn('Cannot persist theme preference', error);
-                }
-            }
-
-            let userSelectedTheme = false;
-            let savedTheme = null;
-            try {
-                savedTheme = localStorage.getItem('ideal-seller-theme');
-                userSelectedTheme = savedTheme === 'dark' || savedTheme === 'light';
-            } catch (error) {
-                console.warn('Cannot read saved theme', error);
-            }
-
-            function applyTheme(theme, { remember = true } = {}) {
-                const nextTheme = theme === 'dark' ? 'dark' : 'light';
-                document.documentElement.classList.toggle('dark', nextTheme === 'dark');
-                document.documentElement.dataset.theme = nextTheme;
-
-                if (themeToggle) {
-                    const icon = nextTheme === 'dark' ? '🌙' : '☀️';
-                    const label = nextTheme === 'dark' ? 'Увімкнути світлу тему' : 'Увімкнути темну тему';
-                    themeToggle.textContent = icon;
-                    themeToggle.setAttribute('aria-pressed', nextTheme === 'dark' ? 'true' : 'false');
-                    themeToggle.setAttribute('aria-label', label);
-                    themeToggle.setAttribute('title', label);
-                }
-
-                if (themeColorMeta) {
-                    themeColorMeta.setAttribute('content', nextTheme === 'dark' ? '#0f172a' : '#f3f4f6');
-                }
-
-                if (remember) {
-                    persistTheme(nextTheme);
-                    userSelectedTheme = true;
-                    savedTheme = nextTheme;
-                }
-            }
-
-            if (userSelectedTheme && savedTheme) {
-                applyTheme(savedTheme, { remember: false });
-            } else if (tg?.colorScheme === 'dark' || prefersDarkQuery?.matches) {
-                applyTheme('dark', { remember: false });
+main
             } else {
                 applyTheme('light', { remember: false });
             }
 
             themeToggle?.addEventListener('click', () => {
-                const nextTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
-                applyTheme(nextTheme);
+main
             });
 
             if (prefersDarkQuery) {
