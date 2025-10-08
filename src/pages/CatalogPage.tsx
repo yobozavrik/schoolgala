@@ -3,14 +3,20 @@ import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { ExternalLink, Play } from "lucide-react";
 import { fetchCatalog } from "@/lib/api";
+import { enableStaticPrefetch } from "@/config/env";
+import { getLocalCatalogItems } from "@/lib/local-data";
 import type { CatalogItem } from "@/types/catalog";
 import { Modal } from "@/components/Modal";
 import { Button } from "@/components/ui/Button";
 
 const CatalogPage = () => {
-  const { data, isLoading, error } = useQuery<CatalogItem[]>({
+  const { data, isLoading, error, isPlaceholderData } = useQuery<CatalogItem[]>({
     queryKey: ["catalog"],
     queryFn: fetchCatalog,
+    initialData: enableStaticPrefetch ? () => getLocalCatalogItems() : undefined,
+    placeholderData: enableStaticPrefetch
+      ? (previous) => previous ?? getLocalCatalogItems()
+      : undefined,
   });
   const [selected, setSelected] = useState<CatalogItem | null>(null);
 
@@ -20,7 +26,9 @@ const CatalogPage = () => {
         <h1 className="text-2xl font-semibold text-skin-text">Наша продукція</h1>
         <p className="text-sm text-skin-muted">Знайомтесь із лінійкою «Галя Балувана» та відкривайте картку для деталей.</p>
       </div>
-      {isLoading ? <div className="text-sm text-skin-muted">Завантаження…</div> : null}
+      {isLoading && !isPlaceholderData ? (
+        <div className="text-sm text-skin-muted">Завантаження…</div>
+      ) : null}
       {error ? (
         <div className="text-sm text-red-500">Не вдалося отримати каталог. Спробуйте пізніше.</div>
       ) : null}

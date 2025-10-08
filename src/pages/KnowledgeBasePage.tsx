@@ -6,6 +6,8 @@ import type { KnowledgeBaseArticleSummary } from "@/types/knowledge-base";
 import { SearchBar } from "@/components/SearchBar";
 import { Accordion, AccordionItem } from "@/components/Accordion";
 import { Badge } from "@/components/ui/Badge";
+import { enableStaticPrefetch } from "@/config/env";
+import { getLocalKnowledgeBaseSummaries } from "@/lib/local-data";
 
 const KnowledgeBasePage = () => {
   const navigate = useNavigate();
@@ -17,9 +19,12 @@ const KnowledgeBasePage = () => {
     return () => window.clearTimeout(timeout);
   }, [search]);
 
-  const { data, isLoading, error } = useQuery<KnowledgeBaseArticleSummary[]>({
+  const { data, isLoading, error, isPlaceholderData } = useQuery<KnowledgeBaseArticleSummary[]>({
     queryKey: ["kb", debounced],
     queryFn: () => fetchKnowledgeBase(debounced),
+    initialData: enableStaticPrefetch && !debounced ? () => getLocalKnowledgeBaseSummaries() : undefined,
+    placeholderData:
+      enableStaticPrefetch && !debounced ? () => getLocalKnowledgeBaseSummaries() : undefined,
   });
 
   const grouped = useMemo(() => {
@@ -41,7 +46,7 @@ const KnowledgeBasePage = () => {
         </p>
       </div>
       <SearchBar value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Пошук статей" />
-      {isLoading ? <div className="text-sm text-skin-muted">Завантаження…</div> : null}
+      {isLoading && !isPlaceholderData ? <div className="text-sm text-skin-muted">Завантаження…</div> : null}
       {error ? (
         <div className="text-sm text-red-500">Не вдалося завантажити статті. Спробуйте пізніше.</div>
       ) : null}
