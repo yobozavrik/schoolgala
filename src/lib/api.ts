@@ -1,7 +1,10 @@
 import type { CatalogItem } from "@/types/catalog";
 import type { KnowledgeBaseArticle, KnowledgeBaseArticleSummary } from "@/types/knowledge-base";
-import { knowledgeBaseArticles } from "@/assets/data/knowledge-base";
-import { catalogItems } from "@/assets/data/catalog";
+import {
+  getLocalCatalogItems,
+  getLocalKnowledgeBaseArticle,
+  getLocalKnowledgeBaseSummaries,
+} from "@/lib/local-data";
 
 type FetchOptions = RequestInit & { timeoutMs?: number };
 
@@ -65,14 +68,7 @@ export const sendAiMessage = async (body: AiRequestBody): Promise<AiResponse> =>
 export const fetchKnowledgeBase = async (query: string): Promise<KnowledgeBaseArticleSummary[]> => {
   const url = query ? buildUrl(kbPath, new URLSearchParams({ query }).toString()) : buildUrl(kbPath);
   if (!url) {
-    return knowledgeBaseArticles
-      .filter((article) =>
-        !query ? true : article.title.toLowerCase().includes(query.toLowerCase()),
-      )
-      .map((article) => {
-        const { contentMd: _contentMd, ...rest } = article;
-        return rest;
-      });
+    return getLocalKnowledgeBaseSummaries(query);
   }
 
   const response = await withTimeout(url);
@@ -85,7 +81,7 @@ export const fetchKnowledgeBase = async (query: string): Promise<KnowledgeBaseAr
 export const fetchKnowledgeArticle = async (id: string): Promise<KnowledgeBaseArticle> => {
   const url = buildUrl(`${kbPath}/${id}`);
   if (!url) {
-    const article = knowledgeBaseArticles.find((item) => item.id === id);
+    const article = getLocalKnowledgeBaseArticle(id);
     if (!article) {
       throw new Error("Стаття не знайдена");
     }
@@ -102,7 +98,7 @@ export const fetchKnowledgeArticle = async (id: string): Promise<KnowledgeBaseAr
 export const fetchCatalog = async (): Promise<CatalogItem[]> => {
   const url = buildUrl(catalogPath);
   if (!url) {
-    return catalogItems;
+    return getLocalCatalogItems();
   }
 
   const response = await withTimeout(url);
