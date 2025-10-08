@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import { fetchKnowledgeArticle } from "@/lib/api";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { Badge } from "@/components/ui/Badge";
+import { enableStaticPrefetch } from "@/config/env";
+import { getLocalKnowledgeBaseArticle } from "@/lib/local-data";
 
 const KnowledgeBaseArticlePage = () => {
   const { id } = useParams<{ id: string }>();
@@ -11,6 +13,8 @@ const KnowledgeBaseArticlePage = () => {
     queryKey: ["kb-article", id],
     queryFn: () => fetchKnowledgeArticle(id ?? ""),
     enabled: Boolean(id),
+    initialData: enableStaticPrefetch && id ? () => getLocalKnowledgeBaseArticle(id) : undefined,
+    placeholderData: enableStaticPrefetch && id ? () => getLocalKnowledgeBaseArticle(id) : undefined,
   });
 
   if (isLoading) {
