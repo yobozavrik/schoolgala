@@ -1,4 +1,12 @@
 import { Tile } from "@/components/Tile";
+import { Accordion, AccordionItem } from "@/components/Accordion";
+import { Badge } from "@/components/ui/Badge";
+import { enableStaticPrefetch } from "@/config/env";
+import { fetchKnowledgeBase } from "@/lib/api";
+import { getLocalKnowledgeBaseSummaries } from "@/lib/local-data";
+import type { KnowledgeBaseArticleSummary } from "@/types/knowledge-base";
+import { useQuery } from "@tanstack/react-query";
+import { motion } from "framer-motion";
 import {
   Bot,
   BookOpenCheck,
@@ -7,7 +15,7 @@ import {
   GraduationCap,
   MessageSquareShare,
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 const tiles = [
   {
@@ -48,7 +56,24 @@ const tiles = [
   },
 ];
 
+const EMERGENCY_CATEGORY = "Дії при екстрених випадках";
+
 const HomePage = () => {
+  const navigate = useNavigate();
+  const {
+    data: emergencyArticles = [],
+    isLoading,
+    error,
+    isPlaceholderData,
+  } = useQuery<KnowledgeBaseArticleSummary[], Error, KnowledgeBaseArticleSummary[]>({
+    queryKey: ["kb", "emergency-highlight"],
+    queryFn: () => fetchKnowledgeBase(""),
+    select: (articles) =>
+      articles.filter((article) => article.category === EMERGENCY_CATEGORY),
+    initialData: enableStaticPrefetch ? () => getLocalKnowledgeBaseSummaries() : undefined,
+    placeholderData: enableStaticPrefetch ? () => getLocalKnowledgeBaseSummaries() : undefined,
+  });
+
   return (
     <div className="space-y-6">
       <motion.div
@@ -67,6 +92,63 @@ const HomePage = () => {
           <Tile key={tile.title} {...tile} />
         ))}
       </div>
+      <motion.section
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.1 }}
+        className="space-y-4 rounded-2xl bg-skin-base/80 p-6 shadow-lg"
+        aria-labelledby="emergency-actions-heading"
+      >
+        <div>
+          <h2 id="emergency-actions-heading" className="text-xl font-semibold text-skin-text">
+            {EMERGENCY_CATEGORY}
+          </h2>
+          <p className="text-sm text-skin-muted">
+            Швидкий доступ до інструкцій дій під час позаштатних ситуацій.
+          </p>
+        </div>
+        {isLoading && !isPlaceholderData ? (
+          <div className="text-sm text-skin-muted">Завантаження…</div>
+        ) : null}
+        {error ? (
+          <div className="text-sm text-red-500">
+            Не вдалося завантажити екстрені інструкції. Спробуйте пізніше.
+          </div>
+        ) : null}
+        {!isLoading && !error && !emergencyArticles.length ? (
+          <div className="rounded-2xl border border-dashed border-skin-ring/60 p-4 text-sm text-skin-muted">
+            Наразі немає доступних матеріалів у цій категорії.
+          </div>
+        ) : null}
+        {emergencyArticles.length ? (
+          <Accordion>
+            <AccordionItem
+              title={EMERGENCY_CATEGORY}
+              subtitle={`${emergencyArticles.length} матеріал(и)`}
+              defaultOpen
+            >
+              <div className="space-y-3">
+                {emergencyArticles.map((article) => (
+                  <button
+                    key={article.id}
+                    type="button"
+                    onClick={() => navigate(`/kb/${article.id}`)}
+                    className="w-full rounded-2xl border border-skin-ring/60 bg-skin-base/60 p-4 text-left transition hover:border-skin-primary"
+                  >
+                    <div className="text-sm font-semibold text-skin-text">{article.title}</div>
+                    <div className="text-xs text-skin-muted">{article.tldr}</div>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {article.tags.map((tag) => (
+                        <Badge key={tag}>{tag}</Badge>
+                      ))}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </AccordionItem>
+          </Accordion>
+        ) : null}
+      </motion.section>
     </div>
   );
 };
