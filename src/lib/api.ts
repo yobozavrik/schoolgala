@@ -1,7 +1,10 @@
 import type { CatalogItem } from "@/types/catalog";
 import type { KnowledgeBaseArticle, KnowledgeBaseArticleSummary } from "@/types/knowledge-base";
-import { knowledgeBaseArticles } from "@/assets/data/knowledge-base";
-import { catalogItems } from "@/assets/data/catalog";
+import {
+  getLocalCatalogItems,
+  getLocalKnowledgeBaseArticle,
+  getLocalKnowledgeBaseSummaries,
+} from "@/lib/local-data";
 
 type FetchOptions = RequestInit & { timeoutMs?: number };
 
@@ -20,6 +23,8 @@ const baseUrl = (import.meta.env.VITE_WEBHOOK_BASE_URL as string | undefined)?.r
 const aiPath = import.meta.env.VITE_WEBHOOK_AI_PATH ?? "/ai";
 const kbPath = import.meta.env.VITE_WEBHOOK_KB_PATH ?? "/kb";
 const catalogPath = import.meta.env.VITE_WEBHOOK_CATALOG_PATH ?? "/catalog";
+const directAiWebhookUrl = (import.meta.env.VITE_AI_DIRECT_WEBHOOK_URL as string | undefined)?.trim();
+const fallbackAiWebhookUrl = "https://n8n.dmytrotovstytskyi.online/webhook-test/gala.school";
 
 const buildUrl = (path: string, query?: string) => {
   if (!baseUrl) return undefined;
@@ -41,7 +46,7 @@ export interface AiResponse {
 }
 
 export const sendAiMessage = async (body: AiRequestBody): Promise<AiResponse> => {
-  const url = buildUrl(aiPath);
+  const url = buildUrl(aiPath) ?? directAiWebhookUrl ?? fallbackAiWebhookUrl;
   if (!url) {
     await new Promise((resolve) => setTimeout(resolve, 500));
     return {
@@ -59,20 +64,37 @@ export const sendAiMessage = async (body: AiRequestBody): Promise<AiResponse> =>
     throw new Error("Не вдалося отримати відповідь від ІІ");
   }
 
-  return (await response.json()) as AiResponse;
+  const payload = await response.json();
+  if (payload && typeof payload === "object") {
+    const data = payload as Record<string, unknown>;
+    const output =
+      typeof data.output === "string"
+        ? data.output
+        : typeof data.reply === "string"
+          ? data.reply
+          : typeof data.text === "string"
+            ? data.text
+            : undefined;
+
+    return {
+      output:
+        output ??
+        "Від агента отримано відповідь у невідомому форматі. Перевірте налаштування вебхука.",
+      image: typeof data.image === "string" ? data.image : undefined,
+      videoUrl: typeof data.videoUrl === "string" ? data.videoUrl : undefined,
+    };
+  }
+
+  return {
+    output:
+      "Від агента отримано відповідь у невідомому форматі. Перевірте налаштування вебхука.",
+  };
 };
 
 export const fetchKnowledgeBase = async (query: string): Promise<KnowledgeBaseArticleSummary[]> => {
   const url = query ? buildUrl(kbPath, new URLSearchParams({ query }).toString()) : buildUrl(kbPath);
   if (!url) {
-    return knowledgeBaseArticles
-      .filter((article) =>
-        !query ? true : article.title.toLowerCase().includes(query.toLowerCase()),
-      )
-      .map((article) => {
-        const { contentMd: _contentMd, ...rest } = article;
-        return rest;
-      });
+    return getLocalKnowledgeBaseSummaries(query);
   }
 
   const response = await withTimeout(url);
@@ -85,7 +107,7 @@ export const fetchKnowledgeBase = async (query: string): Promise<KnowledgeBaseAr
 export const fetchKnowledgeArticle = async (id: string): Promise<KnowledgeBaseArticle> => {
   const url = buildUrl(`${kbPath}/${id}`);
   if (!url) {
-    const article = knowledgeBaseArticles.find((item) => item.id === id);
+    const article = getLocalKnowledgeBaseArticle(id);
     if (!article) {
       throw new Error("Стаття не знайдена");
     }
@@ -102,7 +124,7 @@ export const fetchKnowledgeArticle = async (id: string): Promise<KnowledgeBaseAr
 export const fetchCatalog = async (): Promise<CatalogItem[]> => {
   const url = buildUrl(catalogPath);
   if (!url) {
-    return catalogItems;
+    return getLocalCatalogItems();
   }
 
   const response = await withTimeout(url);

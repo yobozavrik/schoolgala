@@ -1,13 +1,14 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import App from "./App";
 import "./index.css";
 import { ThemeProvider } from "./providers/ThemeProvider";
 import { TelegramProvider } from "./providers/TelegramProvider";
+import { createQueryClient } from "@/lib/query-client";
 
-const queryClient = new QueryClient();
+const queryClient = createQueryClient();
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>

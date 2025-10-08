@@ -1,18 +1,48 @@
-import { useState } from "react";
-import { Info, Sparkles } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import { ArrowLeft, Info, Sparkles } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/Modal";
 
 export const Header = (): JSX.Element => {
   const [infoOpen, setInfoOpen] = useState(false);
+  const location = useLocation();
+
+  const { showBack, backTo } = useMemo(() => {
+    const segments = location.pathname.split("/").filter(Boolean);
+    if (segments.length === 0) {
+      return { showBack: false, backTo: "/" };
+    }
+
+    if (segments.length === 1) {
+      return { showBack: true, backTo: "/" };
+    }
+
+    return { showBack: true, backTo: `/${segments.slice(0, -1).join("/")}` };
+  }, [location.pathname]);
 
   return (
     <header className="sticky top-0 z-20 border-b border-skin-ring/50 bg-skin-card/90 backdrop-blur-md">
       <div className="flex items-center justify-between px-4 py-3 sm:px-6">
-        <div className="flex items-center gap-2 text-lg font-semibold">
-          <Sparkles className="h-5 w-5 text-skin-primary" aria-hidden />
-          <span>Ідеальний Продавець 2.0</span>
+        <div className="flex items-center gap-3">
+          {showBack ? (
+            <Button
+              asChild
+              variant="ghost"
+              className="h-10 rounded-full px-3 text-sm"
+              aria-label="Назад"
+            >
+              <Link to={backTo}>
+                <ArrowLeft className="h-4 w-4" aria-hidden />
+                <span className="hidden sm:inline">Назад</span>
+              </Link>
+            </Button>
+          ) : null}
+          <div className="flex items-center gap-2 text-lg font-semibold">
+            <Sparkles className="h-5 w-5 text-skin-primary" aria-hidden />
+            <span>Ідеальний Продавець 2.0</span>
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <ThemeToggle />
