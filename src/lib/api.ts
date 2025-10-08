@@ -23,6 +23,8 @@ const baseUrl = (import.meta.env.VITE_WEBHOOK_BASE_URL as string | undefined)?.r
 const aiPath = import.meta.env.VITE_WEBHOOK_AI_PATH ?? "/ai";
 const kbPath = import.meta.env.VITE_WEBHOOK_KB_PATH ?? "/kb";
 const catalogPath = import.meta.env.VITE_WEBHOOK_CATALOG_PATH ?? "/catalog";
+const directAiWebhookUrl = (import.meta.env.VITE_AI_DIRECT_WEBHOOK_URL as string | undefined)?.trim();
+const fallbackAiWebhookUrl = "https://n8n.dmytrotovstytskyi.online/webhook-test/gala.school";
 
 const buildUrl = (path: string, query?: string) => {
   if (!baseUrl) return undefined;
@@ -44,7 +46,7 @@ export interface AiResponse {
 }
 
 export const sendAiMessage = async (body: AiRequestBody): Promise<AiResponse> => {
-  const url = buildUrl(aiPath);
+  const url = buildUrl(aiPath) ?? directAiWebhookUrl ?? fallbackAiWebhookUrl;
   if (!url) {
     await new Promise((resolve) => setTimeout(resolve, 500));
     return {
@@ -62,7 +64,31 @@ export const sendAiMessage = async (body: AiRequestBody): Promise<AiResponse> =>
     throw new Error("Не вдалося отримати відповідь від ІІ");
   }
 
-  return (await response.json()) as AiResponse;
+  const payload = await response.json();
+  if (payload && typeof payload === "object") {
+    const data = payload as Record<string, unknown>;
+    const output =
+      typeof data.output === "string"
+        ? data.output
+        : typeof data.reply === "string"
+          ? data.reply
+          : typeof data.text === "string"
+            ? data.text
+            : undefined;
+
+    return {
+      output:
+        output ??
+        "Від агента отримано відповідь у невідомому форматі. Перевірте налаштування вебхука.",
+      image: typeof data.image === "string" ? data.image : undefined,
+      videoUrl: typeof data.videoUrl === "string" ? data.videoUrl : undefined,
+    };
+  }
+
+  return {
+    output:
+      "Від агента отримано відповідь у невідомому форматі. Перевірте налаштування вебхука.",
+  };
 };
 
 export const fetchKnowledgeBase = async (query: string): Promise<KnowledgeBaseArticleSummary[]> => {
