@@ -1,29 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Send, Mic, Square, Bot, User } from 'lucide-react';
 
-interface Message {
-  id: number;
-  role: 'user' | 'assistant';
-  content: string;
-  audioBase64?: string;
-}
-
-interface Persona {
-  id: string;
-  label: string;
-  icon: string;
-  description: string;
-}
-
-type PersonaId = 'seller' | 'psychologist' | 'companion';
-
-interface MessagesByPersona {
-  seller: Message[];
-  psychologist: Message[];
-  companion: Message[];
-}
-
-const personas: Persona[] = [
+const personas = [
   {
     id: 'seller',
     label: 'Продавець',
@@ -45,8 +23,8 @@ const personas: Persona[] = [
 ];
 
 export default function AssistantPage() {
-  const [persona, setPersona] = useState<PersonaId>('seller');
-  const [messages, setMessages] = useState<MessagesByPersona>({
+  const [persona, setPersona] = useState('seller');
+  const [messages, setMessages] = useState({
     seller: [],
     psychologist: [],
     companion: []
@@ -54,13 +32,13 @@ export default function AssistantPage() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
-  const [recordingError, setRecordingError] = useState<string | null>(null);
+  const [recordingError, setRecordingError] = useState(null);
   
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]);
-  const streamRef = useRef<MediaStream | null>(null);
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
+  const streamRef = useRef(null);
 
-  const currentMessages = messages[persona];
+  const currentMessages = messages[persona] || [];
   const activePersona = personas.find(p => p.id === persona);
 
   useEffect(() => {
@@ -74,14 +52,14 @@ export default function AssistantPage() {
     };
   }, []);
 
-  const sendMessage = async (text: string, audioBase64: string | null = null) => {
+  const sendMessage = async (text, audioBase64 = null) => {
     if (!text.trim() && !audioBase64) return;
 
-    const userMessage: Message = {
+    const userMessage = {
       id: Date.now(),
       role: 'user',
       content: text.trim() || 'Голосове повідомлення',
-      audioBase64: audioBase64 || undefined
+      audioBase64
     };
 
     setMessages(prev => ({
@@ -108,7 +86,7 @@ export default function AssistantPage() {
 
       const data = await response.json();
       
-      const aiMessage: Message = {
+      const aiMessage = {
         id: Date.now() + 1,
         role: 'assistant',
         content: data.response || data.message || data.output || 'Вибачте, не зміг отримати відповідь.'
@@ -120,7 +98,7 @@ export default function AssistantPage() {
       }));
     } catch (error) {
       console.error('Помилка AI чату:', error);
-      const errorMessage: Message = {
+      const errorMessage = {
         id: Date.now() + 1,
         role: 'assistant',
         content: 'Вибачте, сталася помилка. Перевірте інтернет або спробуйте пізніше.'
@@ -138,17 +116,12 @@ export default function AssistantPage() {
     sendMessage(input);
   };
 
-  const blobToBase64 = (blob: Blob): Promise<string> => {
+  const blobToBase64 = (blob) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onloadend = () => {
-        const result = reader.result;
-        if (typeof result === 'string') {
-          const base64 = result.split(',')[1] || '';
-          resolve(base64);
-        } else {
-          reject(new Error('Failed to convert blob'));
-        }
+        const base64 = reader.result.split(',')[1];
+        resolve(base64);
       };
       reader.onerror = reject;
       reader.readAsDataURL(blob);
@@ -224,7 +197,7 @@ export default function AssistantPage() {
     if (isRecording) {
       stopRecording();
     } else {
-      void startRecording();
+      startRecording();
     }
   };
 
@@ -242,7 +215,7 @@ export default function AssistantPage() {
           {personas.map((p) => (
             <button
               key={p.id}
-              onClick={() => setPersona(p.id as PersonaId)}
+              onClick={() => setPersona(p.id)}
               className={`p-3 rounded-xl border-2 transition-all ${
                 persona === p.id
                   ? 'border-galya-brown bg-galya-beige shadow-md'
