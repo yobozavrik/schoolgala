@@ -17,6 +17,7 @@ export const Tile = ({ title, description, icon, to }: PropsWithChildren<TilePro
       whileTap={{ scale: 0.98 }}
       onClick={() => navigate(to)}
       className="flex h-full flex-col items-start gap-3 rounded-2xl bg-skin-base/60 p-4 text-left shadow-md transition duration-200 ease-out focus-visible:ring-2 focus-visible:ring-skin-primary"
+      aria-label={`${title}: ${description}`}
     >
       <div className="inline-flex rounded-full bg-skin-primary/15 p-3 text-skin-primary">{icon}</div>
       <div>

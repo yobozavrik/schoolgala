@@ -5,9 +5,11 @@ import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { Badge } from "@/components/ui/Badge";
 import { enableStaticPrefetch } from "@/config/env";
 import { getLocalKnowledgeBaseArticle } from "@/lib/local-data";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const KnowledgeBaseArticlePage = () => {
   const { id } = useParams<{ id: string }>();
+  const { t } = useTranslation();
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["kb-article", id],
@@ -18,21 +20,25 @@ const KnowledgeBaseArticlePage = () => {
   });
 
   if (isLoading) {
-    return <div className="text-sm text-skin-muted">Завантаження статті…</div>;
+    return <div className="text-sm text-skin-muted">{t("knowledge_base.article.loading", "Завантаження статті…")}</div>;
   }
 
   if (error) {
-    return <div className="text-sm text-red-500">Не вдалося завантажити статтю.</div>;
+    return (
+      <div className="text-sm text-red-500">{t("knowledge_base.article.error", "Не вдалося завантажити статтю.")}</div>
+    );
   }
 
   if (!data) {
-    return <div className="text-sm text-skin-muted">Стаття не знайдена.</div>;
+    return <div className="text-sm text-skin-muted">{t("knowledge_base.article.not_found", "Стаття не знайдена.")}</div>;
   }
 
   return (
     <article className="space-y-4">
       <header className="space-y-2">
-        <p className="text-xs uppercase tracking-wide text-skin-muted">{data.category}</p>
+        <p className="text-xs uppercase tracking-wide text-skin-muted">
+          {t("knowledge_base.article.category", "Категорія: {{category}}", { category: data.category })}
+        </p>
         <h1 className="text-2xl font-semibold text-skin-text">{data.title}</h1>
         <p className="text-sm text-skin-muted">{data.tldr}</p>
         <div className="flex flex-wrap gap-2">
@@ -44,7 +50,7 @@ const KnowledgeBaseArticlePage = () => {
       {data.imageUrl ? (
         <img
           src={data.imageUrl}
-          alt="Ілюстрація статті"
+          alt={t("knowledge_base.article.image_alt", "Ілюстрація статті")}
           className="w-full rounded-2xl object-cover"
           loading="lazy"
         />
@@ -57,7 +63,7 @@ const KnowledgeBaseArticlePage = () => {
           rel="noopener noreferrer"
           className="inline-flex items-center rounded-full bg-skin-primary px-4 py-2 text-sm font-semibold text-white shadow-md"
         >
-          Переглянути відео
+          {t("knowledge_base.article.video", "Переглянути відео")}
         </a>
       ) : null}
     </article>

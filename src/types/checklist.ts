@@ -1,14 +1,19 @@
-export interface ChecklistSummary {
-  id: string;
-  title: string;
-  description: string;
-}
+import type { Locale } from "@/i18n/dictionary";
 
-export interface ChecklistItem {
+export interface ChecklistItemCopy {
   id: string;
   text: string;
 }
 
-export interface Checklist extends ChecklistSummary {
-  items: ChecklistItem[];
+export interface ChecklistCopy {
+  title: string;
+  description: string;
+  items: ChecklistItemCopy[];
 }
+
+export interface Checklist {
+  id: string;
+  translations: Record<Locale, ChecklistCopy>;
+}
+
+export type ChecklistSummary = Pick<ChecklistCopy, "title" | "description"> & { id: string };

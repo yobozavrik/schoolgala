@@ -4,4 +4,7 @@ export interface Contact {
   role: string;
   phone: string;
   telegram: string;
+  videoUrl?: string;
+  email?: string;
+  hours: string;
 }
