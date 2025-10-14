@@ -8,11 +8,13 @@ import { Accordion, AccordionItem } from "@/components/Accordion";
 import { Badge } from "@/components/ui/Badge";
 import { enableStaticPrefetch } from "@/config/env";
 import { getLocalKnowledgeBaseSummaries } from "@/lib/local-data";
+import { useTranslation } from "@/hooks/useTranslation";
 
 const KnowledgeBasePage = () => {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
   const [debounced, setDebounced] = useState("");
+  const { t } = useTranslation();
 
   useEffect(() => {
     const timeout = window.setTimeout(() => setDebounced(search), 300);
@@ -40,19 +42,34 @@ const KnowledgeBasePage = () => {
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-2xl font-semibold text-skin-text">База знань</h1>
+        <h1 className="text-2xl font-semibold text-skin-text">{t("knowledge_base.title", "База знань")}</h1>
         <p className="text-sm text-skin-muted">
-          Використовуйте пошук або оберіть категорію, щоб знайти потрібну інструкцію.
+          {t(
+            "knowledge_base.subtitle",
+            "Використовуйте пошук або оберіть категорію, щоб знайти потрібну інструкцію.",
+          )}
         </p>
       </div>
-      <SearchBar value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Пошук статей" />
-      {isLoading && !isPlaceholderData ? <div className="text-sm text-skin-muted">Завантаження…</div> : null}
+      <SearchBar
+        value={search}
+        onChange={(event) => setSearch(event.target.value)}
+        placeholder={t("knowledge_base.search_placeholder", "Пошук статей")}
+      />
+      {isLoading && !isPlaceholderData ? (
+        <div className="text-sm text-skin-muted">{t("knowledge_base.loading", "Завантаження…")}</div>
+      ) : null}
       {error ? (
-        <div className="text-sm text-red-500">Не вдалося завантажити статті. Спробуйте пізніше.</div>
+        <div className="text-sm text-red-500">
+          {t("knowledge_base.error", "Не вдалося завантажити статті. Спробуйте пізніше.")}
+        </div>
       ) : null}
       <Accordion>
         {grouped.map(([category, articles]) => (
-          <AccordionItem key={category} title={category} subtitle={`${articles.length} матеріал(и)`}>
+          <AccordionItem
+            key={category}
+            title={category}
+            subtitle={t("knowledge_base.count", "{{count}} матеріал(и)", { count: articles.length })}
+          >
             <div className="space-y-3">
               {articles.map((article) => (
                 <button
@@ -76,7 +93,7 @@ const KnowledgeBasePage = () => {
       </Accordion>
       {!isLoading && !grouped.length ? (
         <div className="rounded-2xl bg-skin-base/80 p-6 text-center text-sm text-skin-muted">
-          Нічого не знайдено. Уточніть запит.
+          {t("knowledge_base.empty", "Нічого не знайдено. Уточніть запит.")}
         </div>
       ) : null}
     </div>
