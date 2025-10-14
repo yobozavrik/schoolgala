@@ -1,201 +1,136 @@
-import { useEffect, useRef, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { AudioLines, Send, Square } from "lucide-react";
-import { Textarea } from "@/components/ui/Textarea";
-import { Button } from "@/components/ui/Button";
-import { ChatBubble } from "@/components/chat/ChatBubble";
-import { TypingDots } from "@/components/chat/TypingDots";
-import { sendAiMessage } from "@/lib/api";
-import { useTelegramContext } from "@/providers/TelegramProvider";
-
-interface ChatMessage {
-  id: string;
-  role: "user" | "assistant";
-  content: string;
-  image?: string;
-  videoUrl?: string;
-  audioUrl?: string;
-}
+import { useState, useRef, useEffect } from 'react';
+import { Send, Mic, Square, Bot, User } from 'lucide-react';
 
 const personas = [
   {
-    id: "seller",
-    label: "Продавець",
-    description: "Про товари, техніки продажу, мерчендайзинг та сервіс",
+    id: 'seller',
+    label: 'Продавець',
+    icon: '🛒',
+    description: 'Про товари, техніки продажу та сервіс'
   },
   {
-    id: "psychologist",
-    label: "Психолог",
-    description: "Підтримка емоційного стану, робота зі стресом та втомою",
+    id: 'psychologist',
+    label: 'Психолог',
+    icon: '💆',
+    description: 'Підтримка емоційного стану та робота зі стресом'
   },
   {
-    id: "companion",
-    label: "Потеревенькати",
-    description: "Легка дружня бесіда, щоб відволіктися під час зміни",
-  },
+    id: 'companion',
+    label: 'Потеревенькати',
+    icon: '☕',
+    description: 'Легка дружня бесіда під час зміни'
+  }
 ];
 
-const AssistantPage = () => {
-  const { initData } = useTelegramContext();
-  const [persona, setPersona] = useState(personas[0].id);
-  const [inputValue, setInputValue] = useState("");
-  const [messagesByPersona, setMessagesByPersona] = useState<Record<string, ChatMessage[]>>(
-    () =>
-      Object.fromEntries(personas.map((item) => [item.id, []])) as Record<string, ChatMessage[]>,
-  );
-  const [isRecording, setIsRecording] = useState(false);
-  const [recordingError, setRecordingError] = useState<string | null>(null);
-  const [canRecordAudio, setCanRecordAudio] = useState(false);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]);
-  const streamRef = useRef<MediaStream | null>(null);
-  const audioUrlsRef = useRef<string[]>([]);
-
-  const { mutateAsync, isPending } = useMutation({
-    mutationFn: sendAiMessage,
+export default function AssistantPage() {
+  const [persona, setPersona] = useState('seller');
+  const [messages, setMessages] = useState({
+    seller: [],
+    psychologist: [],
+    companion: []
   });
+  const [input, setInput] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordingError, setRecordingError] = useState(null);
+  
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
+  const streamRef = useRef(null);
 
-  const currentMessages = messagesByPersona[persona] ?? [];
-  const activePersona = personas.find((item) => item.id === persona);
+  const currentMessages = messages[persona] || [];
+  const activePersona = personas.find(p => p.id === persona);
 
   useEffect(() => {
-    if (typeof navigator !== "undefined") {
-      const getUserMedia = navigator.mediaDevices?.getUserMedia;
-      if (typeof getUserMedia === "function") {
-        setCanRecordAudio(true);
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
       }
-    }
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+        mediaRecorderRef.current.stop();
+      }
+    };
   }, []);
 
-  useEffect(
-    () => () => {
-      audioUrlsRef.current.forEach((url) => URL.revokeObjectURL(url));
-      audioUrlsRef.current = [];
-      const stream = streamRef.current;
-      stream?.getTracks().forEach((track) => track.stop());
-      streamRef.current = null;
-      const recorder = mediaRecorderRef.current;
-      if (recorder && recorder.state !== "inactive") {
-        recorder.stop();
-      }
-    },
-    [],
-  );
+  const sendMessage = async (text, audioBase64 = null) => {
+    if (!text.trim() && !audioBase64) return;
 
-  const sendMessage = async ({
-    text,
-    audioBase64,
-    audioUrl,
-    personaId = persona,
-  }: {
-    text?: string;
-    audioBase64?: string;
-    audioUrl?: string;
-    personaId?: string;
-  }) => {
-    const trimmed = text?.trim();
-    if (!trimmed && !audioBase64) {
-      return;
-    }
-
-    if (trimmed) {
-      setInputValue("");
-    }
-
-    const userMessage: ChatMessage = {
-      id: crypto.randomUUID(),
-      role: "user",
-      content: trimmed ?? "Голосове повідомлення",
-      audioUrl,
+    const userMessage = {
+      id: Date.now(),
+      role: 'user',
+      content: text.trim() || 'Голосове повідомлення',
+      audioBase64
     };
 
-    setMessagesByPersona((prev) => {
-      const prevMessages = prev[personaId] ?? [];
-      return {
-        ...prev,
-        [personaId]: [...prevMessages, userMessage],
-      };
-    });
+    setMessages(prev => ({
+      ...prev,
+      [persona]: [...prev[persona], userMessage]
+    }));
+
+    setInput('');
+    setIsLoading(true);
 
     try {
-      const response = await mutateAsync({
-        text: trimmed,
-        audioBase64,
-        persona: personaId,
-        initData,
+      const response = await fetch('https://n8n.dmytrotovstytskyi.online/webhook/gala.school', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          text: text.trim(),
+          audioBase64,
+          persona,
+          history: currentMessages.slice(-10)
+        })
       });
-      setMessagesByPersona((prev) => {
-        const prevMessages = prev[personaId] ?? [];
-        return {
-          ...prev,
-          [personaId]: [
-            ...prevMessages,
-            {
-              id: crypto.randomUUID(),
-              role: "assistant",
-              content: response.output,
-              image: response.image,
-              videoUrl: response.videoUrl,
-            },
-          ],
-        };
-      });
+
+      if (!response.ok) throw new Error('Помилка відповіді від сервера');
+
+      const data = await response.json();
+      
+      const aiMessage = {
+        id: Date.now() + 1,
+        role: 'assistant',
+        content: data.response || data.message || data.output || 'Вибачте, не зміг отримати відповідь.'
+      };
+
+      setMessages(prev => ({
+        ...prev,
+        [persona]: [...prev[persona], aiMessage]
+      }));
     } catch (error) {
-      setMessagesByPersona((prev) => {
-        const prevMessages = prev[personaId] ?? [];
-        return {
-          ...prev,
-          [personaId]: [
-            ...prevMessages,
-            {
-              id: crypto.randomUUID(),
-              role: "assistant",
-              content:
-                error instanceof Error
-                  ? error.message
-                  : "Сталася помилка. Спробуйте пізніше.",
-            },
-          ],
-        };
-      });
+      console.error('Помилка AI чату:', error);
+      const errorMessage = {
+        id: Date.now() + 1,
+        role: 'assistant',
+        content: 'Вибачте, сталася помилка. Перевірте інтернет або спробуйте пізніше.'
+      };
+      setMessages(prev => ({
+        ...prev,
+        [persona]: [...prev[persona], errorMessage]
+      }));
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleSend = async () => {
-    await sendMessage({ text: inputValue, personaId: persona });
+  const handleSend = () => {
+    sendMessage(input);
   };
 
-  const blobToBase64 = async (blob: Blob) =>
-    new Promise<string>((resolve, reject) => {
+  const blobToBase64 = (blob) => {
+    return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.onloadend = () => {
-        const result = reader.result;
-        if (typeof result === "string") {
-          const base64 = result.split(",")[1] ?? "";
-          resolve(base64);
-        } else {
-          reject(new Error("Не вдалося обробити аудіо"));
-        }
+        const base64 = reader.result.split(',')[1];
+        resolve(base64);
       };
-      reader.onerror = () => reject(new Error("Не вдалося обробити аудіо"));
+      reader.onerror = reject;
       reader.readAsDataURL(blob);
     });
-
-  const stopStreamTracks = () => {
-    const stream = streamRef.current;
-    stream?.getTracks().forEach((track) => track.stop());
-    streamRef.current = null;
-  };
-
-  const stopRecording = () => {
-    const recorder = mediaRecorderRef.current;
-    if (recorder && recorder.state !== "inactive") {
-      recorder.stop();
-    }
   };
 
   const startRecording = async () => {
-    if (!canRecordAudio || isRecording) {
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setRecordingError('Ваш браузер не підтримує запис аудіо');
       return;
     }
 
@@ -203,163 +138,220 @@ const AssistantPage = () => {
       setRecordingError(null);
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
+      
       const mediaRecorder = new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
       audioChunksRef.current = [];
 
-      mediaRecorder.addEventListener("dataavailable", (event) => {
+      mediaRecorder.addEventListener('dataavailable', (event) => {
         if (event.data.size > 0) {
           audioChunksRef.current.push(event.data);
         }
       });
 
-      mediaRecorder.addEventListener("stop", async () => {
+      mediaRecorder.addEventListener('stop', async () => {
         setIsRecording(false);
-        stopStreamTracks();
-        mediaRecorderRef.current = null;
+        
+        if (streamRef.current) {
+          streamRef.current.getTracks().forEach(track => track.stop());
+          streamRef.current = null;
+        }
+
         const chunks = audioChunksRef.current;
         audioChunksRef.current = [];
+
         if (!chunks.length) {
-          setRecordingError("Запис не містить звуку. Спробуйте ще раз.");
+          setRecordingError('Запис не містить звуку');
           return;
         }
 
-        const blob = new Blob(chunks, { type: mediaRecorder.mimeType || "audio/webm" });
-        if (blob.size === 0) {
-          setRecordingError("Запис не містить звуку. Спробуйте ще раз.");
-          return;
-        }
-
+        const blob = new Blob(chunks, { type: 'audio/webm' });
+        
         try {
           const base64 = await blobToBase64(blob);
-          const objectUrl = URL.createObjectURL(blob);
-          audioUrlsRef.current.push(objectUrl);
-          await sendMessage({ audioBase64: base64, audioUrl: objectUrl, personaId: persona });
+          await sendMessage('🎤 Голосове повідомлення', base64);
         } catch (error) {
-          setRecordingError(
-            error instanceof Error ? error.message : "Не вдалося підготувати аудіо.",
-          );
+          setRecordingError('Не вдалося обробити аудіо');
         }
       });
 
       mediaRecorder.start();
       setIsRecording(true);
     } catch (error) {
-      stopStreamTracks();
-      setRecordingError(
-        error instanceof Error
-          ? error.message
-          : "Немає доступу до мікрофона. Перевірте налаштування.",
-      );
+      console.error('Помилка запису:', error);
+      setRecordingError('Немає доступу до мікрофона');
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+        streamRef.current = null;
+      }
     }
   };
 
-  const handleVoiceButtonClick = () => {
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      mediaRecorderRef.current.stop();
+    }
+  };
+
+  const handleVoiceClick = () => {
     if (isRecording) {
       stopRecording();
     } else {
-      void startRecording();
+      startRecording();
     }
   };
 
   return (
-    <div className="flex h-full flex-col gap-4">
-      <section className="rounded-2xl bg-skin-base/80 p-4 shadow-md">
-        <span className="text-xs uppercase tracking-wide text-skin-muted">
-          Інтелектуальні агенти
-        </span>
-        <div className="mt-3 grid gap-3 md:grid-cols-3">
-          {personas.map((item) => {
-            const isActive = persona === item.id;
-            return (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => setPersona(item.id)}
-                className={`flex h-full flex-col rounded-2xl border p-4 text-left transition focus:outline-none focus:ring-2 focus:ring-skin-primary focus:ring-offset-2 ${
-                  isActive
-                    ? "border-skin-primary bg-skin-primary/10 text-skin-text shadow"
-                    : "border-transparent bg-skin-base text-skin-muted hover:border-skin-primary/40 hover:text-skin-text"
-                }`}
-              >
-                <span className="text-base font-semibold text-skin-text">{item.label}</span>
-                <span className="mt-2 text-sm text-skin-muted">{item.description}</span>
-              </button>
-            );
-          })}
+    <div className="flex h-screen flex-col bg-gradient-to-b from-galya-beige to-gray-50">
+      {/* Шапка */}
+      <div className="bg-white border-b-2 border-galya-accent px-4 py-4 shadow-md">
+        <div className="max-w-md mx-auto">
+          <h1 className="text-xl font-bold text-galya-brown">AI Наставник</h1>
+          <p className="text-sm text-galya-brown-light">Виберіть режим спілкування</p>
         </div>
-      </section>
-      <section className="flex-1 overflow-hidden rounded-2xl bg-skin-card p-4 shadow-inner">
-        <div className="flex h-full flex-col gap-3 overflow-y-auto pr-1" role="list">
-          {currentMessages.map((message) => (
-            <ChatBubble
-              key={message.id}
-              from={message.role}
-              media={
-                message.audioUrl ? (
-                  <audio controls className="w-full" src={message.audioUrl} />
-                ) : message.image ? (
-                  <img src={message.image} alt="Ілюстрація" className="h-auto w-full" loading="lazy" />
-                ) : message.videoUrl ? (
-                  <a
-                    href={message.videoUrl}
-                    className="block rounded-2xl bg-skin-base/80 p-3 text-center text-sm text-skin-primary"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    Переглянути відео
-                  </a>
-                ) : null
-              }
+      </div>
+
+      {/* Вибір персони */}
+      <div className="px-4 py-4 bg-white border-b border-gray-200">
+        <div className="max-w-md mx-auto grid grid-cols-3 gap-3">
+          {personas.map((p) => (
+            <button
+              key={p.id}
+              onClick={() => setPersona(p.id)}
+              className={`p-3 rounded-xl border-2 transition-all ${
+                persona === p.id
+                  ? 'border-galya-brown bg-galya-beige shadow-md'
+                  : 'border-gray-200 hover:border-galya-brown-light'
+              }`}
             >
-              {message.content}
-            </ChatBubble>
+              <div className="text-2xl mb-1">{p.icon}</div>
+              <div className="text-xs font-semibold text-galya-brown">{p.label}</div>
+            </button>
           ))}
-          {isPending ? (
-            <ChatBubble from="assistant">
-              <TypingDots />
-            </ChatBubble>
-          ) : null}
-          {!currentMessages.length && !isPending ? (
-            <div className="mt-12 text-center text-sm text-skin-muted">
-              Почніть діалог із агентом «{activePersona?.label}». {activePersona?.description}
+        </div>
+        <p className="text-xs text-center text-galya-brown-light mt-2">
+          {activePersona?.description}
+        </p>
+      </div>
+
+      {/* Повідомлення */}
+      <div className="flex-1 overflow-y-auto px-4 py-6 pb-32">
+        <div className="max-w-md mx-auto space-y-4">
+          {currentMessages.length === 0 && !isLoading && (
+            <div className="text-center py-12">
+              <div className="text-4xl mb-4">{activePersona?.icon}</div>
+              <p className="text-galya-brown-light">
+                Почніть діалог з {activePersona?.label}
+              </p>
             </div>
-          ) : null}
+          )}
+
+          {currentMessages.map((message) => (
+            <div
+              key={message.id}
+              className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+            >
+              <div className={`flex max-w-[80%] ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                <div className={`flex-shrink-0 ${message.role === 'user' ? 'ml-3' : 'mr-3'}`}>
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center shadow-md ${
+                    message.role === 'user'
+                      ? 'bg-gradient-to-br from-galya-brown to-galya-brown-light'
+                      : 'bg-gradient-to-br from-blue-500 to-blue-600'
+                  }`}>
+                    {message.role === 'user' ? (
+                      <User size={20} className="text-white" />
+                    ) : (
+                      <Bot size={20} className="text-white" />
+                    )}
+                  </div>
+                </div>
+                <div className={`rounded-2xl px-4 py-3 shadow-md ${
+                  message.role === 'user'
+                    ? 'bg-gradient-to-br from-galya-brown to-galya-brown-light text-white'
+                    : 'bg-white text-galya-brown border-2 border-galya-beige'
+                }`}>
+                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {isLoading && (
+            <div className="flex justify-start">
+              <div className="flex max-w-[80%]">
+                <div className="mr-3">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center shadow-md bg-gradient-to-br from-blue-500 to-blue-600">
+                    <Bot size={20} className="text-white" />
+                  </div>
+                </div>
+                <div className="rounded-2xl px-4 py-3 shadow-md bg-white border-2 border-galya-beige">
+                  <div className="flex space-x-2">
+                    <div className="w-2 h-2 bg-galya-brown rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-galya-brown rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                    <div className="w-2 h-2 bg-galya-brown rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-      </section>
-      <section className="flex flex-col gap-2 rounded-2xl bg-skin-base/70 p-4 shadow-md">
-        <Textarea
-          value={inputValue}
-          onChange={(event) => setInputValue(event.target.value)}
-          placeholder="Напишіть повідомлення…"
-          rows={3}
-        />
-        <div className="flex items-center justify-between gap-2">
-          <Button
-            type="button"
-            variant="ghost"
-            className="px-3 text-sm"
-            onClick={handleVoiceButtonClick}
-            disabled={!canRecordAudio || isPending}
-          >
-            {isRecording ? (
-              <>
-                <Square className="mr-2 h-4 w-4" /> Зупинити
-              </>
-            ) : (
-              <>
-                <AudioLines className="mr-2 h-4 w-4" /> Голос
-              </>
-            )}
-          </Button>
-          <Button type="button" onClick={handleSend} disabled={isPending || !inputValue.trim()}>
-            Надіслати <Send className="ml-2 h-4 w-4" />
-          </Button>
+      </div>
+
+      {/* Поле вводу */}
+      <div className="fixed bottom-16 left-0 right-0 bg-white border-t-2 border-galya-accent px-4 py-3 shadow-lg">
+        <div className="max-w-md mx-auto">
+          <div className="flex space-x-2 mb-2">
+            <textarea
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSend();
+                }
+              }}
+              placeholder="Напишіть повідомлення..."
+              disabled={isLoading}
+              rows={2}
+              className="flex-1 px-4 py-3 border-2 border-galya-brown-light rounded-xl focus:outline-none focus:border-galya-brown disabled:opacity-50 resize-none"
+            />
+          </div>
+          <div className="flex space-x-2">
+            <button
+              onClick={handleVoiceClick}
+              disabled={isLoading}
+              className={`flex-1 py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center ${
+                isRecording
+                  ? 'bg-red-500 text-white hover:bg-red-600'
+                  : 'bg-gray-100 text-galya-brown hover:bg-gray-200'
+              } disabled:opacity-50`}
+            >
+              {isRecording ? (
+                <>
+                  <Square size={18} className="mr-2" />
+                  Зупинити
+                </>
+              ) : (
+                <>
+                  <Mic size={18} className="mr-2" />
+                  Голос
+                </>
+              )}
+            </button>
+            <button
+              onClick={handleSend}
+              disabled={!input.trim() || isLoading}
+              className="flex-1 py-3 px-4 bg-gradient-to-r from-galya-brown to-galya-brown-light text-white rounded-xl font-medium hover:shadow-lg disabled:opacity-50 transition-all flex items-center justify-center"
+            >
+              Надіслати
+              <Send size={18} className="ml-2" />
+            </button>
+          </div>
+          {recordingError && (
+            <p className="text-xs text-red-500 mt-2">{recordingError}</p>
+          )}
         </div>
-        {recordingError ? <div className="text-xs text-red-500">{recordingError}</div> : null}
-      </section>
+      </div>
     </div>
   );
-};
-
-export default AssistantPage;
+}
