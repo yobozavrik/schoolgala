@@ -18,16 +18,31 @@ interface ChatMessage {
 }
 
 const personas = [
-  { id: "seller", label: "Продавець" },
-  { id: "helper", label: "Наставник" },
-  { id: "friendly", label: "Друг" },
+  {
+    id: "seller",
+    label: "Продавець",
+    description: "Про товари, техніки продажу, мерчендайзинг та сервіс",
+  },
+  {
+    id: "psychologist",
+    label: "Психолог",
+    description: "Підтримка емоційного стану, робота зі стресом та втомою",
+  },
+  {
+    id: "companion",
+    label: "Потеревенькати",
+    description: "Легка дружня бесіда, щоб відволіктися під час зміни",
+  },
 ];
 
 const AssistantPage = () => {
   const { initData } = useTelegramContext();
   const [persona, setPersona] = useState(personas[0].id);
   const [inputValue, setInputValue] = useState("");
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [messagesByPersona, setMessagesByPersona] = useState<Record<string, ChatMessage[]>>(
+    () =>
+      Object.fromEntries(personas.map((item) => [item.id, []])) as Record<string, ChatMessage[]>,
+  );
   const [isRecording, setIsRecording] = useState(false);
   const [recordingError, setRecordingError] = useState<string | null>(null);
   const [canRecordAudio, setCanRecordAudio] = useState(false);
@@ -39,6 +54,9 @@ const AssistantPage = () => {
   const { mutateAsync, isPending } = useMutation({
     mutationFn: sendAiMessage,
   });
+
+  const currentMessages = messagesByPersona[persona] ?? [];
+  const activePersona = personas.find((item) => item.id === persona);
 
   useEffect(() => {
     if (typeof navigator !== "undefined") {
@@ -68,10 +86,12 @@ const AssistantPage = () => {
     text,
     audioBase64,
     audioUrl,
+    personaId = persona,
   }: {
     text?: string;
     audioBase64?: string;
     audioUrl?: string;
+    personaId?: string;
   }) => {
     const trimmed = text?.trim();
     if (!trimmed && !audioBase64) {
@@ -89,40 +109,60 @@ const AssistantPage = () => {
       audioUrl,
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    setMessagesByPersona((prev) => {
+      const prevMessages = prev[personaId] ?? [];
+      return {
+        ...prev,
+        [personaId]: [...prevMessages, userMessage],
+      };
+    });
 
     try {
       const response = await mutateAsync({
         text: trimmed,
         audioBase64,
-        persona,
+        persona: personaId,
         initData,
       });
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: crypto.randomUUID(),
-          role: "assistant",
-          content: response.output,
-          image: response.image,
-          videoUrl: response.videoUrl,
-        },
-      ]);
+      setMessagesByPersona((prev) => {
+        const prevMessages = prev[personaId] ?? [];
+        return {
+          ...prev,
+          [personaId]: [
+            ...prevMessages,
+            {
+              id: crypto.randomUUID(),
+              role: "assistant",
+              content: response.output,
+              image: response.image,
+              videoUrl: response.videoUrl,
+            },
+          ],
+        };
+      });
     } catch (error) {
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: crypto.randomUUID(),
-          role: "assistant",
-          content:
-            error instanceof Error ? error.message : "Сталася помилка. Спробуйте пізніше.",
-        },
-      ]);
+      setMessagesByPersona((prev) => {
+        const prevMessages = prev[personaId] ?? [];
+        return {
+          ...prev,
+          [personaId]: [
+            ...prevMessages,
+            {
+              id: crypto.randomUUID(),
+              role: "assistant",
+              content:
+                error instanceof Error
+                  ? error.message
+                  : "Сталася помилка. Спробуйте пізніше.",
+            },
+          ],
+        };
+      });
     }
   };
 
   const handleSend = async () => {
-    await sendMessage({ text: inputValue });
+    await sendMessage({ text: inputValue, personaId: persona });
   };
 
   const blobToBase64 = async (blob: Blob) =>
@@ -194,7 +234,7 @@ const AssistantPage = () => {
           const base64 = await blobToBase64(blob);
           const objectUrl = URL.createObjectURL(blob);
           audioUrlsRef.current.push(objectUrl);
-          await sendMessage({ audioBase64: base64, audioUrl: objectUrl });
+          await sendMessage({ audioBase64: base64, audioUrl: objectUrl, personaId: persona });
         } catch (error) {
           setRecordingError(
             error instanceof Error ? error.message : "Не вдалося підготувати аудіо.",
@@ -225,27 +265,33 @@ const AssistantPage = () => {
   return (
     <div className="flex h-full flex-col gap-4">
       <section className="rounded-2xl bg-skin-base/80 p-4 shadow-md">
-        <span className="text-xs uppercase tracking-wide text-skin-muted">Персона</span>
-        <div className="mt-3 inline-flex rounded-full bg-skin-base p-1 shadow-inner">
-          {personas.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              onClick={() => setPersona(item.id)}
-              className={`rounded-full px-4 py-2 text-sm transition ${
-                persona === item.id
-                  ? "bg-skin-primary text-white shadow"
-                  : "text-skin-muted hover:text-skin-text"
-              }`}
-            >
-              {item.label}
-            </button>
-          ))}
+        <span className="text-xs uppercase tracking-wide text-skin-muted">
+          Інтелектуальні агенти
+        </span>
+        <div className="mt-3 grid gap-3 md:grid-cols-3">
+          {personas.map((item) => {
+            const isActive = persona === item.id;
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => setPersona(item.id)}
+                className={`flex h-full flex-col rounded-2xl border p-4 text-left transition focus:outline-none focus:ring-2 focus:ring-skin-primary focus:ring-offset-2 ${
+                  isActive
+                    ? "border-skin-primary bg-skin-primary/10 text-skin-text shadow"
+                    : "border-transparent bg-skin-base text-skin-muted hover:border-skin-primary/40 hover:text-skin-text"
+                }`}
+              >
+                <span className="text-base font-semibold text-skin-text">{item.label}</span>
+                <span className="mt-2 text-sm text-skin-muted">{item.description}</span>
+              </button>
+            );
+          })}
         </div>
       </section>
       <section className="flex-1 overflow-hidden rounded-2xl bg-skin-card p-4 shadow-inner">
         <div className="flex h-full flex-col gap-3 overflow-y-auto pr-1" role="list">
-          {messages.map((message) => (
+          {currentMessages.map((message) => (
             <ChatBubble
               key={message.id}
               from={message.role}
@@ -274,9 +320,9 @@ const AssistantPage = () => {
               <TypingDots />
             </ChatBubble>
           ) : null}
-          {!messages.length && !isPending ? (
+          {!currentMessages.length && !isPending ? (
             <div className="mt-12 text-center text-sm text-skin-muted">
-              Почніть діалог — напишіть питання про продукт або сервіс.
+              Почніть діалог із агентом «{activePersona?.label}». {activePersona?.description}
             </div>
           ) : null}
         </div>
