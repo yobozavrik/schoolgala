@@ -20,9 +20,7 @@ interface ChatMessage {
   audioUrl?: string;
 }
 
-const PERSONA_IDS = ["seller", "psychologist", "companion"] as const;
-const FEEDBACK_TIMEOUT = 3000;
-const RECORDING_FFT_SIZE = 256;
+main
 
 export type PersonaId = (typeof PERSONA_IDS)[number];
 
@@ -63,14 +61,7 @@ export const AssistantPage = () => {
 
   const [persona, setPersona] = useState<PersonaId>(personaOptions[0]?.id ?? "seller");
   const [inputValue, setInputValue] = useState("");
-  const [messagesByPersona, setMessagesByPersona] = useState<Record<PersonaId, ChatMessage[]>>(() =>
-    PERSONA_IDS.reduce(
-      (acc, id) => ({
-        ...acc,
-        [id]: [],
-      }),
-      {} as Record<PersonaId, ChatMessage[]>,
-    ),
+ main
   );
   const [isRecording, setIsRecording] = useState(false);
   const [recordingError, setRecordingError] = useState<string | null>(null);
@@ -94,11 +85,7 @@ export const AssistantPage = () => {
   });
 
   const currentMessages = messagesByPersona[persona] ?? [];
-  const activePersona = personaOptions.find((item) => item.id === persona);
-
-  useEffect(() => {
-    personaRef.current = persona;
-  }, [persona]);
+ main
 
   useEffect(() => {
     if (typeof navigator !== "undefined") {
@@ -200,12 +187,12 @@ export const AssistantPage = () => {
     text,
     audioBase64,
     audioUrl,
-    personaId = personaRef.current,
+
   }: {
     text?: string;
     audioBase64?: string;
     audioUrl?: string;
-    personaId?: PersonaId;
+main
   }) => {
     const trimmed = text?.trim();
     if (!trimmed && !audioBase64) {
@@ -255,13 +242,7 @@ export const AssistantPage = () => {
           ],
         };
       });
-      setSendFeedback(t("assistant.sent_confirmation", "Повідомлення передано до агента"));
-    } catch (error) {
-      captureError(error, { scope: "assistant_send", persona: personaId });
-      const message =
-        error instanceof Error
-          ? error.message
-          : t("common.error", "Сталася помилка. Спробуйте пізніше.");
+
       setMessagesByPersona((prev) => {
         const prevMessages = prev[personaId] ?? [];
         return {
@@ -271,18 +252,7 @@ export const AssistantPage = () => {
             {
               id: crypto.randomUUID(),
               role: "assistant",
-              content: message,
-            },
-          ],
-        };
-      });
-      setSendFeedback(message);
-    }
-  };
 
-  const handlePersonaClick = (id: PersonaId) => {
-    setPersona(id);
-    trackPersonaChange(id);
   };
 
   const handleSend = async () => {
@@ -369,8 +339,7 @@ export const AssistantPage = () => {
           const base64 = await blobToBase64(blob);
           const objectUrl = URL.createObjectURL(blob);
           audioUrlsRef.current.push(objectUrl);
-          trackSendEvent({ persona: personaRef.current, hasAudio: true, length: Math.round(blob.size / 1024) });
-          await sendMessage({ audioBase64: base64, audioUrl: objectUrl, personaId: personaRef.current });
+
         } catch (error) {
           captureError(error, { scope: "assistant_audio_prepare" });
           setRecordingError(
@@ -411,23 +380,18 @@ export const AssistantPage = () => {
     <div className="flex h-full flex-col gap-4">
       <section className="rounded-2xl bg-skin-base/80 p-4 shadow-md">
         <span className="text-xs uppercase tracking-wide text-skin-muted">
-          {t("assistant.section_title", "Інтелектуальні агенти")}
-        </span>
-        <div className="mt-3 grid gap-3 md:grid-cols-3">
-          {personaOptions.map((item) => {
+
             const isActive = persona === item.id;
             return (
               <button
                 key={item.id}
                 type="button"
-                onClick={() => handlePersonaClick(item.id)}
-                className={`flex h-full flex-col rounded-2xl border p-4 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-skin-primary focus-visible:ring-offset-2 ${
+
                   isActive
                     ? "border-skin-primary bg-skin-primary/10 text-skin-text shadow"
                     : "border-transparent bg-skin-base text-skin-muted hover:border-skin-primary/40 hover:text-skin-text"
                 }`}
-                aria-pressed={isActive}
-                aria-label={`${item.label}. ${item.description}`}
+
               >
                 <span className="text-base font-semibold text-skin-text">{item.label}</span>
                 <span className="mt-2 text-sm text-skin-muted">{item.description}</span>
@@ -437,7 +401,7 @@ export const AssistantPage = () => {
         </div>
       </section>
       <section className="flex-1 overflow-hidden rounded-2xl bg-skin-card p-4 shadow-inner">
-        <div className="flex h-full flex-col gap-3 overflow-y-auto pr-1" role="list" aria-live="polite">
+
           {currentMessages.map((message) => (
             <ChatBubble
               key={message.id}
@@ -462,10 +426,7 @@ export const AssistantPage = () => {
           ) : null}
           {!currentMessages.length && !isPending ? (
             <div className="mt-12 text-center text-sm text-skin-muted">
-              {t("assistant.chat.empty", "Почніть діалог із агентом «{{name}}». {{description}}", {
-                name: activePersona?.label ?? "Агент",
-                description: activePersona?.description ?? "",
-              })}
+
             </div>
           ) : null}
         </div>
