@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import clsx from "clsx";
 import { fetchKnowledgeBase } from "@/lib/api";
 import type { KnowledgeBaseArticleSummary } from "@/types/knowledge-base";
 import { SearchBar } from "@/components/SearchBar";
@@ -77,7 +78,6 @@ const KnowledgeBasePage = () => {
                   <button
                     type="button"
                     onClick={() => navigate(`/kb/${article.id}`)}
-                    className="w-full rounded-2xl border border-skin-ring/50 bg-skin-base/90 p-4 text-left shadow-sm transition hover:border-skin-primary"
                   >
                     <div className="flex items-center justify-between text-xs text-skin-muted">
                       <span>{article.category}</span>
@@ -101,7 +101,6 @@ const KnowledgeBasePage = () => {
                     key={article.id}
                     type="button"
                     onClick={() => navigate(`/kb/${article.id}`)}
-                    className="w-full rounded-2xl border border-skin-ring/60 bg-skin-base/60 p-4 text-left transition hover:border-skin-primary"
                   >
                     <div className="text-sm font-semibold text-skin-text">{article.title}</div>
                     <div className="text-xs text-skin-muted">{article.tldr}</div>

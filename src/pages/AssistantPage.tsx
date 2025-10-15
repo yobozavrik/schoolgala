@@ -18,7 +18,6 @@ import { Button } from "@/components/ui/Button";
 import { useChecklistProgress } from "@/hooks/useChecklistProgress";
 import { useNavigate } from "react-router-dom";
 
-
 interface Message {
   id: string;
   role: "user" | "assistant";
@@ -46,7 +45,6 @@ type SendPayload = {
   text: string;
   audioBase64?: string | null;
   history: Message[];
-
 };
 
 const personas: Persona[] = [
@@ -72,50 +70,6 @@ const personas: Persona[] = [
     gradient: "from-amber-500/10 via-amber-500/5 to-transparent",
   },
 ];
-
-
-  const currentMessages = messagesByPersona[persona];
-
-  const mutation = useMutation({
-    mutationFn: sendAssistantMessage,
-    onError: () => {
-      setMessagesByPersona((prev) => ({
-        ...prev,
-        [persona]: [
-          ...prev[persona],
-          {
-            id: buildMessageId("error"),
-            role: "assistant",
-            content: "Вибачте, сталася помилка. Перевірте інтернет або спробуйте пізніше.",
-            createdAt: Date.now(),
-            persona,
-          },
-        ],
-      }));
-    },
-    onSuccess: (content) => {
-      const resources = resolveAssistantResources(content);
-      setLastResources(resources);
-      setMessagesByPersona((prev) => ({
-        ...prev,
-        [persona]: [
-          ...prev[persona],
-          {
-            id: buildMessageId("assistant"),
-            role: "assistant",
-            content,
-            createdAt: Date.now(),
-            persona,
-            relatedResources: resources,
-          },
-        ],
-      }));
-    },
-  });
-
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [currentMessages.length, mutation.isPending]);
 
   useEffect(() => {
     return () => {

@@ -36,7 +36,6 @@ const ChecklistsPage = () => {
                 <button
                   type="button"
                   onClick={() => navigate(`/checklists/${checklist.id}`)}
-                  className="flex w-full flex-col gap-2 rounded-2xl border border-skin-ring/50 bg-skin-base/90 p-4 text-left shadow-md transition hover:border-skin-primary"
                 >
                   <div className="flex items-center justify-between">
                     <div className="text-sm font-semibold text-skin-text">{checklist.title}</div>
