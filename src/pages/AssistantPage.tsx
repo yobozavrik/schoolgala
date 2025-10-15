@@ -12,13 +12,13 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { resolveAssistantResources } from "@/lib/assistant-insights";
-import { sendAiMessage } from "@/lib/api";
+ main
 import type { AssistantRelatedResources } from "@/lib/assistant-insights";
 import type { Checklist } from "@/types/checklist";
 import { Button } from "@/components/ui/Button";
 import { useChecklistProgress } from "@/hooks/useChecklistProgress";
 import { useNavigate } from "react-router-dom";
-import { useTelegramContext } from "@/providers/TelegramProvider";
+ main
 
 interface Message {
   id: string;
@@ -47,7 +47,7 @@ type SendPayload = {
   text: string;
   audioBase64?: string | null;
   history: Message[];
-  initData?: string;
+ main
 };
 
 const personas: Persona[] = [
@@ -74,23 +74,7 @@ const personas: Persona[] = [
   },
 ];
 
-const buildMessageId = (prefix: string): string => {
-  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
-    return `${prefix}-${crypto.randomUUID()}`;
-  }
-  return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(16).slice(2)}`;
-};
-
-const sendAssistantMessage = async ({ persona, text, audioBase64, history, initData }: SendPayload): Promise<string> => {
-  const response = await sendAiMessage({
-    persona,
-    text: text.trim(),
-    audioBase64: audioBase64 ?? undefined,
-    initData,
-    history: history.slice(-10).map(({ role, content }) => ({ role, content })),
-  });
-
-  return response.output || "Вибачте, не вдалося отримати відповідь.";
+ main
 };
 
 const SuggestedChecklist = ({ checklist }: { checklist: Checklist }) => {
@@ -181,7 +165,7 @@ const SuggestedResources = ({ resources }: { resources: AssistantRelatedResource
 };
 
 const AssistantPage = () => {
-  const { initData } = useTelegramContext();
+ main
   const [persona, setPersona] = useState<PersonaId>("seller");
   const [input, setInput] = useState("");
   const [messagesByPersona, setMessagesByPersona] = useState<MessagesByPersona>({
@@ -324,35 +308,7 @@ const AssistantPage = () => {
     };
 
     setLastResources(null);
-
-    setMessagesByPersona((prev) => ({
-      ...prev,
-      [persona]: [...prev[persona], message],
-    }));
-
-    setInput("");
-    await mutation.mutateAsync({ persona, text, audioBase64, history: [...currentMessages, message], initData });
-  };
-
-  const blobToBase64 = (blob: Blob): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const result = reader.result;
-        if (typeof result === "string") {
-          const base64 = result.split(",")[1] ?? "";
-          resolve(base64);
-        } else {
-          reject(new Error("Не вдалося обробити аудіо"));
-        }
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
-  };
-
-  const personaConfig = useMemo(() => personas.find((item) => item.id === persona)!, [persona]);
-
+ main
   return (
     <div className="space-y-6">
       <div className={`relative overflow-hidden rounded-2xl border border-skin-ring/50 bg-skin-card/80 p-6 shadow-lg`}> 
