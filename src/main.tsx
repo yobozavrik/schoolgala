@@ -7,6 +7,8 @@ import "./index.css";
 import { ThemeProvider } from "./providers/ThemeProvider";
 import { TelegramProvider } from "./providers/TelegramProvider";
 import { createQueryClient } from "@/lib/query-client";
+import { reportWebVitals } from "@/lib/metrics";
+import { onCLS, onINP, onLCP } from "web-vitals";
 
 const queryClient = createQueryClient();
 
@@ -23,3 +25,7 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     </TelegramProvider>
   </React.StrictMode>,
 );
+
+onCLS(reportWebVitals);
+onINP(reportWebVitals);
+onLCP(reportWebVitals);
