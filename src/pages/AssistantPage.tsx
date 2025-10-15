@@ -12,13 +12,12 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { resolveAssistantResources } from "@/lib/assistant-insights";
- main
 import type { AssistantRelatedResources } from "@/lib/assistant-insights";
 import type { Checklist } from "@/types/checklist";
 import { Button } from "@/components/ui/Button";
 import { useChecklistProgress } from "@/hooks/useChecklistProgress";
 import { useNavigate } from "react-router-dom";
- main
+
 
 interface Message {
   id: string;
@@ -47,7 +46,7 @@ type SendPayload = {
   text: string;
   audioBase64?: string | null;
   history: Message[];
- main
+
 };
 
 const personas: Persona[] = [
@@ -74,112 +73,6 @@ const personas: Persona[] = [
   },
 ];
 
- main
-};
-
-const SuggestedChecklist = ({ checklist }: { checklist: Checklist }) => {
-  const navigate = useNavigate();
-  const { completedIds, toggle } = useChecklistProgress(checklist.id);
-  const completion = Math.round((completedIds.length / checklist.items.length) * 100);
-
-  return (
-    <div className="rounded-2xl border border-emerald-200/60 bg-emerald-50/60 p-4 text-sm text-emerald-950 shadow-sm">
-      <div className="flex items-center justify-between gap-3">
-        <div>
-          <p className="text-xs uppercase tracking-wide text-emerald-600">Чек-лист</p>
-          <h3 className="text-base font-semibold text-emerald-900">{checklist.title}</h3>
-          {checklist.nextDueAt ? (
-            <p className="text-xs text-emerald-600">
-              Наступне нагадування: {new Date(checklist.nextDueAt).toLocaleTimeString("uk-UA", { hour: "2-digit", minute: "2-digit" })}
-            </p>
-          ) : null}
-        </div>
-        <Button size="sm" variant="ghost" onClick={() => navigate(`/checklists/${checklist.id}`)}>
-          <Link2 className="mr-2 h-4 w-4" /> Повний
-        </Button>
-      </div>
-      <div className="mt-3 text-xs text-emerald-700">Прогрес: {completion}%</div>
-      <ul className="mt-3 space-y-2">
-        {checklist.items.slice(0, 3).map((item) => {
-          const checked = completedIds.includes(item.id);
-          return (
-            <li key={item.id} className="flex items-center gap-2">
-              <label className="flex cursor-pointer items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  className="h-4 w-4 rounded border-emerald-400 text-emerald-500 focus:ring-emerald-500"
-                  checked={checked}
-                  onChange={() => toggle(item.id)}
-                />
-                <span className={checked ? "text-emerald-600 line-through" : "text-emerald-900"}>{item.text}</span>
-              </label>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  );
-};
-
-const SuggestedResources = ({ resources }: { resources: AssistantRelatedResources }) => {
-  if (!resources.articles.length && !resources.checklists.length) {
-    return null;
-  }
-
-  return (
-    <div className="mt-4 space-y-3 rounded-2xl border border-skin-ring/50 bg-skin-card/80 p-4 text-sm shadow-inner">
-      <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-skin-muted">
-        <CheckSquare className="h-4 w-4" /> Рекомендації на основі відповіді
-      </p>
-      <div className="space-y-3">
-        {resources.articles.length ? (
-          <div className="space-y-2">
-            <p className="text-xs text-skin-muted">Статті бази знань</p>
-            <div className="grid gap-2 sm:grid-cols-2">
-              {resources.articles.map((article) => (
-                <a
-                  key={article.id}
-                  href={`/kb/${article.id}`}
-                  className="rounded-xl border border-skin-ring/40 bg-skin-base/60 p-3 transition hover:border-skin-primary"
-                >
-                  <p className="text-sm font-semibold text-skin-text">{article.title}</p>
-                  <p className="text-xs text-skin-muted">{article.tldr}</p>
-                </a>
-              ))}
-            </div>
-          </div>
-        ) : null}
-        {resources.checklists.length ? (
-          <div className="space-y-2">
-            <p className="text-xs text-skin-muted">Швидкі чек-листи</p>
-            <div className="space-y-2">
-              {resources.checklists.map((checklist) => (
-                <SuggestedChecklist key={checklist.id} checklist={checklist} />
-              ))}
-            </div>
-          </div>
-        ) : null}
-      </div>
-    </div>
-  );
-};
-
-const AssistantPage = () => {
- main
-  const [persona, setPersona] = useState<PersonaId>("seller");
-  const [input, setInput] = useState("");
-  const [messagesByPersona, setMessagesByPersona] = useState<MessagesByPersona>({
-    seller: [],
-    psychologist: [],
-    companion: [],
-  });
-  const [isRecording, setIsRecording] = useState(false);
-  const [recordingError, setRecordingError] = useState<string | null>(null);
-  const [lastResources, setLastResources] = useState<AssistantRelatedResources | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const streamRef = useRef<MediaStream | null>(null);
-  const bottomRef = useRef<HTMLDivElement | null>(null);
 
   const currentMessages = messagesByPersona[persona];
 
@@ -307,8 +200,6 @@ const AssistantPage = () => {
       audioBase64: audioBase64 ?? undefined,
     };
 
-    setLastResources(null);
- main
   return (
     <div className="space-y-6">
       <div className={`relative overflow-hidden rounded-2xl border border-skin-ring/50 bg-skin-card/80 p-6 shadow-lg`}> 

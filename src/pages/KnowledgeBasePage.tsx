@@ -66,7 +66,6 @@ const KnowledgeBasePage = () => {
           className="max-h-[70vh] overflow-y-auto rounded-2xl border border-skin-ring/40 bg-skin-base/70 shadow-inner"
         >
           <div style={{ height: `${listVirtualizer.getTotalSize()}px` }} className="relative">
-            {listVirtualizer.getVirtualItems().map((virtualRow) => {
               const article = data?.[virtualRow.index];
               if (!article) return null;
               return (

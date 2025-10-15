@@ -25,7 +25,6 @@ const ChecklistsPage = () => {
         className="max-h-[70vh] overflow-y-auto rounded-2xl border border-skin-ring/40 bg-skin-base/80 shadow-inner"
       >
         <div style={{ height: `${rowVirtualizer.getTotalSize()}px` }} className="relative">
-          {rowVirtualizer.getVirtualItems().map((virtualRow) => {
             const checklist = data[virtualRow.index];
             const top = 0;
             return (
