@@ -12,11 +12,13 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { resolveAssistantResources } from "@/lib/assistant-insights";
+ main
 import type { AssistantRelatedResources } from "@/lib/assistant-insights";
 import type { Checklist } from "@/types/checklist";
 import { Button } from "@/components/ui/Button";
 import { useChecklistProgress } from "@/hooks/useChecklistProgress";
 import { useNavigate } from "react-router-dom";
+ main
 
 interface Message {
   id: string;
@@ -45,6 +47,7 @@ type SendPayload = {
   text: string;
   audioBase64?: string | null;
   history: Message[];
+ main
 };
 
 const personas: Persona[] = [
@@ -71,28 +74,7 @@ const personas: Persona[] = [
   },
 ];
 
-const buildMessageId = (prefix: string): string => `${prefix}-${crypto.randomUUID()}`;
-
-const sendAssistantMessage = async ({ persona, text, audioBase64, history }: SendPayload): Promise<string> => {
-  const controller = new AbortController();
-  const response = await fetch("https://n8n.dmytrotovstytskyi.online/webhook/gala.school", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      text: text.trim(),
-      audioBase64,
-      persona,
-      history: history.slice(-10).map(({ role, content }) => ({ role, content })),
-    }),
-    signal: controller.signal,
-  });
-
-  if (!response.ok) {
-    throw new Error("Помилка відповіді від сервера");
-  }
-
-  const data = (await response.json()) as { response?: string; message?: string; output?: string };
-  return data.response ?? data.message ?? data.output ?? "Вибачте, не вдалося отримати відповідь.";
+ main
 };
 
 const SuggestedChecklist = ({ checklist }: { checklist: Checklist }) => {
@@ -183,6 +165,7 @@ const SuggestedResources = ({ resources }: { resources: AssistantRelatedResource
 };
 
 const AssistantPage = () => {
+ main
   const [persona, setPersona] = useState<PersonaId>("seller");
   const [input, setInput] = useState("");
   const [messagesByPersona, setMessagesByPersona] = useState<MessagesByPersona>({
@@ -325,35 +308,7 @@ const AssistantPage = () => {
     };
 
     setLastResources(null);
-
-    setMessagesByPersona((prev) => ({
-      ...prev,
-      [persona]: [...prev[persona], message],
-    }));
-
-    setInput("");
-    await mutation.mutateAsync({ persona, text, audioBase64, history: [...currentMessages, message] });
-  };
-
-  const blobToBase64 = (blob: Blob): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const result = reader.result;
-        if (typeof result === "string") {
-          const base64 = result.split(",")[1] ?? "";
-          resolve(base64);
-        } else {
-          reject(new Error("Не вдалося обробити аудіо"));
-        }
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
-  };
-
-  const personaConfig = useMemo(() => personas.find((item) => item.id === persona)!, [persona]);
-
+ main
   return (
     <div className="space-y-6">
       <div className={`relative overflow-hidden rounded-2xl border border-skin-ring/50 bg-skin-card/80 p-6 shadow-lg`}> 
