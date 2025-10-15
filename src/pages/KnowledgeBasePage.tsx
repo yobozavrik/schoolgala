@@ -10,7 +10,6 @@ import { Badge } from "@/components/ui/Badge";
 import { enableStaticPrefetch } from "@/config/env";
 import { getLocalKnowledgeBaseSummaries } from "@/lib/local-data";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import type { VirtualItem } from "@tanstack/react-virtual";
 
 const KnowledgeBasePage = () => {
   const navigate = useNavigate();
@@ -68,7 +67,6 @@ const KnowledgeBasePage = () => {
           className="max-h-[70vh] overflow-y-auto rounded-2xl border border-skin-ring/40 bg-skin-base/70 shadow-inner"
         >
           <div style={{ height: `${listVirtualizer.getTotalSize()}px` }} className="relative">
-            {listVirtualizer.getVirtualItems().map((virtualRow: VirtualItem) => {
               const article = data?.[virtualRow.index];
               if (!article) return null;
               return (
@@ -80,10 +78,6 @@ const KnowledgeBasePage = () => {
                   <button
                     type="button"
                     onClick={() => navigate(`/kb/${article.id}`)}
-                    className={clsx(
-                      "w-full rounded-2xl border border-skin-ring/50 bg-skin-base/90 p-4 text-left shadow-sm transition",
-                      "hover:border-skin-primary",
-                    )}
                   >
                     <div className="flex items-center justify-between text-xs text-skin-muted">
                       <span>{article.category}</span>
@@ -107,10 +101,6 @@ const KnowledgeBasePage = () => {
                     key={article.id}
                     type="button"
                     onClick={() => navigate(`/kb/${article.id}`)}
-                    className={clsx(
-                      "w-full rounded-2xl border border-skin-ring/60 bg-skin-base/60 p-4 text-left transition",
-                      "hover:border-skin-primary",
-                    )}
                   >
                     <div className="text-sm font-semibold text-skin-text">{article.title}</div>
                     <div className="text-xs text-skin-muted">{article.tldr}</div>

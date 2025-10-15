@@ -1,8 +1,6 @@
 import { useMemo, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import type { VirtualItem } from "@tanstack/react-virtual";
-import clsx from "clsx";
 import { checklists } from "@/assets/data/checklists";
 import { Badge } from "@/components/ui/Badge";
 
@@ -27,7 +25,6 @@ const ChecklistsPage = () => {
         className="max-h-[70vh] overflow-y-auto rounded-2xl border border-skin-ring/40 bg-skin-base/80 shadow-inner"
       >
         <div style={{ height: `${rowVirtualizer.getTotalSize()}px` }} className="relative">
-          {rowVirtualizer.getVirtualItems().map((virtualRow: VirtualItem) => {
             const checklist = data[virtualRow.index];
             const top = 0;
             return (
@@ -39,10 +36,6 @@ const ChecklistsPage = () => {
                 <button
                   type="button"
                   onClick={() => navigate(`/checklists/${checklist.id}`)}
-                  className={clsx(
-                    "flex w-full flex-col gap-2 rounded-2xl border border-skin-ring/50 bg-skin-base/90 p-4 text-left shadow-md transition",
-                    "hover:border-skin-primary",
-                  )}
                 >
                   <div className="flex items-center justify-between">
                     <div className="text-sm font-semibold text-skin-text">{checklist.title}</div>
