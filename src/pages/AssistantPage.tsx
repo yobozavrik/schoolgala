@@ -1,163 +1,257 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Send, Mic, Square, Bot, User } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import {
+  Bot,
+  CheckSquare,
+  Link2,
+  Loader2,
+  Mic,
+  Send,
+  Square,
+  User,
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { resolveAssistantResources } from "@/lib/assistant-insights";
+import { sendAiMessage } from "@/lib/api";
+import type { AssistantRelatedResources } from "@/lib/assistant-insights";
+import type { Checklist } from "@/types/checklist";
+import { Button } from "@/components/ui/Button";
+import { useChecklistProgress } from "@/hooks/useChecklistProgress";
+import { useNavigate } from "react-router-dom";
+import { useTelegramContext } from "@/providers/TelegramProvider";
 
 interface Message {
-  id: number;
-  role: 'user' | 'assistant';
+  id: string;
+  role: "user" | "assistant";
   content: string;
+  createdAt: number;
+  persona: PersonaId;
   audioBase64?: string;
+  relatedResources?: AssistantRelatedResources;
 }
 
 interface Persona {
-  id: string;
+  id: PersonaId;
   label: string;
   icon: string;
   description: string;
+  gradient: string;
 }
 
-type PersonaId = 'seller' | 'psychologist' | 'companion';
+type PersonaId = "seller" | "psychologist" | "companion";
 
-interface MessagesByPersona {
-  seller: Message[];
-  psychologist: Message[];
-  companion: Message[];
-}
+type MessagesByPersona = Record<PersonaId, Message[]>;
+
+type SendPayload = {
+  persona: PersonaId;
+  text: string;
+  audioBase64?: string | null;
+  history: Message[];
+  initData?: string;
+};
 
 const personas: Persona[] = [
   {
-    id: 'seller',
-    label: 'Продавець',
-    icon: '🛒',
-    description: 'Про товари, техніки продажу та сервіс'
+    id: "seller",
+    label: "Продавець",
+    icon: "🛒",
+    description: "Про товари, техніки продажу та сервіс",
+    gradient: "from-rose-500/10 via-rose-500/5 to-transparent",
   },
   {
-    id: 'psychologist',
-    label: 'Психолог',
-    icon: '💆',
-    description: 'Підтримка емоційного стану та робота зі стресом'
+    id: "psychologist",
+    label: "Психолог",
+    icon: "💆",
+    description: "Підтримка емоційного стану та робота зі стресом",
+    gradient: "from-sky-500/10 via-sky-500/5 to-transparent",
   },
   {
-    id: 'companion',
-    label: 'Потеревенькати',
-    icon: '☕',
-    description: 'Легка дружня бесіда під час зміни'
-  }
+    id: "companion",
+    label: "Потеревенькати",
+    icon: "☕",
+    description: "Легка дружня бесіда під час зміни",
+    gradient: "from-amber-500/10 via-amber-500/5 to-transparent",
+  },
 ];
 
-export default function AssistantPage() {
-  const [persona, setPersona] = useState<PersonaId>('seller');
-  const [messages, setMessages] = useState<MessagesByPersona>({
+const buildMessageId = (prefix: string): string => {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+    return `${prefix}-${crypto.randomUUID()}`;
+  }
+  return `${prefix}-${Date.now().toString(36)}-${Math.random().toString(16).slice(2)}`;
+};
+
+const sendAssistantMessage = async ({ persona, text, audioBase64, history, initData }: SendPayload): Promise<string> => {
+  const response = await sendAiMessage({
+    persona,
+    text: text.trim(),
+    audioBase64: audioBase64 ?? undefined,
+    initData,
+    history: history.slice(-10).map(({ role, content }) => ({ role, content })),
+  });
+
+  return response.output || "Вибачте, не вдалося отримати відповідь.";
+};
+
+const SuggestedChecklist = ({ checklist }: { checklist: Checklist }) => {
+  const navigate = useNavigate();
+  const { completedIds, toggle } = useChecklistProgress(checklist.id);
+  const completion = Math.round((completedIds.length / checklist.items.length) * 100);
+
+  return (
+    <div className="rounded-2xl border border-emerald-200/60 bg-emerald-50/60 p-4 text-sm text-emerald-950 shadow-sm">
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <p className="text-xs uppercase tracking-wide text-emerald-600">Чек-лист</p>
+          <h3 className="text-base font-semibold text-emerald-900">{checklist.title}</h3>
+          {checklist.nextDueAt ? (
+            <p className="text-xs text-emerald-600">
+              Наступне нагадування: {new Date(checklist.nextDueAt).toLocaleTimeString("uk-UA", { hour: "2-digit", minute: "2-digit" })}
+            </p>
+          ) : null}
+        </div>
+        <Button size="sm" variant="ghost" onClick={() => navigate(`/checklists/${checklist.id}`)}>
+          <Link2 className="mr-2 h-4 w-4" /> Повний
+        </Button>
+      </div>
+      <div className="mt-3 text-xs text-emerald-700">Прогрес: {completion}%</div>
+      <ul className="mt-3 space-y-2">
+        {checklist.items.slice(0, 3).map((item) => {
+          const checked = completedIds.includes(item.id);
+          return (
+            <li key={item.id} className="flex items-center gap-2">
+              <label className="flex cursor-pointer items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 rounded border-emerald-400 text-emerald-500 focus:ring-emerald-500"
+                  checked={checked}
+                  onChange={() => toggle(item.id)}
+                />
+                <span className={checked ? "text-emerald-600 line-through" : "text-emerald-900"}>{item.text}</span>
+              </label>
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+};
+
+const SuggestedResources = ({ resources }: { resources: AssistantRelatedResources }) => {
+  if (!resources.articles.length && !resources.checklists.length) {
+    return null;
+  }
+
+  return (
+    <div className="mt-4 space-y-3 rounded-2xl border border-skin-ring/50 bg-skin-card/80 p-4 text-sm shadow-inner">
+      <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-skin-muted">
+        <CheckSquare className="h-4 w-4" /> Рекомендації на основі відповіді
+      </p>
+      <div className="space-y-3">
+        {resources.articles.length ? (
+          <div className="space-y-2">
+            <p className="text-xs text-skin-muted">Статті бази знань</p>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {resources.articles.map((article) => (
+                <a
+                  key={article.id}
+                  href={`/kb/${article.id}`}
+                  className="rounded-xl border border-skin-ring/40 bg-skin-base/60 p-3 transition hover:border-skin-primary"
+                >
+                  <p className="text-sm font-semibold text-skin-text">{article.title}</p>
+                  <p className="text-xs text-skin-muted">{article.tldr}</p>
+                </a>
+              ))}
+            </div>
+          </div>
+        ) : null}
+        {resources.checklists.length ? (
+          <div className="space-y-2">
+            <p className="text-xs text-skin-muted">Швидкі чек-листи</p>
+            <div className="space-y-2">
+              {resources.checklists.map((checklist) => (
+                <SuggestedChecklist key={checklist.id} checklist={checklist} />
+              ))}
+            </div>
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+};
+
+const AssistantPage = () => {
+  const { initData } = useTelegramContext();
+  const [persona, setPersona] = useState<PersonaId>("seller");
+  const [input, setInput] = useState("");
+  const [messagesByPersona, setMessagesByPersona] = useState<MessagesByPersona>({
     seller: [],
     psychologist: [],
-    companion: []
+    companion: [],
   });
-  const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [recordingError, setRecordingError] = useState<string | null>(null);
-  
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const [lastResources, setLastResources] = useState<AssistantRelatedResources | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const bottomRef = useRef<HTMLDivElement | null>(null);
 
-  const currentMessages = messages[persona];
-  const activePersona = personas.find(p => p.id === persona);
+  const currentMessages = messagesByPersona[persona];
+
+  const mutation = useMutation({
+    mutationFn: sendAssistantMessage,
+    onError: () => {
+      setMessagesByPersona((prev) => ({
+        ...prev,
+        [persona]: [
+          ...prev[persona],
+          {
+            id: buildMessageId("error"),
+            role: "assistant",
+            content: "Вибачте, сталася помилка. Перевірте інтернет або спробуйте пізніше.",
+            createdAt: Date.now(),
+            persona,
+          },
+        ],
+      }));
+    },
+    onSuccess: (content) => {
+      const resources = resolveAssistantResources(content);
+      setLastResources(resources);
+      setMessagesByPersona((prev) => ({
+        ...prev,
+        [persona]: [
+          ...prev[persona],
+          {
+            id: buildMessageId("assistant"),
+            role: "assistant",
+            content,
+            createdAt: Date.now(),
+            persona,
+            relatedResources: resources,
+          },
+        ],
+      }));
+    },
+  });
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [currentMessages.length, mutation.isPending]);
 
   useEffect(() => {
     return () => {
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop());
-      }
-      if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+      if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
         mediaRecorderRef.current.stop();
       }
+      streamRef.current?.getTracks().forEach((track) => track.stop());
     };
   }, []);
 
-  const sendMessage = async (text: string, audioBase64: string | null = null) => {
-    if (!text.trim() && !audioBase64) return;
-
-    const userMessage: Message = {
-      id: Date.now(),
-      role: 'user',
-      content: text.trim() || 'Голосове повідомлення',
-      audioBase64: audioBase64 || undefined
-    };
-
-    setMessages(prev => ({
-      ...prev,
-      [persona]: [...prev[persona], userMessage]
-    }));
-
-    setInput('');
-    setIsLoading(true);
-
-    try {
-      const response = await fetch('https://n8n.dmytrotovstytskyi.online/webhook/gala.school', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          text: text.trim(),
-          audioBase64,
-          persona,
-          history: currentMessages.slice(-10)
-        })
-      });
-
-      if (!response.ok) throw new Error('Помилка відповіді від сервера');
-
-      const data = await response.json();
-      
-      const aiMessage: Message = {
-        id: Date.now() + 1,
-        role: 'assistant',
-        content: data.response || data.message || data.output || 'Вибачте, не зміг отримати відповідь.'
-      };
-
-      setMessages(prev => ({
-        ...prev,
-        [persona]: [...prev[persona], aiMessage]
-      }));
-    } catch (error) {
-      console.error('Помилка AI чату:', error);
-      const errorMessage: Message = {
-        id: Date.now() + 1,
-        role: 'assistant',
-        content: 'Вибачте, сталася помилка. Перевірте інтернет або спробуйте пізніше.'
-      };
-      setMessages(prev => ({
-        ...prev,
-        [persona]: [...prev[persona], errorMessage]
-      }));
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleSend = () => {
-    sendMessage(input);
-  };
-
-  const blobToBase64 = (blob: Blob): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const result = reader.result;
-        if (typeof result === 'string') {
-          const base64 = result.split(',')[1] || '';
-          resolve(base64);
-        } else {
-          reject(new Error('Failed to convert blob'));
-        }
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
-  };
-
   const startRecording = async () => {
     if (!navigator.mediaDevices?.getUserMedia) {
-      setRecordingError('Ваш браузер не підтримує запис аудіо');
+      setRecordingError("Ваш браузер не підтримує запис аудіо");
       return;
     }
 
@@ -165,57 +259,46 @@ export default function AssistantPage() {
       setRecordingError(null);
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
-      
       const mediaRecorder = new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
       audioChunksRef.current = [];
 
-      mediaRecorder.addEventListener('dataavailable', (event) => {
+      mediaRecorder.addEventListener("dataavailable", (event) => {
         if (event.data.size > 0) {
           audioChunksRef.current.push(event.data);
         }
       });
 
-      mediaRecorder.addEventListener('stop', async () => {
+      mediaRecorder.addEventListener("stop", async () => {
         setIsRecording(false);
-        
-        if (streamRef.current) {
-          streamRef.current.getTracks().forEach(track => track.stop());
-          streamRef.current = null;
-        }
+        streamRef.current?.getTracks().forEach((track) => track.stop());
+        streamRef.current = null;
 
         const chunks = audioChunksRef.current;
         audioChunksRef.current = [];
 
         if (!chunks.length) {
-          setRecordingError('Запис не містить звуку');
+          setRecordingError("Запис не містить звуку");
           return;
         }
 
-        const blob = new Blob(chunks, { type: 'audio/webm' });
-        
-        try {
-          const base64 = await blobToBase64(blob);
-          await sendMessage('🎤 Голосове повідомлення', base64);
-        } catch (error) {
-          setRecordingError('Не вдалося обробити аудіо');
-        }
+        const blob = new Blob(chunks, { type: "audio/webm" });
+        const base64 = await blobToBase64(blob);
+        await handleSend("🎤 Голосове повідомлення", base64);
       });
 
       mediaRecorder.start();
       setIsRecording(true);
     } catch (error) {
-      console.error('Помилка запису:', error);
-      setRecordingError('Немає доступу до мікрофона');
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop());
-        streamRef.current = null;
-      }
+      console.error("Помилка запису:", error);
+      setRecordingError("Немає доступу до мікрофона");
+      streamRef.current?.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
     }
   };
 
   const stopRecording = () => {
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
+    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
       mediaRecorderRef.current.stop();
     }
   };
@@ -228,153 +311,201 @@ export default function AssistantPage() {
     }
   };
 
+  const handleSend = async (text: string, audioBase64: string | null = null) => {
+    if (!text.trim() && !audioBase64) return;
+
+    const message: Message = {
+      id: buildMessageId("user"),
+      role: "user",
+      content: text.trim() || "Голосове повідомлення",
+      createdAt: Date.now(),
+      persona,
+      audioBase64: audioBase64 ?? undefined,
+    };
+
+    setLastResources(null);
+
+    setMessagesByPersona((prev) => ({
+      ...prev,
+      [persona]: [...prev[persona], message],
+    }));
+
+    setInput("");
+    await mutation.mutateAsync({ persona, text, audioBase64, history: [...currentMessages, message], initData });
+  };
+
+  const blobToBase64 = (blob: Blob): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const result = reader.result;
+        if (typeof result === "string") {
+          const base64 = result.split(",")[1] ?? "";
+          resolve(base64);
+        } else {
+          reject(new Error("Не вдалося обробити аудіо"));
+        }
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  };
+
+  const personaConfig = useMemo(() => personas.find((item) => item.id === persona)!, [persona]);
+
   return (
-    <div className="flex h-screen flex-col bg-gradient-to-b from-galya-beige to-gray-50">
-      <div className="bg-white border-b-2 border-galya-accent px-4 py-4 shadow-md">
-        <div className="max-w-md mx-auto">
-          <h1 className="text-xl font-bold text-galya-brown">AI Наставник</h1>
-          <p className="text-sm text-galya-brown-light">Виберіть режим спілкування</p>
-        </div>
-      </div>
-
-      <div className="px-4 py-4 bg-white border-b border-gray-200">
-        <div className="max-w-md mx-auto grid grid-cols-3 gap-3">
-          {personas.map((p) => (
-            <button
-              key={p.id}
-              onClick={() => setPersona(p.id as PersonaId)}
-              className={`p-3 rounded-xl border-2 transition-all ${
-                persona === p.id
-                  ? 'border-galya-brown bg-galya-beige shadow-md'
-                  : 'border-gray-200 hover:border-galya-brown-light'
-              }`}
-            >
-              <div className="text-2xl mb-1">{p.icon}</div>
-              <div className="text-xs font-semibold text-galya-brown">{p.label}</div>
-            </button>
-          ))}
-        </div>
-        <p className="text-xs text-center text-galya-brown-light mt-2">
-          {activePersona?.description}
-        </p>
-      </div>
-
-      <div className="flex-1 overflow-y-auto px-4 py-6 pb-32">
-        <div className="max-w-md mx-auto space-y-4">
-          {currentMessages.length === 0 && !isLoading && (
-            <div className="text-center py-12">
-              <div className="text-4xl mb-4">{activePersona?.icon}</div>
-              <p className="text-galya-brown-light">
-                Почніть діалог з {activePersona?.label}
-              </p>
+    <div className="space-y-6">
+      <div className={`relative overflow-hidden rounded-2xl border border-skin-ring/50 bg-skin-card/80 p-6 shadow-lg`}> 
+        <div className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${personaConfig.gradient}`} aria-hidden />
+        <div className="relative z-[1] space-y-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs uppercase tracking-wide text-skin-muted">AI наставник</p>
+              <h1 className="text-2xl font-semibold text-skin-text">Обраний режим: {personaConfig.label}</h1>
+              <p className="text-sm text-skin-muted">{personaConfig.description}</p>
             </div>
-          )}
-
-          {currentMessages.map((message) => (
-            <div
-              key={message.id}
-              className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div className={`flex max-w-[80%] ${message.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                <div className={`flex-shrink-0 ${message.role === 'user' ? 'ml-3' : 'mr-3'}`}>
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center shadow-md ${
-                    message.role === 'user'
-                      ? 'bg-gradient-to-br from-galya-brown to-galya-brown-light'
-                      : 'bg-gradient-to-br from-blue-500 to-blue-600'
-                  }`}>
-                    {message.role === 'user' ? (
-                      <User size={20} className="text-white" />
-                    ) : (
-                      <Bot size={20} className="text-white" />
-                    )}
+          </div>
+          <div className="grid gap-3 sm:grid-cols-3">
+            {personas.map((item) => {
+              const active = item.id === persona;
+              return (
+                <button
+                  key={item.id}
+                  type="button"
+                  onClick={() => setPersona(item.id)}
+                  className={`flex items-start gap-3 rounded-2xl border-2 bg-skin-base/70 p-4 text-left transition focus:outline-none focus:ring-2 focus:ring-skin-primary ${
+                    active ? "border-skin-primary shadow-md" : "border-transparent hover:border-skin-ring"
+                  }`}
+                >
+                  <span className="text-2xl" aria-hidden>
+                    {item.icon}
+                  </span>
+                  <div>
+                    <p className="text-sm font-semibold text-skin-text">{item.label}</p>
+                    <p className="text-xs text-skin-muted">{item.description}</p>
                   </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      <div className="max-h-[55vh] space-y-4 overflow-y-auto pr-2">
+        <AnimatePresence>
+          {currentMessages.length === 0 && !mutation.isPending ? (
+            <motion.div
+              key="placeholder"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="rounded-2xl border border-dashed border-skin-ring/40 bg-skin-card/60 p-8 text-center text-sm text-skin-muted"
+            >
+              <div className="text-4xl">{personaConfig.icon}</div>
+              <p className="mt-3">Почніть діалог — наставник підготує сценарії, статті та чек-листи.</p>
+            </motion.div>
+          ) : null}
+          {currentMessages.map((message) => {
+            const isUser = message.role === "user";
+            return (
+              <motion.div
+                key={message.id}
+                layout
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`flex ${isUser ? "justify-end" : "justify-start"}`}
+              >
+                <div className={`flex max-w-[80%] flex-col gap-2 ${isUser ? "items-end" : "items-start"}`}>
+                  <div
+                    className={`flex items-start gap-3 rounded-2xl border border-skin-ring/50 bg-skin-card/80 p-4 shadow-md ${
+                      isUser ? "bg-skin-primary/10" : "bg-skin-base/90"
+                    }`}
+                  >
+                    <div className={`mt-1 flex h-9 w-9 items-center justify-center rounded-full ${
+                      isUser ? "bg-skin-primary text-white" : "bg-sky-500/10 text-sky-600"
+                    }`}
+                    >
+                      {isUser ? <User className="h-4 w-4" /> : <Bot className="h-4 w-4" />}
+                    </div>
+                    <div>
+                      <p className="text-xs text-skin-muted">
+                        {new Date(message.createdAt).toLocaleTimeString("uk-UA", { hour: "2-digit", minute: "2-digit" })}
+                      </p>
+                      <p className="mt-1 whitespace-pre-wrap text-sm text-skin-text">{message.content}</p>
+                    </div>
+                  </div>
+                  {!isUser && message.relatedResources ? (
+                    <SuggestedResources resources={message.relatedResources} />
+                  ) : null}
                 </div>
-                <div className={`rounded-2xl px-4 py-3 shadow-md ${
-                  message.role === 'user'
-                    ? 'bg-gradient-to-br from-galya-brown to-galya-brown-light text-white'
-                    : 'bg-white text-galya-brown border-2 border-galya-beige'
-                }`}>
-                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+              </motion.div>
+            );
+          })}
+          {mutation.isPending ? (
+            <motion.div
+              key="typing"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex justify-start"
+            >
+              <div className="flex max-w-[80%] items-center gap-3 rounded-2xl border border-skin-ring/40 bg-skin-card/70 p-4 shadow-md">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-sky-500/10 text-sky-600">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                </div>
+                <div className="flex items-center gap-1 text-skin-muted">
+                  <span className="h-2 w-2 animate-bounce rounded-full bg-sky-500"></span>
+                  <span className="h-2 w-2 animate-bounce rounded-full bg-sky-500" style={{ animationDelay: "120ms" }}></span>
+                  <span className="h-2 w-2 animate-bounce rounded-full bg-sky-500" style={{ animationDelay: "240ms" }}></span>
                 </div>
               </div>
-            </div>
-          ))}
-
-          {isLoading && (
-            <div className="flex justify-start">
-              <div className="flex max-w-[80%]">
-                <div className="mr-3">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center shadow-md bg-gradient-to-br from-blue-500 to-blue-600">
-                    <Bot size={20} className="text-white" />
-                  </div>
-                </div>
-                <div className="rounded-2xl px-4 py-3 shadow-md bg-white border-2 border-galya-beige">
-                  <div className="flex space-x-2">
-                    <div className="w-2 h-2 bg-galya-brown rounded-full animate-bounce"></div>
-                    <div className="w-2 h-2 bg-galya-brown rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                    <div className="w-2 h-2 bg-galya-brown rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+            </motion.div>
+          ) : null}
+        </AnimatePresence>
+        <div ref={bottomRef} />
       </div>
 
-      <div className="fixed bottom-16 left-0 right-0 bg-white border-t-2 border-galya-accent px-4 py-3 shadow-lg">
-        <div className="max-w-md mx-auto">
-          <div className="flex space-x-2 mb-2">
-            <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault();
-                  handleSend();
-                }
-              }}
-              placeholder="Напишіть повідомлення..."
-              disabled={isLoading}
-              rows={2}
-              className="flex-1 px-4 py-3 border-2 border-galya-brown-light rounded-xl focus:outline-none focus:border-galya-brown disabled:opacity-50 resize-none"
-            />
-          </div>
-          <div className="flex space-x-2">
-            <button
-              onClick={handleVoiceClick}
-              disabled={isLoading}
-              className={`flex-1 py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center ${
-                isRecording
-                  ? 'bg-red-500 text-white hover:bg-red-600'
-                  : 'bg-gray-100 text-galya-brown hover:bg-gray-200'
-              } disabled:opacity-50`}
-            >
-              {isRecording ? (
-                <>
-                  <Square size={18} className="mr-2" />
-                  Зупинити
-                </>
-              ) : (
-                <>
-                  <Mic size={18} className="mr-2" />
-                  Голос
-                </>
-              )}
-            </button>
-            <button
-              onClick={handleSend}
-              disabled={!input.trim() || isLoading}
-              className="flex-1 py-3 px-4 bg-gradient-to-r from-galya-brown to-galya-brown-light text-white rounded-xl font-medium hover:shadow-lg disabled:opacity-50 transition-all flex items-center justify-center"
-            >
-              Надіслати
-              <Send size={18} className="ml-2" />
-            </button>
-          </div>
-          {recordingError && (
-            <p className="text-xs text-red-500 mt-2">{recordingError}</p>
-          )}
+      <div className="space-y-3 rounded-2xl border border-skin-ring/60 bg-skin-card/80 p-4 shadow-xl">
+        <textarea
+          value={input}
+          onChange={(event) => setInput(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" && !event.shiftKey) {
+              event.preventDefault();
+              void handleSend(input);
+            }
+          }}
+          placeholder="Напишіть повідомлення..."
+          rows={3}
+          className="w-full resize-none rounded-2xl border border-skin-ring/40 bg-skin-base/70 p-3 text-sm text-skin-text shadow-inner focus:border-skin-primary focus:outline-none"
+          disabled={mutation.isPending}
+        />
+        <div className="flex flex-wrap items-center gap-3">
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={handleVoiceClick}
+            disabled={mutation.isPending}
+            className={isRecording ? "border-red-400 bg-red-50 text-red-600" : undefined}
+          >
+            {isRecording ? (
+              <>
+                <Square className="mr-2 h-4 w-4" /> Зупинити
+              </>
+            ) : (
+              <>
+                <Mic className="mr-2 h-4 w-4" /> Голос
+              </>
+            )}
+          </Button>
+          <Button type="button" onClick={() => void handleSend(input)} disabled={!input.trim() || mutation.isPending}>
+            Надіслати <Send className="ml-2 h-4 w-4" />
+          </Button>
         </div>
+        {recordingError ? <p className="text-xs text-red-500">{recordingError}</p> : null}
+        {lastResources && !mutation.isPending ? <SuggestedResources resources={lastResources} /> : null}
       </div>
     </div>
   );
-}
+};
+
+export default AssistantPage;

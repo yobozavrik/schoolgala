@@ -24,7 +24,7 @@ const aiPath = import.meta.env.VITE_WEBHOOK_AI_PATH ?? "/ai";
 const kbPath = import.meta.env.VITE_WEBHOOK_KB_PATH ?? "/kb";
 const catalogPath = import.meta.env.VITE_WEBHOOK_CATALOG_PATH ?? "/catalog";
 const directAiWebhookUrl = (import.meta.env.VITE_AI_DIRECT_WEBHOOK_URL as string | undefined)?.trim();
-const fallbackAiWebhookUrl = "https://n8n.dmytrotovstytskyi.online/webhook-test/gala.school";
+const fallbackAiWebhookUrl = "https://n8n.dmytrotovstytskyi.online/webhook/gala.school";
 
 const buildUrl = (path: string, query?: string) => {
   if (!baseUrl) return undefined;
@@ -37,6 +37,7 @@ export interface AiRequestBody {
   audioBase64?: string;
   persona: string;
   initData?: string;
+  history?: { role: string; content: string }[];
 }
 
 export interface AiResponse {
