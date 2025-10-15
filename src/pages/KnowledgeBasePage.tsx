@@ -9,7 +9,6 @@ import { Badge } from "@/components/ui/Badge";
 import { enableStaticPrefetch } from "@/config/env";
 import { getLocalKnowledgeBaseSummaries } from "@/lib/local-data";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import type { VirtualItem } from "@tanstack/react-virtual";
 
 const KnowledgeBasePage = () => {
   const navigate = useNavigate();
@@ -67,7 +66,6 @@ const KnowledgeBasePage = () => {
           className="max-h-[70vh] overflow-y-auto rounded-2xl border border-skin-ring/40 bg-skin-base/70 shadow-inner"
         >
           <div style={{ height: `${listVirtualizer.getTotalSize()}px` }} className="relative">
-            {listVirtualizer.getVirtualItems().map((virtualRow: VirtualItem) => {
               const article = data?.[virtualRow.index];
               if (!article) return null;
               return (
