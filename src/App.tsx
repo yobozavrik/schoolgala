@@ -10,6 +10,7 @@ const KnowledgeBaseArticlePage = lazy(() => import("@/pages/KnowledgeBaseArticle
 const ChecklistsPage = lazy(() => import("@/pages/ChecklistsPage"));
 const ChecklistDetailPage = lazy(() => import("@/pages/ChecklistDetailPage"));
 const CatalogPage = lazy(() => import("@/pages/CatalogPage"));
+const SalesToolsPage = lazy(() => import("@/pages/SalesToolsPage"));
 const TestsPage = lazy(() => import("@/pages/TestsPage"));
 const ContactsPage = lazy(() => import("@/pages/ContactsPage"));
 
@@ -25,6 +26,7 @@ const App = (): JSX.Element => {
           <Route path="/checklists" element={<ChecklistsPage />} />
           <Route path="/checklists/:id" element={<ChecklistDetailPage />} />
           <Route path="/catalog" element={<CatalogPage />} />
+          <Route path="/sales-tools" element={<SalesToolsPage />} />
           <Route path="/tests" element={<TestsPage />} />
           <Route path="/contacts" element={<ContactsPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
