@@ -11,6 +11,7 @@ import {
   Bot,
   BookOpenCheck,
   Boxes,
+  Workflow,
   ClipboardCheck,
   GraduationCap,
   MessageSquareShare,
@@ -23,6 +24,12 @@ const tiles = [
     description: "Миттєві відповіді на складні запитання",
     icon: <Bot className="h-6 w-6" aria-hidden />,
     to: "/assistant",
+  },
+  {
+    title: "Інструменти продажу",
+    description: "Скрипти, відповіді на заперечення та готові набори",
+    icon: <Workflow className="h-6 w-6" aria-hidden />,
+    to: "/sales-tools",
   },
   {
     title: "База знань",
